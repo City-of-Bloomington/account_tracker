@@ -1,6 +1,6 @@
 export default function ({ $axios, app, store, redirect, route }) {
   $axios.onRequest(config => {
-    config.headers.common['Authorization'] = `JWT ${store.state.auth.auth}`
+    // config.headers.common['Authorization'] = `JWT ${store.state.auth.auth}`
     config.headers.common['Content-Type']  = `application/json`
 
     if(process.env.NODE_ENV === 'development')
@@ -14,7 +14,7 @@ export default function ({ $axios, app, store, redirect, route }) {
     }
 
     if (code === 401) {
-      redirect('/login')
+      // redirect('/login')
     }
 
     if (code === 404) {

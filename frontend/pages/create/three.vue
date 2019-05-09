@@ -69,7 +69,6 @@ import exampleSelect    from '~/components/exampleSelect'
 
 export default {
   layout:           'create',
-  middleware:       'authenticated',
   components: {
     progressStepper,
     asideComponent,

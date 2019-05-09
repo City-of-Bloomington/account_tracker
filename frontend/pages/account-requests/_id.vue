@@ -332,7 +332,6 @@ export default {
   mounted(context) {
     this.loadData();
   },
-  middleware:       'authenticated',
   components: {
     exampleSelect,
     exampleDropdown,

@@ -93,7 +93,6 @@ import 'flatpickr/dist/flatpickr.css';
 
 export default {
   layout:           'create',
-  middleware:       'authenticated',
   components: {
     progressStepper,
     asideComponent,

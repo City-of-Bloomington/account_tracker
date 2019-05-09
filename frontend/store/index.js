@@ -18,6 +18,8 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 const cookieparser = process.server ? require('cookieparser') : undefined;
+const Cookie       = process.client ? require('js-cookie') : undefined
+
 export const strict = false;
 
 export const defaultState = () => ({
@@ -68,31 +70,52 @@ export const actions = {
     commit('RESET_BASE_STATE')
   },
   async nuxtServerInit({ commit, state }, { req }) {
-    let auth = null;
-    if (req.headers.cookie) {
-      const parsed = cookieparser.parse(req.headers.cookie)
-      try {
-        auth = parsed.auth;
-        commit('auth/SET_AUTH', auth)
-        commit('auth/SET_IS_AUTHENTICATED', true)
+    // let auth = null;
+    // if (req.headers.cookie) {
+    //   const parsed = cookieparser.parse(req.headers.cookie)
 
-        let user = await
-        this.$axios.get(`${process.env.api}${process.env.user}`)
+    //   try {
+    //     auth = parsed.auth;
+    //     commit('auth/SET_AUTH', auth)
+    //     commit('auth/SET_IS_AUTHENTICATED', true)
 
-        commit('auth/SET_AUTH_USER', user.data);
-        console.log(user.data);
+    //     console.log(`👤 ✅`);
+    //     console.log(auth);
+    //   } catch (e) {
+    //     commit('auth/SET_AUTH')
+    //     commit('auth/SET_AUTH_USER')
+    //     commit('auth/SET_IS_AUTHENTICATED', false)
 
-        console.log(`👤 & 🍪 = ✅`);
-      } catch (err) {
+    //     console.log(`👤 ⛔`);
+    //     console.log(e);
+    //   }
+    // }
 
-        console.log(err);
-        console.log(`👤 & 🍪 = ⛔`);
+  //   let auth = null;
+  //   if (req.headers.cookie) {
+  //     const parsed = cookieparser.parse(req.headers.cookie)
+  //     try {
+  //       auth = parsed.auth;
+  //       commit('auth/SET_AUTH', auth)
+  //       commit('auth/SET_IS_AUTHENTICATED', true)
 
-        commit('auth/SET_AUTH')
-        commit('auth/SET_AUTH_USER')
-        commit('auth/SET_IS_AUTHENTICATED', false)
-      }
-    }
+  //       let user = await
+  //       this.$axios.get(`${process.env.api}${process.env.user}`)
+
+  //       commit('auth/SET_AUTH_USER', user.data);
+  //       console.log(user.data);
+
+  //       console.log(`👤 & 🍪 = ✅`);
+  //     } catch (err) {
+
+  //       console.log(err);
+  //       console.log(`👤 & 🍪 = ⛔`);
+
+  //       commit('auth/SET_AUTH')
+  //       commit('auth/SET_AUTH_USER')
+  //       commit('auth/SET_IS_AUTHENTICATED', false)
+  //     }
+  //   }
   }
 }
 

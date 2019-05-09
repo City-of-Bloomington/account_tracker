@@ -5,6 +5,10 @@ module.exports = {
   mode: 'universal',
   dev:  (process.env.NODE_ENV !== 'production'),
 
+  router: {
+    base: '/'
+  },
+
   head: {
     title: pkg.prettyName,
     meta: [

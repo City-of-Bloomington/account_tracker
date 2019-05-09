@@ -130,7 +130,6 @@ import asideComponent   from '~/components/asideComponent'
 
 export default {
   layout:           'create',
-  middleware:       'authenticated',
   components: {
     progressStepper,
     asideComponent

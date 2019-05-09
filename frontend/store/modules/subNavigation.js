@@ -15,14 +15,6 @@ export const defaultSubNavState = () => ({
         name: 'New',
         href: '/create/'
       },
-      {
-        name: 'Created',
-        href: '/account-requests/created'
-      },
-      {
-        name: 'Denied',
-        href: '/account-requests/denied'
-      },
     ],
   },
 })

@@ -15,7 +15,6 @@
 
 <script>
 export default {
-  middleware:       'authenticated',
   name:             'Error',
   props: {
     error: {

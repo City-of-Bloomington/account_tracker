@@ -54,7 +54,6 @@ import exampleCheckbox from '~/components/exampleCheckbox'
 
 export default {
   layout:           'create',
-  middleware:       'authenticated',
   components: {
     progressStepper,
     asideComponent

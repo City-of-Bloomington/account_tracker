@@ -35,4 +35,5 @@ urlpatterns = [
     path('api/auth/refresh_token/', refresh_jwt_token),
     path('api/', include(router.urls)),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('app/', TemplateView.as_view(template_name='dist/index.html'), name='app'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
