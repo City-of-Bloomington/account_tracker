@@ -4,11 +4,14 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
-  <p><a href="{% url 'logout' %}">logout</a></p>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
-{% endif %}
+  {% if user.is_authenticated %}
+    <h1>
+      Hi, {{user.first_name}} ({{ user.username }}) {{user.last_name}}!<br>
+      <a href="{% url 'logout' %}">logout</a>
+    </h1>
+  {% else %}
+    <h1>
+      <a href="{% url 'login' %}">login</a>
+    </h1>
+  {% endif %}
 {% endblock %}

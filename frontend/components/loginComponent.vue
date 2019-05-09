@@ -1,6 +1,6 @@
 <template>
   <div class="body-cover">
-    <form class="login-wrapper">
+    <form id="login-form">
       <svg version="1.1" id="city-of-bloomington-logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 150 150" enable-background="new 0 0 150 150" xml:space="preserve">
         <polygon fill="#1e5aae" points="31.9991798,21.9479866 22.7739067,12.826499 22.7739067,22.8042793 12.8196859,22.8042793
           21.3657379,32.579998 12.8196859,41.1248817 41.1218987,41.1248817 41.1218987,12.826499 "/>
@@ -116,7 +116,7 @@ export default {
     margin: 0;
   }
 
-  .login-wrapper {
+  #login-form {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
