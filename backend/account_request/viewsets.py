@@ -27,6 +27,33 @@ class AccountRequestViewSet(viewsets.ModelViewSet):
     @action(detail=True)
     def pending(self, request, *args, **kwargs):
         ar = self.get_object()
+
+        ad_json = {
+            "sAMAccountName": "string",
+            "userPrincipalName": "string",
+            "distinguishedName": "string",
+            "givenName": "string",
+            "displayName": ar.first_name + ' ' + ar.last_name,
+            "sn": "string",
+            "countryCode": "USA",
+            "mail": ar.first_name.lower() + '.' + ar.last_name.lower() + '@bloomington.in.gov',
+            "description": "string",
+            "telephoneNumber": ar.employee_phone,
+            "pager": "string",
+            "facsimileTelephoneNumber": "string",
+            "info": "string",
+            "physicalDeliveryOfficeName": "string",
+            "title": ar.job,
+            "department": ar.department,
+            "uid": "string",
+            "employeeID": "string",
+            "employeeNumber": "string"
+        }
+
+        r = requests.post('http://10.20.20.218:5000/index.html', json=ad_json)
+        r.raise_for_status()
+        r.json()
+
         service_list = json.loads(ar.requested_services)
         for service_id in service_list:
             # get the corresponding Service

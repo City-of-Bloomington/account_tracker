@@ -8,3 +8,4 @@ djangorestframework-jwt
 django-filter
 Pillow
 drf-friendly-errors
+requests
