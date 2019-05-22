@@ -15,6 +15,23 @@ Vue.mixin({
   },
   methods: {
     /**
+     * A Promise returning the logged in User
+     *
+     * @promise     getUser
+     * @resolve     { Object }
+     * @reject      { Error }
+     * @return      { Promise <Object> } Resolves to an Object containing
+     *              the current logged in User
+     */
+    getUser(){
+      return new Promise((resolve, reject) => {
+        this.$axios
+        .get(`${process.env.api}${process.env.user}`)
+        .then(res => resolve(res.data))
+        .catch(e  => reject(e))
+      })
+    },
+    /**
      * A Promise for Account Requests
      * by Request Status
      *

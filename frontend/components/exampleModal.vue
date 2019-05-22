@@ -1,26 +1,31 @@
 <template>
   <component :is="wrapper">
     <transition name="modal">
-      <div class="modal-mask" v-show="showModal" @click.native.self="outside">
-        <div class="modal-wrapper" v-show="showModal">
+      <div class="modal-mask"
+           v-show="showModal"
+           @click.native.self="outside">
+        <div class="modal-wrapper"
+             v-show="showModal">
           <div class="modal-container">
             <div class="modal-header">
               <slot name="header">{{ title }}</slot>
             </div>
 
-            <div class="modal-body"><slot name="body" /></div>
+            <div class="modal-body">
+              <slot name="body"></slot>
+            </div>
 
             <div class="modal-footer">
-              <slot name="footer" />
-              <!-- <fn1-button @click.native="cancelModal">Cancel</fn1-button>
-              <fn1-button @click.native="$emit('confirmModal')">Confirm</fn1-button> -->
+              <slot name="footer"></slot>
             </div>
           </div>
         </div>
       </div>
     </transition>
 
-    <fn1-button @click.native="displayModal" v-html="launchButtonText"></fn1-button>
+    <fn1-button @click.native="displayModal">
+      {{launchButtonText}}
+    </fn1-button>
   </component>
 </template>
 

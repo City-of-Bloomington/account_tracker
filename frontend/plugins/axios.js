@@ -1,7 +1,25 @@
+// import https from 'https';
+
 export default function ({ $axios, app, store, redirect, route }) {
+  // const agent = new https.Agent({
+  //   rejectUnauthorized: false
+  // });
+
   $axios.onRequest(config => {
-    // config.headers.common['Authorization'] = `JWT ${store.state.auth.auth}`
-    config.headers.common['Content-Type']  = `application/json`
+    // process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+
+    // if (process.env.NODE_ENV === 'development') {
+    //   config.httpsAgent = agent;
+    // }
+
+    // config['xsrfCookieName'] = `csrftoken`
+    // config['xsrfHeaderName'] = `X-CSRFToken`
+
+    // config.headers.common['Authorization'] = `Token ${store.state.auth.auth.sessionid}`
+
+    // config.headers.common['X-CSRFToken'] = `${store.state.auth.auth.csrftoken}`
+
+    // config.headers.common['Content-Type']  = `application/json`
 
     if(process.env.NODE_ENV === 'development')
       console.log(`${config.method.toUpperCase()} :: ${config.url}`)

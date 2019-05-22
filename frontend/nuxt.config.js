@@ -3,11 +3,18 @@ require('dotenv').config()
 
 module.exports = {
   mode: 'universal',
+
+  // buildDir: 'nuxt-dist',
+
   dev:  (process.env.NODE_ENV !== 'production'),
 
   router: {
-    base: '/'
+    base: '/frontend/'
   },
+
+  // build: {
+  //   publicPath: '/frontend/'
+  // },
 
   head: {
     title: pkg.prettyName,
@@ -20,19 +27,19 @@ module.exports = {
 
   env: {
     repo:           pkg.repository.url,
-    nuxtPort:       process.env.NUXT_PORT           || 8080,
+    nuxtPort:       process.env.NUXT_PORT || 9090,
 
-    api:            process.env.API || `http://127.0.0.1:8000/api/`,
-    obtainJWT:      process.env.API_OBTAIN_JWT      || `auth/obtain_token/`,
-    refreshJWT:     process.env.API_REFRESH_JWT     || `auth/refresh_token/`,
-    user:           process.env.API_USER            || `user/`,
-    employee:       process.env.API_EMPLOYEE        || `employee/`,
-    action:         process.env.API_ACTION          || `action/`,
-    profile:        process.env.API_PROFILE         || `profile/`,
-    service:        process.env.API_SERVICE         || `service/`,
-    serviceReq:     process.env.API_SERVICE_REQ     || `service-request/`,
-    serviceManager: process.env.API_SERVICE_MANAGER || `service-manager/`,
-    accountRequest: process.env.API_ACCOUNT_REQUEST || `account-request/`,
+    api:            process.env.AT_API || `https://dhcp-cityhall-101-164.bloomington.in.gov:9090/`,
+    login:          process.env.AT_LOGIN               || `accounts/login/`,
+    logout:         process.env.AT_LOGOUT              || `accounts/logout/`,
+    user:           process.env.AT_API_USER            || `api/user/`,
+    employee:       process.env.AT_API_EMPLOYEE        || `api/employee/`,
+    action:         process.env.AT_API_ACTION          || `api/action/`,
+    profile:        process.env.AT_API_PROFILE         || `api/profile/`,
+    service:        process.env.AT_API_SERVICE         || `api/service/`,
+    serviceReq:     process.env.AT_API_SERVICE_REQ     || `api/service-request/`,
+    serviceManager: process.env.AT_API_SERVICE_MANAGER || `api/service-manager/`,
+    accountRequest: process.env.AT_API_ACCOUNT_REQUEST || `api/account-request/`,
 
     ttApi:          process.env.TT_API || `https://tomcat2.bloomington.in.gov/timetrack/`,
     deptService:    process.env.TT_API_DEPT_SERVICE     || `DepartmentService`,
@@ -63,6 +70,7 @@ module.exports = {
   modules: [
     ['@nuxtjs/style-resources'],
     ['@nuxtjs/axios'],
+    ['@nuxtjs/redirect-module'],
     // PWA having issues w/ nodemon
     // ['@nuxtjs/pwa', {
     //   icon: true,
@@ -82,11 +90,51 @@ module.exports = {
     ]
   },
 
+  /**
+   * note: these axios/proxy settings only apply
+   * for SSR dev
+   *
+   */
+  redirect: [
+    { from: '^/accounts/login', to: '/accounts/login/' }
+    // {
+    //   from: '^(.*)$',
+    //   to: (from, req) => {
+    //     let trailingUrl = req.url.endsWith('/') ? req.url : req.url + '/'
+    //     return trailingUrl
+    //   }
+    // }
+  ],
   axios: {
-    withCredentials: true
+    proxy: true,
+  },
+  proxy: {
+    '/api/': {
+      target: 'http://127.0.0.1:8000/api/',
+      pathRewrite: {
+        '^/api/': ''
+      }
+    },
+    '/accounts/login/': {
+      target: 'http://127.0.0.1:8000/accounts/login/',
+      pathRewrite: {
+        '^/accounts/login/': ''
+      }
+    },
+    '/accounts/logout/': {
+      target: 'http://127.0.0.1:8000/accounts/logout/',
+      pathRewrite: {
+        '^/accounts/logout/': ''
+      }
+    },
   },
 
   build: {
+    extend(config, ctx) {
+      if(!ctx.isDev) {
+        config.output.publicPath = '/frontend/_nuxt/'
+      }
+    }
     // ESLint needs config for Nuxt
     // extend (config, { isDev, isClient }) {
     //   if (isDev && isClient) {

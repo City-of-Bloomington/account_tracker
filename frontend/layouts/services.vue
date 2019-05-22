@@ -10,9 +10,20 @@
 
 <script>
 import headerNav    from '~/components/headerNav'
+import { mapFields }   from 'vuex-map-fields'
 
 export default {
+  // middleware: 'authenticated',
   components: { headerNav },
+  computed: {
+    ...mapFields([
+      'auth',
+      'consoleLog',
+    ]),
+  },
+  mounted() {
+    alert(`services alert ${JSON.stringify(this.auth)}`)
+  },
   data() {
     return {}
   }

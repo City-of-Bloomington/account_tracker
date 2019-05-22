@@ -20,6 +20,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 from .routers import router
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.views import LoginView
 
 
 # TODO:
@@ -34,6 +35,6 @@ urlpatterns = [
     path('api/auth/obtain_token/', obtain_jwt_token),
     path('api/auth/refresh_token/', refresh_jwt_token),
     path('api/', include(router.urls)),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('app/', TemplateView.as_view(template_name='dist/index.html'), name='app'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', LoginView.as_view(), name='login'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

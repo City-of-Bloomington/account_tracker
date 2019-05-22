@@ -7,17 +7,19 @@ import {
 
 export const defaultAuthState = () => ({
   isAuthenticated:  false,
-  auth:             null,
   authUser: {
-    email:          "",
-    first_name:     "",
+    id:             null,
+    username:       null,
+    email:          null,
+    first_name:     null,
+    last_name:      null,
     groups:         [],
-    last_name:      "",
-    username:       ""
+    service_set:    []
   },
   authLevel:        {
     admin:          false,
     regular:        false,
+    support:        false,
   },
 })
 
@@ -27,9 +29,6 @@ export const mutations = {
   updateField,
   RESET_AUTH_STATE(state) {
     Object.assign(state, defaultAuthState())
-  },
-  SET_AUTH(state, auth) {
-    state.auth = auth
   },
   SET_AUTH_USER(state, payload) {
     state.authUser = payload

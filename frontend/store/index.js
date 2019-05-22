@@ -26,9 +26,8 @@ export const defaultState = () => ({
   apiLimit:         1000,
   groupLevels: {
     admin:          1,
-    helpdesk:       2,
-    regular:        3,
-    manager:        4,
+    regular:        4,
+    support:        5,
   },
   startDateFormat:  "MMMM Do, YYYY",
   requestStatuses:  ['new','pending','approved','active','inactive','denied'],
@@ -69,33 +68,47 @@ export const actions = {
   resetBaseState({ commit }) {
     commit('RESET_BASE_STATE')
   },
-  async nuxtServerInit({ commit, state }, { req }) {
-    // let auth = null;
-    // if (req.headers.cookie) {
-    //   const parsed = cookieparser.parse(req.headers.cookie)
+  /**
+   * Note: we can only use this via SSR
+   */
+  async nuxtServerInit({ commit, state }, { redirect, req }) {
+    let parsed = cookieparser.parse(req.headers.cookie),
+    sessID     = parsed.sessionid;
 
-    //   try {
-    //     auth = parsed.auth;
-    //     commit('auth/SET_AUTH', auth)
-    //     commit('auth/SET_IS_AUTHENTICATED', true)
+    if (sessID) {
+      try {
+        let user = await
+        this.$axios.get(`${process.env.api}${process.env.user}`)
 
-    //     console.log(`👤 ✅`);
-    //     console.log(auth);
-    //   } catch (e) {
-    //     commit('auth/SET_AUTH')
-    //     commit('auth/SET_AUTH_USER')
-    //     commit('auth/SET_IS_AUTHENTICATED', false)
+        commit('auth/SET_IS_AUTHENTICATED', true)
+        commit('auth/SET_AUTH_USER', user.data);
 
-    //     console.log(`👤 ⛔`);
-    //     console.log(e);
-    //   }
-    // }
+        console.log(`👤`, user.data);
 
+      } catch (err) {
+
+        console.log(err);
+        console.log(`👤 & 🍪 = ⛔`);
+        commit('auth/SET_AUTH_USER')
+        commit('auth/SET_IS_AUTHENTICATED', false)
+      }
+    } else {
+      redirect(`${process.env.api}${process.env.login}`);
+    }
+  }
+  // async nuxtServerInit({ commit, state }, { req }) {
   //   let auth = null;
   //   if (req.headers.cookie) {
   //     const parsed = cookieparser.parse(req.headers.cookie)
+
   //     try {
-  //       auth = parsed.auth;
+  //       auth = {
+  //         'sessionid': parsed.sessionid,
+  //         'csrftoken': parsed.csrftoken
+  //       };
+
+  //       console.log(`AUTH`, auth);
+
   //       commit('auth/SET_AUTH', auth)
   //       commit('auth/SET_IS_AUTHENTICATED', true)
 
@@ -103,9 +116,8 @@ export const actions = {
   //       this.$axios.get(`${process.env.api}${process.env.user}`)
 
   //       commit('auth/SET_AUTH_USER', user.data);
-  //       console.log(user.data);
+  //       console.log(`👤`, user.data);
 
-  //       console.log(`👤 & 🍪 = ✅`);
   //     } catch (err) {
 
   //       console.log(err);
@@ -116,7 +128,7 @@ export const actions = {
   //       commit('auth/SET_IS_AUTHENTICATED', false)
   //     }
   //   }
-  }
+  //}
 }
 
 export const getters = {

@@ -112,7 +112,7 @@ if db_pass: DATABASES['default']['PASSWORD'] = db_pass
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ('https://dhcp-cityhall-101-164.bloomington.in.gov:8080/')
+CORS_ORIGIN_WHITELIST = ('https://dhcp-cityhall-101-164.bloomington.in.gov:9090/')
 
 # Adapting from Netbox approach for configuring LDAP
 # Attempt to import LDAP configuration if it has been defined
@@ -169,11 +169,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-JWT_AUTH = {
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': timedelta(hours=1),
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
-}
+#CSRF_COOKIE_NAME = "csrftoken"
+#JWT_AUTH = {
+#    'JWT_ALLOW_REFRESH': True,
+#    'JWT_EXPIRATION_DELTA': timedelta(hours=1),
+#    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -207,6 +208,8 @@ USE_TZ   = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+LOGIN_REDIRECT_URL = 'https://dhcp-cityhall-101-164.bloomington.in.gov:9090/frontend/'
+
 STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
@@ -214,5 +217,5 @@ STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+# LOGIN_REDIRECT_URL = 'home'
+# LOGOUT_REDIRECT_URL = 'home'

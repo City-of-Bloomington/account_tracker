@@ -179,7 +179,7 @@ export default {
         { value: 'VI',  text: 'VI' }
       ],
       blob:           '',
-      placeholderImg: '/user-upload-placeholder.jpg',
+      placeholderImg: `./user-upload-placeholder.jpg`,
       imgOrientation: '',
       imgOrientation2: '',
       croppieCropped: null,

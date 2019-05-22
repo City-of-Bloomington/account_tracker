@@ -26,7 +26,9 @@
                     title="Reset - Account Request Form"
                     launchButtonText="reset form">
 
-        <p slot="body"><strong>Are you sure</strong> you want to clear all current data entered for this Account Request?</p>
+        <p slot="body">
+          <strong>Are you sure</strong> you want to clear all current data entered for this Account Request?
+        </p>
 
         <fn1-button slot="footer"
                     title="Confirm - Account Request Reset"

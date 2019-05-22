@@ -185,11 +185,8 @@ export default {
     servicesAside,
   },
   mounted() {
-    this.mgrID = this.authUser.id;
-
-    this.loadData();
-
     this.$nextTick(() => {
+      this.loadData();
       this.displayResults;
     });
   },
@@ -204,6 +201,11 @@ export default {
     }
   },
   methods: {
+    getUserId() {
+      return new Promise((resolve) => {
+        resolve(this.authUser.id)
+      })
+    },
     watchServiceFilters(payload) {
       console.log(`%c watchServiceFilters ${payload} `, this.consoleLog.info);
       this.serviceFilterIDs = payload;
@@ -250,22 +252,30 @@ export default {
                 console.log(`%c 5. setMgrServiceReqs 🛑 `, this.consoleLog.error);
               })
             }, (reject) => {
-              console.log(`%c 4. mgrServices 🛑 `, this.consoleLog.error);
+              console.log(`%c 4. mgrServices 🛑 `,
+                        this.consoleLog.error,
+                        `\n\n ${reject} \n\n`);
             });
           }, (reject) => {
-            console.log(`%c 3. getManagerServiceSet 🛑 `, this.consoleLog.error);
+            console.log(`%c 3. getManagerServiceSet 🛑 `,
+                        this.consoleLog.error,
+                        `\n\n ${reject} \n\n`);
           });
         }, (reject) => {
-          console.log(`%c 2. getServiceRequests 🛑 `, this.consoleLog.error);
+          console.log(`%c 2. getServiceRequests 🛑 `,
+                        this.consoleLog.error,
+                        `\n\n ${reject} \n\n`);
         });
       }, (reject) => {
-        console.log(`%c 1. getServices 🛑 `, this.errLogStyle);
+        console.log(`%c 1. getServices 🛑 `,
+                        this.consoleLog.error,
+                        `\n\n ${reject} \n\n`);
       });
     },
     getManagerServiceSet() {
       return new Promise((resolve,reject) => {
         this.$axios
-        .get(`${process.env.api}${process.env.employee}${this.mgrID}/`)
+        .get(`${process.env.api}${process.env.employee}${this.authUser.id}/`)
         .then((res) => {
           resolve(res.data.service_set);
         })

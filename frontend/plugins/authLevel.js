@@ -14,10 +14,17 @@ Vue.mixin({
         admin: {
           admin:    true,
           regular:  false,
+          support:  false,
         },
         regular: {
           admin:    false,
           regular:  true,
+          support:  false,
+        },
+        support: {
+          admin:    false,
+          regular:  false,
+          support:  true,
         },
       },
     }
@@ -31,17 +38,24 @@ Vue.mixin({
     checkAuthLevel() {
       let adminLevel  = this.groupLevels.admin,
       regularLevel    = this.groupLevels.regular,
+      supportLevel    = this.groupLevels.support,
       userLevels      = this.authUser.groups,
       isAdminLevel    = userLevels.includes(adminLevel),
-      isRegularLevel  = userLevels.includes(regularLevel);
+      isRegularLevel  = userLevels.includes(regularLevel),
+      isSupportLevel  = userLevels.includes(supportLevel);
 
       if(isAdminLevel) {
+        alert('admin')
         this.$store.dispatch('auth/authLevel', this.levels.admin)
       } else if(isRegularLevel) {
+         alert('reg')
         this.$store.dispatch('auth/authLevel', this.levels.regular)
+      } else if(isSupportLevel) {
+         alert('sup')
+        this.$store.dispatch('auth/authLevel', this.levels.support)
       }
 
-      return this.authUser.groups
+      // return this.authUser.groups
     }
   },
 })

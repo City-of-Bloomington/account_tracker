@@ -4,7 +4,7 @@
       :active.sync="$route.name"
       :logo="{
         url:          'https://bloomington.in.gov/',
-        image:        '/city-of-bloomington-logo.svg',
+        image:        `./city-of-bloomington-logo.svg`,
         imageAlt:     'City of Bloomington, IN'
       }"
 
@@ -18,8 +18,7 @@
       :subNavItems="subNavItems">
 
       <fn1-button slot="dropdown"
-                  v-if="isAuthenticated"
-                  :title="`Logout: ${authUser.username}`"
+                  :title="`Logout`"
                   @click.native="logout()">
         Logout
       </fn1-button>
@@ -42,9 +41,49 @@ import exampleHeader   from '~/components/exampleHeader'
 export default {
   mounted(context) {
     this.routeParam = this.$route.name;
-    this.checkAuthLevel;
-    this.navItems;
-    this.subNavItems;
+    this.$nextTick()
+    .then(() => {
+      alert('checking auth level')
+      this.checkAuthLevel;
+    });
+
+    // this.$nextTick()
+    // .then(() => {
+    //   alert(`header ${JSON.stringify(this.isAuthenticated)}`);
+
+    //   if(this.isAuthenticated == false) {
+
+    //     // alert('no sessionID, go login')
+    //     redirect(`${process.env.api}${process.env.login}`);
+
+    //   } else {
+    //     alert('got sessionID, run get user');
+
+    //     this.getUser()
+    //     .then((resolve) => {
+    //       alert('resolve get user')
+    //       this.$store.dispatch('auth/authUser', resolve);
+    //       this.$store.dispatch('auth/authUserAuthenticated', true);
+
+    //       this.checkAuthLevel;
+    //       this.navItems;
+    //       this.subNavItems;
+
+    //       console.log(resolve);
+
+    //       console.log(`%c 👤 getUser 👌 `, this.consoleLog.success);
+    //     },(reject) => {
+    //       this.$store.dispatch('auth/authUser')
+    //       this.$store.dispatch('auth/authUserAuthenticated', false)
+    //       console.log(`%c 👤 getUser 🛑 `,
+    //                     this.consoleLog.error,
+    //                     `\n\n ${reject} \n\n`);
+    //     });
+
+    //   }
+    // });
+  },
+  updated() {
   },
   components: {
     exampleDropdown,
@@ -54,7 +93,7 @@ export default {
     return {
       routeParam:   '',
       routes: {
-        accountReq: ['account-requests','create'],
+        accountReq: ['index','account-requests','create'],
         serviceReq: ['service-requests'],
         services:   ['services'],
         profiles:   ['profiles'],
@@ -63,14 +102,20 @@ export default {
   },
   computed: {
     ...mapFields([
-      'auth.auth',
+      'consoleLog',
       'auth.authUser',
       'auth.authLevel',
       'auth.isAuthenticated',
       'navigation',
     ]),
     navItems() {
-      return this.navigation.nav.admin
+      if(this.authLevel.admin) {
+        return this.navigation.nav.admin
+      } else if (this.authLevel.regular) {
+        return this.navigation.nav.regular
+      } else if (this.authLevel.support) {
+        return this.navigation.nav.support
+      }
     },
     isAccountRequestRoute() {
       if(this.routes.accountReq.includes(this.routeParam))
@@ -94,6 +139,8 @@ export default {
           return this.navigation.subNav.accountRequest.admin;
         } else if(this.authLevel.regular) {
           return this.navigation.subNav.accountRequest.regular;
+        } else if(this.authLevel.support) {
+          return this.navigation.subNav.accountRequest.support;
         }
       } else {
         return [{}]
@@ -105,6 +152,7 @@ export default {
       this.resetGlobalStore();
       this.clearAuth();
       this.clearStorage();
+      window.location = process.env.api + process.env.logout
     },
   },
 }

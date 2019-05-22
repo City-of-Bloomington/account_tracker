@@ -1,8 +1,9 @@
 <template>
   <div>
     <fn1-tabs>
-      <fn1-tab :name="`New (` + [[ newCount ]] + `)`"
-               :selected="true">
+      <fn1-tab v-if="authLevel.admin"
+               :name="`New (` + [[ newCount ]] + `)`"
+               :selected="authLevel.admin">
         <div class="title-row">
           <h4><strong>New</strong> user <strong>Account Requests</strong>.</h4>
 
@@ -100,7 +101,8 @@
         </table>
       </fn1-tab>
 
-      <fn1-tab :name="`Pending (` + [[ pendingCount ]] + `)`">
+      <fn1-tab :name="`Pending (` + [[ pendingCount ]] + `)`"
+               :selected="!authLevel.admin">
         <div class="title-row">
           <h4><strong>Pending</strong> user <strong>Account Requests</strong>.</h4>
 
@@ -510,7 +512,8 @@ export default {
       'acctReqs.accountRequests.pending',
       'acctReqs.accountRequests.approved',
       'acctReqs.accountRequests.denied',
-      'auth.authUser'
+      'auth.authUser',
+      'auth.authLevel'
     ]),
     batchApprovalCount() {
       return this.selected.length;
