@@ -40,50 +40,13 @@ import exampleHeader   from '~/components/exampleHeader'
 
 export default {
   mounted(context) {
+    console.log(`%c Made with ❤️ via City of Bloomington, ITS `,
+      this.consoleLog.info)
+
     this.routeParam = this.$route.name;
+
     this.$nextTick()
-    .then(() => {
-      alert('checking auth level')
-      this.checkAuthLevel;
-    });
-
-    // this.$nextTick()
-    // .then(() => {
-    //   alert(`header ${JSON.stringify(this.isAuthenticated)}`);
-
-    //   if(this.isAuthenticated == false) {
-
-    //     // alert('no sessionID, go login')
-    //     redirect(`${process.env.api}${process.env.login}`);
-
-    //   } else {
-    //     alert('got sessionID, run get user');
-
-    //     this.getUser()
-    //     .then((resolve) => {
-    //       alert('resolve get user')
-    //       this.$store.dispatch('auth/authUser', resolve);
-    //       this.$store.dispatch('auth/authUserAuthenticated', true);
-
-    //       this.checkAuthLevel;
-    //       this.navItems;
-    //       this.subNavItems;
-
-    //       console.log(resolve);
-
-    //       console.log(`%c 👤 getUser 👌 `, this.consoleLog.success);
-    //     },(reject) => {
-    //       this.$store.dispatch('auth/authUser')
-    //       this.$store.dispatch('auth/authUserAuthenticated', false)
-    //       console.log(`%c 👤 getUser 🛑 `,
-    //                     this.consoleLog.error,
-    //                     `\n\n ${reject} \n\n`);
-    //     });
-
-    //   }
-    // });
-  },
-  updated() {
+    .then(() => this.checkAuthLevel);
   },
   components: {
     exampleDropdown,

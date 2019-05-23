@@ -45,13 +45,13 @@ Vue.mixin({
       isSupportLevel  = userLevels.includes(supportLevel);
 
       if(isAdminLevel) {
-        alert('admin')
+        // alert('admin')
         this.$store.dispatch('auth/authLevel', this.levels.admin)
       } else if(isRegularLevel) {
-         alert('reg')
+        // alert('reg')
         this.$store.dispatch('auth/authLevel', this.levels.regular)
       } else if(isSupportLevel) {
-         alert('sup')
+        // alert('sup')
         this.$store.dispatch('auth/authLevel', this.levels.support)
       }
 

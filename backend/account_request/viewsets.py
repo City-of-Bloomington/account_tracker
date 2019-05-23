@@ -28,15 +28,18 @@ class AccountRequestViewSet(viewsets.ModelViewSet):
     def pending(self, request, *args, **kwargs):
         ar = self.get_object()
 
-        ad_json = {
+        ad_displayName = ar.first_name + ' ' + ar.last_name
+        ad_mail        = ar.first_name.lower() + '.' + ar.last_name.lower() + '@bloomington.in.gov'
+
+        ad_payload = {
             "sAMAccountName": "string",
             "userPrincipalName": "string",
             "distinguishedName": "string",
             "givenName": "string",
-            "displayName": ar.first_name + ' ' + ar.last_name,
+            "displayName": ad_displayName,
             "sn": "string",
             "countryCode": "USA",
-            "mail": ar.first_name.lower() + '.' + ar.last_name.lower() + '@bloomington.in.gov',
+            "mail": ad_mail,
             "description": "string",
             "telephoneNumber": ar.employee_phone,
             "pager": "string",
@@ -50,7 +53,7 @@ class AccountRequestViewSet(viewsets.ModelViewSet):
             "employeeNumber": "string"
         }
 
-        r = requests.post('http://10.20.20.218:5000/index.html', json=ad_json)
+        r = requests.post('http://10.20.20.218:5000/index.html', json=ad_payload)
         r.raise_for_status()
         r.json()
 

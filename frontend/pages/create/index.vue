@@ -18,17 +18,19 @@
           <div class="image-upload-wrapper">
             <span class="label">Profile Image</span>
             <div class="croppie-wrapper">
-              <no-ssr>
-                <vue-croppie
+              <vue-croppie
                   ref="croppieRef"
-                  :enableExif="true"
-                  :enableOrientation="true"
                   :enableResize="false"
                   :showZoomer="true"
-                  @update="update"
                   :viewport="{ width: 180, height: 240 }"
-                  :boundary="{ width: 180, height: 240 }" />
-              </no-ssr>
+                  :boundary="{ width: 180, height: 240 }"
+                  :croppieInitialized="croppieInitialized"
+                  @result="result"
+                  @update="update">
+                </vue-croppie>
+              <!-- <no-ssr>
+
+              </no-ssr> -->
             </div>
 
             <div class="image-wrapper">
@@ -47,7 +49,7 @@
                 <fn1-button type="button"
                             class="image-input"
                             @click.native="$refs.fileInput.click()">
-                  Upload
+                  Upload Photo
                 </fn1-button>
 
                 <fn1-button type="button"
@@ -144,20 +146,20 @@ export default {
     asideComponent,
     exampleSelect
   },
-  beforeUpdate() {
+  mounted() {
     this.$nextTick(() => {
       if(this.full){
         this.$refs.croppieRef.bind({
           url: this.full,
           zoom: 0,
-          enableOrientation: true,
         });
       } else {
         this.$refs.croppieRef.bind({
           url: this.placeholderImg,
+          zoom: 0,
         });
       }
-      if(this.cropped) {
+      if(this.cropped != "") {
         this.croppieCropped = this.cropped;
       }
     });
@@ -179,7 +181,7 @@ export default {
         { value: 'VI',  text: 'VI' }
       ],
       blob:           '',
-      placeholderImg: `./user-upload-placeholder.jpg`,
+      placeholderImg: 'user-upload-placeholder.jpg',
       imgOrientation: '',
       imgOrientation2: '',
       croppieCropped: null,
@@ -199,25 +201,43 @@ export default {
     ]),
   },
   methods: {
+    croppieInitialized() {
+      // This method will be executed when the croppie is initialized
+      // You can use it to set the image
+      this.$refs.croppieRef.bind({
+        url: this.placeholderImg,
+      });
+      console.log('Croppie was initialized');
+    },
     crop() {
+      // let options = {
+      //   enableResize: true,
+      //   enableOrientation: true,
+      //   type:   'base64',
+      //   format: 'jpeg',
+      //   size:   { width: 1150, height: 1533 }
+      // }
+
       let options = {
-        enableResize: true,
-        enableOrientation: true,
         type:   'base64',
         format: 'jpeg',
         size:   { width: 1150, height: 1533 }
       }
+
       this.$refs.croppieRef.result(options, (output) => {
-        console.log(options);
-        console.log(output);
+        // console.log(options);
+        // console.log(output);
         this.croppieCropped = output;
         this.cropped = output;
       });
     },
+    result(output) {
+      this.cropped = output;
+    },
     clearImage() {
       this.croppieCropped      = null;
-      this.full = "";
-      this.cropped = "";
+      this.full = null;
+      this.cropped = null;
       this.$refs.croppieRef.bind({
         url: "",
         zoom: 0,
@@ -230,7 +250,7 @@ export default {
       this.$refs.croppieRef.rotate(rotationAngle);
     },
     update(val) {
-      console.log(val);
+      // console.log(val);
     },
     base64ToArrayBuffer (base64) {
         base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
@@ -248,18 +268,29 @@ export default {
 
       reader.onload = (e) => {
         let img = new Image();
+        this.full = e.target.result;
+        this.$refs.croppieRef.bind({
+          url: this.full,
+        });
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    updateCanvasImage(e) {
+      let files     = e.target.files;
+      let reader    = new FileReader();
+
+      reader.onload = (e) => {
+        let img = new Image();
 
         let self = this;
-        img.onload = function() {
-          self.getExif(img);
-        }
+        // img.onload = function() {
+        //   self.getExif(img);
+        // }
         img.src = e.target.result;
 
         this.full = img.src;
         this.$refs.croppieRef.bind({
           url: this.full,
-          zoom: 0,
-          enableOrientation: true,
         });
       };
       reader.readAsDataURL(files[0]);
@@ -277,7 +308,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/css/style.scss';
   .image-upload-wrapper {
+    // background-color: red;
     display: flex;
     flex-wrap: wrap;
     border-right: 1px solid lighten($text-color, 50%);
@@ -287,13 +320,20 @@ export default {
     height: fit-content;
 
     .croppie-wrapper {
+      // background-color: purple;
+      // padding: 5px;
       width: 180px;
       margin: 0 40px 0 0;
 
       /deep/ .croppie-container {
+        position: relative;
+        // background-color: teal;
+        // padding: 10px;
 
         .cr-viewport  {
           position: relative;
+          // background-color: pink;
+          // padding: 10px;
 
           &:before {
             position: absolute;
@@ -316,10 +356,51 @@ export default {
         }
 
         .cr-slider-wrap {
+          // background-color: orange;
           width: 180px;
           margin: 20px 0 0 0;
         }
       }
+    }
+
+    .image-wrapper {
+      // background-color: grey;
+      position: relative;
+      margin-left: auto;
+      padding: 0 40px 0 0;
+
+      img {
+        border: 1px solid lighten($text-color, 50%);
+        width: 180px;
+        height: 240px;
+        margin: 0;
+      }
+
+      svg {
+        &.check {
+          position: absolute;
+          display: block;
+          background-color: $color-green;
+          filter: drop-shadow(0 1px 1px lighten($text-color, 20%));
+          height: 30px;
+          width: 30px;
+          padding: 5px;
+          border-radius: 50%;
+          top: -10px;
+          right: 30px;
+        }
+      }
+    }
+
+    .image-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      // background-color: blue;
+      border-top: 1px solid lighten($text-color, 50%);
+      border-bottom: 1px solid lighten($text-color, 50%);
+      width: 100%;
+      margin: 20px 0;
     }
 
     /deep/  ol, ul {
@@ -369,50 +450,13 @@ export default {
       }
     }
 
-    .image-wrapper {
-      position: relative;
-      margin-left: auto;
-      padding: 0 40px 0 0;
-
-      img {
-        border: 1px solid lighten($text-color, 50%);
-        width: 180px;
-        height: 240px;
-        margin: 0;
-      }
-
-      svg {
-        &.check {
-          position: absolute;
-          display: block;
-          background-color: $color-green;
-          filter: drop-shadow(0 1px 1px lighten($text-color, 20%));
-          height: 30px;
-          width: 30px;
-          padding: 5px;
-          border-radius: 50%;
-          top: -10px;
-          right: 30px;
-        }
-      }
-    }
-
     input {
       &[type=file] {
         @include visuallyHidden;
       }
     }
 
-    .image-controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      // background-color: blue;
-      border-top: 1px solid lighten($text-color, 50%);
-      border-bottom: 1px solid lighten($text-color, 50%);
-      width: 100%;
-      margin: 20px 0;
-    }
+
 
     .button-group {
       // background-color: red;
