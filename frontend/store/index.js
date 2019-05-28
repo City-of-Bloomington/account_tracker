@@ -96,39 +96,6 @@ export const actions = {
       redirect(`${process.env.api}${process.env.login}`);
     }
   }
-  // async nuxtServerInit({ commit, state }, { req }) {
-  //   let auth = null;
-  //   if (req.headers.cookie) {
-  //     const parsed = cookieparser.parse(req.headers.cookie)
-
-  //     try {
-  //       auth = {
-  //         'sessionid': parsed.sessionid,
-  //         'csrftoken': parsed.csrftoken
-  //       };
-
-  //       console.log(`AUTH`, auth);
-
-  //       commit('auth/SET_AUTH', auth)
-  //       commit('auth/SET_IS_AUTHENTICATED', true)
-
-  //       let user = await
-  //       this.$axios.get(`${process.env.api}${process.env.user}`)
-
-  //       commit('auth/SET_AUTH_USER', user.data);
-  //       console.log(`👤`, user.data);
-
-  //     } catch (err) {
-
-  //       console.log(err);
-  //       console.log(`👤 & 🍪 = ⛔`);
-
-  //       commit('auth/SET_AUTH')
-  //       commit('auth/SET_AUTH_USER')
-  //       commit('auth/SET_IS_AUTHENTICATED', false)
-  //     }
-  //   }
-  //}
 }
 
 export const getters = {
