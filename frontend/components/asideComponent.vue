@@ -240,7 +240,6 @@ export default {
 
       li {
         display: flex;
-
         margin: 0 0 10px 6px;
         font-weight: $weight-semi-bold;
         color: lighten($text-color, 15%);
@@ -274,6 +273,10 @@ export default {
         strong {
           color: darken($text-color, 5%);
           margin: 0 0 2px -5px;
+        }
+
+        ul {
+          margin: 0;
         }
       }
     }

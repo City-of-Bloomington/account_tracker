@@ -1,316 +1,327 @@
 <template>
   <div>
+    <fn1-button type="a"
+                class="back-button"
+                @click.native="goBack()">
+
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+        <path fill="currentColor" d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z">
+        </path>
+      </svg>
+      back
+    </fn1-button>
+
     <fn1-tabs v-if="acctReq">
-        <fn1-tab name="Account" :selected="true">
-          <div class="left" v-if="acctReq.cropped_image">
-            <div class="profile-image">
-              <img :src="acctReq.cropped_image" :alt="acctReq.first_name + ' ' + acctReq.last_name">
+      <fn1-tab name="Account" :selected="true">
+        <div class="left" v-if="acctReq.cropped_image">
+          <div class="profile-image">
+            <img :src="acctReq.cropped_image" :alt="acctReq.first_name + ' ' + acctReq.last_name">
+          </div>
+
+          <fn1-button
+            class="image-download"
+            @click.native="downloadARImages(acctReq.cropped_image, acctReq.first_name + '-' + acctReq.last_name)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path fill="currentColor" d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm76.45 211.36l-96.42 95.7c-6.65 6.61-17.39 6.61-24.04 0l-96.42-95.7C73.42 337.29 80.54 320 94.82 320H160v-80c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v80h65.18c14.28 0 21.4 17.29 11.27 27.36zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z"></path>
+            </svg>
+            Save Image
+          </fn1-button>
+        </div>
+
+        <div class="right" :class="[{'has-image': acctReq.cropped_image }]">
+          <h2>
+            <template v-if="acctReq.first_name">
+              {{acctReq.first_name}}
+            </template>
+
+            <template v-if="acctReq.nickname">
+              ({{acctReq.nickname}})
+            </template>
+
+            <template v-if="acctReq.middle_name">
+              {{acctReq.middle_name}}
+            </template>
+
+            <template v-if="acctReq.last_name">
+              {{acctReq.last_name}}
+            </template>
+
+            <template v-if="acctReq.suffix">
+              {{acctReq.suffix}}
+            </template>
+
+            <fn1-badge :class="acctReq.request_status">
+              {{acctReq.request_status}}
+            </fn1-badge>
+          </h2>
+
+          <div class="account-fields">
+            <div class="one">
+              <template v-if="acctReq.facility">
+                <fn1-input v-model="acctReq.facility"
+                           label="Facility"
+                           name="facility"
+                           id="facility"
+                           disabled />
+              </template>
+
+              <template v-if="acctReq.department">
+                <fn1-input v-model="acctReq.department"
+                           label="Department"
+                           name="department"
+                           id="department"
+                           disabled />
+              </template>
+
+              <template v-if="acctReq.group">
+                <fn1-input v-model="acctReq.group"
+                           label="Group"
+                           name="group"
+                           id="group"
+                           disabled />
+              </template>
+
+              <template v-if="acctReq.division">
+                <fn1-input v-model="acctReq.division"
+                           label="Division"
+                           name="division"
+                           id="division"
+                           disabled />
+              </template>
+
+              <template v-if="acctReq.job">
+                <fn1-input v-model="acctReq.job"
+                           label="Job"
+                           name="job"
+                           id="job"
+                           disabled />
+              </template>
             </div>
 
-            <fn1-button
-              class="image-download"
-              @click.native="downloadARImages(acctReq.cropped_image, acctReq.first_name + '-' + acctReq.last_name)">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path fill="currentColor" d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm76.45 211.36l-96.42 95.7c-6.65 6.61-17.39 6.61-24.04 0l-96.42-95.7C73.42 337.29 80.54 320 94.82 320H160v-80c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v80h65.18c14.28 0 21.4 17.29 11.27 27.36zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z"></path>
-              </svg>
-              Save Image
-            </fn1-button>
-          </div>
-
-          <div class="right" :class="[{'has-image': acctReq.cropped_image }]">
-            <h2>
-              <template v-if="acctReq.first_name">
-                {{acctReq.first_name}}
+            <div class="two">
+              <template v-if="acctReq.supervisor">
+                <fn1-input v-model="acctReq.supervisor"
+                           label="Supervisor"
+                           name="supervisor"
+                           id="supervisor"
+                           disabled />
               </template>
 
-              <template v-if="acctReq.nickname">
-                ({{acctReq.nickname}})
+              <template v-if="acctReq.supervisor_phone">
+                <fn1-input v-model="acctReq.supervisor_phone"
+                           label="Supervisor Phone"
+                           name="supervisor-phone"
+                           id="supervisor-phone"
+                           disabled />
               </template>
 
-              <template v-if="acctReq.middle_name">
-                {{acctReq.middle_name}}
+              <template v-if="acctReq.employee_phone">
+                <fn1-input v-model="acctReq.employee_phone"
+                           label="Employee Phone (desk)"
+                           name="employee-phone"
+                           id="employee-phone"
+                           disabled />
               </template>
 
-              <template v-if="acctReq.last_name">
-                {{acctReq.last_name}}
+              <template v-if="acctReq.clock_entry_only">
+                <fn1-input v-model="acctReq.clock_entry_only"
+                           label="Clock Entry Only"
+                           name="clock-entry-only"
+                           id="clock-entry-only"
+                           disabled />
               </template>
 
-              <template v-if="acctReq.suffix">
-                {{acctReq.suffix}}
+              <template v-if="acctReq.employee_status">
+                <fn1-input v-model="acctReq.employee_status"
+                           label="Employee Status"
+                           name="employee-status"
+                           id="employee-status"
+                           disabled />
               </template>
-
-              <fn1-badge :class="acctReq.request_status">
-                {{acctReq.request_status}}
-              </fn1-badge>
-            </h2>
-
-            <div class="account-fields">
-              <div class="one">
-                <template v-if="acctReq.facility">
-                  <fn1-input v-model="acctReq.facility"
-                             label="Facility"
-                             name="facility"
-                             id="facility"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.department">
-                  <fn1-input v-model="acctReq.department"
-                             label="Department"
-                             name="department"
-                             id="department"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.group">
-                  <fn1-input v-model="acctReq.group"
-                             label="Group"
-                             name="group"
-                             id="group"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.division">
-                  <fn1-input v-model="acctReq.division"
-                             label="Division"
-                             name="division"
-                             id="division"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.job">
-                  <fn1-input v-model="acctReq.job"
-                             label="Job"
-                             name="job"
-                             id="job"
-                             disabled />
-                </template>
-              </div>
-
-              <div class="two">
-                <template v-if="acctReq.supervisor">
-                  <fn1-input v-model="acctReq.supervisor"
-                             label="Supervisor"
-                             name="supervisor"
-                             id="supervisor"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.supervisor_phone">
-                  <fn1-input v-model="acctReq.supervisor_phone"
-                             label="Supervisor Phone"
-                             name="supervisor-phone"
-                             id="supervisor-phone"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.employee_phone">
-                  <fn1-input v-model="acctReq.employee_phone"
-                             label="Employee Phone (desk)"
-                             name="employee-phone"
-                             id="employee-phone"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.clock_entry_only">
-                  <fn1-input v-model="acctReq.clock_entry_only"
-                             label="Clock Entry Only"
-                             name="clock-entry-only"
-                             id="clock-entry-only"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.employee_status">
-                  <fn1-input v-model="acctReq.employee_status"
-                             label="Employee Status"
-                             name="employee-status"
-                             id="employee-status"
-                             disabled />
-                </template>
-              </div>
-
-              <div class="three">
-                <template v-if="acctReq.start_date">
-                  <fn1-input :value="MMDYYYYDateFormat(acctReq.start_date)"
-                             :label="`Start Date: ${timeAgo(acctReq.start_date)}`"
-                             name="start-date"
-                             id="start-date"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.end_date">
-                  <fn1-input :value="MMDYYYYDateFormat(acctReq.end_date)"
-                             :label="`End Date: ${timeAgo(acctReq.end_date)}`"
-                             name="end-date"
-                             id="end-date"
-                             disabled />
-                </template>
-
-
-                <template v-if="acctReq.requested">
-                  <fn1-input :value="MMDYYYYDateFormat(acctReq.requested)"
-                             :label="`Requested: ${timeAgo(acctReq.requested)}`"
-                             name="requested"
-                             id="requested"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.updated">
-                  <fn1-input :value="MMDYYYYDateFormat(acctReq.updated)"
-                             :label="`Updated: ${timeAgo(acctReq.updated)}`"
-                             name="updated"
-                             id="updated"
-                             disabled />
-                </template>
-
-                <template v-if="acctReq.created">
-                  <fn1-input :value="MMDYYYYDateFormat(acctReq.created)"
-                             :label="`Created: ${timeAgo(acctReq.created)}`"
-                             name="created"
-                             id="created"
-                             disabled />
-                </template>
-              </div>
-            </div>
-          </div>
-        </fn1-tab>
-
-        <fn1-tab name="Services">
-          <div class="title-row">
-            <h4><strong>Service Profiles</strong> associated with this <strong>Account Request</strong>.</h4>
-
-            <div class="filters">
-              <fn1-badge
-                v-for="s, i in requestStatuses"
-                :key="i"
-                :class="s">
-                {{s}}
-              </fn1-badge>
             </div>
 
-            <div class="notes" v-if="acctReqIsNew">
-              <p><strong>Note:</strong> <strong>Service Requests</strong> become available when the <strong>Account Request</strong> reaches <fn1-badge class="pending">pending</fn1-badge>.</p>
+            <div class="three">
+              <template v-if="acctReq.start_date">
+                <fn1-input :value="MMDYYYYDateFormat(acctReq.start_date)"
+                           :label="`Start Date: ${timeAgo(acctReq.start_date)}`"
+                           name="start-date"
+                           id="start-date"
+                           disabled />
+              </template>
+
+              <template v-if="acctReq.end_date">
+                <fn1-input :value="MMDYYYYDateFormat(acctReq.end_date)"
+                           :label="`End Date: ${timeAgo(acctReq.end_date)}`"
+                           name="end-date"
+                           id="end-date"
+                           disabled />
+              </template>
+
+
+              <template v-if="acctReq.requested">
+                <fn1-input :value="MMDYYYYDateFormat(acctReq.requested)"
+                           :label="`Requested: ${timeAgo(acctReq.requested)}`"
+                           name="requested"
+                           id="requested"
+                           disabled />
+              </template>
+
+              <template v-if="acctReq.updated">
+                <fn1-input :value="MMDYYYYDateFormat(acctReq.updated)"
+                           :label="`Updated: ${timeAgo(acctReq.updated)}`"
+                           name="updated"
+                           id="updated"
+                           disabled />
+              </template>
+
+              <template v-if="acctReq.created">
+                <fn1-input :value="MMDYYYYDateFormat(acctReq.created)"
+                           :label="`Created: ${timeAgo(acctReq.created)}`"
+                           name="created"
+                           id="created"
+                           disabled />
+              </template>
             </div>
           </div>
+        </div>
+      </fn1-tab>
 
-          <table class="fixed-header service-reqs" v-if="!acctReqIsNew">
-            <caption class="sr-only">All User Requests</caption>
-            <thead>
-              <tr>
-                <th scope="col">Status</th>
-                <th scope="col">Name</th>
-                <th scope="col">Managers</th>
-                <th scope="col">Requested</th>
-                <th scope="col">Updated</th>
-                <th scope="col">Created</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
+      <fn1-tab name="Services">
+        <div class="title-row">
+          <h4><strong>Service Profiles</strong> associated with this <strong>Account Request</strong>.</h4>
 
-            <tbody>
-              <tr></tr>
-              <tr v-for="s, i in usersServices" :key="i">
-                <th class="status">
-                  <fn1-badge v-if="s.request_status == null"
-                             class="new">
-                    new
-                  </fn1-badge>
-
-                  <fn1-badge v-if="s.request_status != null"
-                             :class="s.request_status">
-                    {{ s.request_status }}
-                  </fn1-badge>
-                </th>
-                <th><!-- {{s.service}} -  -->{{s.name}}<!--  {{s.service}} --></th>
-                <th>
-                  <template v-for="m, i in s.managers">
-                    <div>{{m.first_name}} {{m.last_name}}</div>
-                    <div>{{m.username}}</div>
-                  </template>
-                </th>
-                <th>
-                  <div>{{MMDYYYYDateFormat(s.requested)}}</div>
-                  <div>{{timeAgo(s.requested)}}</div>
-                </th>
-                <th>
-                  <div>{{MMDYYYYDateFormat(s.updated)}}</div>
-                  <div>{{timeAgo(s.updated)}}</div>
-                </th>
-                <th>
-                  <template v-if="s.created == null">
-                    <div></div>
-                    <div>&mdash;</div>
-                  </template>
-
-                  <template v-if="s.created != null">
-                    <div>{{MMDYYYYDateFormat(s.created)}}</div>
-                    <div>{{timeAgo(s.created)}}</div>
-                  </template>
-                </th>
-                <th :class="{'disabled': acctReqIsNew}">
-                  <exampleDropdown
-                    text="status"
-                    navAlign="right"
-                    :disabled="acctReqIsNew">
-                    <li v-for="rs, i in requestStatuses"
-                        :class="rs"
-                        @click="changeStatus(s, rs)">
-                        <span>{{rs}}</span>
-                    </li>
-                  </exampleDropdown>
-                </th>
-              </tr>
-            </tbody>
-          </table>
-        </fn1-tab>
-
-        <fn1-tab name="Extras" v-if="acctReq.dynamic_options">
-          <div class="title-row">
-            <h4><strong>Extra Q&amp;A</strong> associated with this <strong>Account Request</strong>.</h4>
+          <div class="filters">
+            <fn1-badge
+              v-for="s, i in requestStatuses"
+              :key="i"
+              :class="s">
+              {{s}}
+            </fn1-badge>
           </div>
 
-          <p v-for="ex, index in JSON.parse(acctReq.dynamic_options)" class="extras">
-            {{ex}}
-          </p><br>
-        </fn1-tab>
-
-        <fn1-tab name="History">
-          <div class="title-row">
-            <h4><strong>Action History</strong> associated with this <strong>Account Request</strong>.</h4>
+          <div class="notes" v-if="acctReqIsNew">
+            <p><strong>Note:</strong> <strong>Service Requests</strong> become available when the <strong>Account Request</strong> reaches <fn1-badge class="pending">pending</fn1-badge>.</p>
           </div>
+        </div>
 
-          <table class="fixed-header">
-            <caption class="sr-only">User Action History</caption>
-            <thead>
-              <tr>
-                <th scope="col">Details</th>
-                <th scope="col">Action by</th>
-                <th scope="col">Date</th>
-              </tr>
-            </thead>
+        <table class="fixed-header service-reqs" v-if="!acctReqIsNew">
+          <caption class="sr-only">All User Requests</caption>
+          <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Name</th>
+              <th scope="col">Managers</th>
+              <th scope="col">Requested</th>
+              <th scope="col">Updated</th>
+              <th scope="col">Created</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
 
-            <tbody>
-              <tr v-for="a, i in historyByUpdated" :key="i">
-                <th>
-                  <div>{{a.action}}</div>
-                  <div>{{a.comment}}</div>
-                </th>
-                <th>
-                  <template v-for="u, i in usersWithActions">
-                    <template v-if="u.id === a.user">
-                      <div>{{u.first_name}} {{u.last_name}}</div>
-                      <div>{{u.username}}</div>
-                    </template>
+          <tbody>
+            <tr></tr>
+            <tr v-for="s, i in usersServices" :key="i">
+              <th class="status">
+                <fn1-badge v-if="s.request_status == null"
+                           class="new">
+                  new
+                </fn1-badge>
+
+                <fn1-badge v-if="s.request_status != null"
+                           :class="s.request_status">
+                  {{ s.request_status }}
+                </fn1-badge>
+              </th>
+              <th><!-- {{s.service}} -  -->{{s.name}}<!--  {{s.service}} --></th>
+              <th>
+                <template v-for="m, i in s.managers">
+                  <div>{{m.first_name}} {{m.last_name}}</div>
+                  <div>{{m.username}}</div>
+                </template>
+              </th>
+              <th>
+                <div>{{MMDYYYYDateFormat(s.requested)}}</div>
+                <div>{{timeAgo(s.requested)}}</div>
+              </th>
+              <th>
+                <div>{{MMDYYYYDateFormat(s.updated)}}</div>
+                <div>{{timeAgo(s.updated)}}</div>
+              </th>
+              <th>
+                <template v-if="s.created == null">
+                  <div></div>
+                  <div>&mdash;</div>
+                </template>
+
+                <template v-if="s.created != null">
+                  <div>{{MMDYYYYDateFormat(s.created)}}</div>
+                  <div>{{timeAgo(s.created)}}</div>
+                </template>
+              </th>
+              <th :class="{'disabled': acctReqIsNew}">
+                <exampleDropdown
+                  text="status"
+                  navAlign="right"
+                  :disabled="acctReqIsNew">
+                  <li v-for="rs, i in requestStatuses"
+                      :class="rs"
+                      @click="changeStatus(s, rs)">
+                      <span>{{rs}}</span>
+                  </li>
+                </exampleDropdown>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </fn1-tab>
+
+      <fn1-tab name="Extras" v-if="acctReq.dynamic_options.length > 3">
+        <div class="title-row">
+          <h4><strong>Extra Q&amp;A</strong> associated with this <strong>Account Request</strong>.</h4>
+        </div>
+
+        <p v-for="ex, index in JSON.parse(acctReq.dynamic_options)" class="extras">
+          {{ex}}
+        </p><br>
+      </fn1-tab>
+
+      <fn1-tab name="History">
+        <div class="title-row">
+          <h4><strong>Action History</strong> associated with this <strong>Account Request</strong>.</h4>
+        </div>
+
+        <table class="fixed-header">
+          <caption class="sr-only">User Action History</caption>
+          <thead>
+            <tr>
+              <th scope="col">Details</th>
+              <th scope="col">Action by</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="a, i in historyByUpdated" :key="i">
+              <th>
+                <div>{{a.action}}</div>
+                <div>{{a.comment}}</div>
+              </th>
+              <th>
+                <template v-for="u, i in usersWithActions">
+                  <template v-if="u.id === a.user">
+                    <div>{{u.first_name}} {{u.last_name}}</div>
+                    <div>{{u.username}}</div>
                   </template>
-                </th>
-                <th>
-                  <div>{{MMDYYYYDateFormat(a.updated)}}</div>
-                  <div>{{timeAgo(a.updated)}}</div>
-                </th>
-              </tr>
-            </tbody>
-          </table>
-        </fn1-tab>
+                </template>
+              </th>
+              <th>
+                <div>{{MMDYYYYDateFormat(a.updated)}}</div>
+                <div>{{timeAgo(a.updated)}}</div>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </fn1-tab>
     </fn1-tabs>
   </div>
 </template>
@@ -325,7 +336,7 @@ import exampleSelect   from '~/components/exampleSelect'
 import exampleDropdown from '~/components/exampleDropdown'
 
 export default {
-  layout:           'account-reqs',
+  layout:           'account-requests',
   validate({ params }) {
     return !isNaN(+params.id)
   },
@@ -347,6 +358,7 @@ export default {
   },
   computed: {
     ...mapFields([
+      'paths',
       'auth.authUser',
       'apiLimit',
       'services.services',
@@ -385,6 +397,9 @@ export default {
     },
   },
   methods: {
+    goBack() {
+      this.$router.push({ path: this.paths.accountRequests });
+    },
     /**
      * Loads init page data required to fire up
      * an Account Request page based on URL param ID
@@ -533,6 +548,22 @@ export default {
   $image-left-margin: 40px;
   $image-width-height: 130px;
 
+  .back-button {
+    margin: 0 0 20px 0;
+    padding: 2px 8px;
+    // color: $text-color;
+    // text-transform: uppercase;
+    background-color: lighten($text-color, 25%);
+
+    svg {
+      // fill: $text-color;
+      display: block;
+      width: 15px;
+      height: 15px;
+      margin: 0 10px 0 0;
+    }
+  }
+
   h2 {
     display: inline-flex;
     align-items: center;
@@ -631,6 +662,16 @@ export default {
   }
 
   /deep/ .tabs-group {
+
+    .tabs {
+      ul {
+        li {
+          color: $text-color;
+          font-size: 18px;
+          line-height: 18px;
+        }
+      }
+    }
     .tab-content {
       margin: 20px 0 0 0;
       padding: 0;

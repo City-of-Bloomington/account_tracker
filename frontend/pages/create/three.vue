@@ -24,7 +24,9 @@
           </select>
         </div>
 
-        <div class="field-group">
+        <!-- NOTE: -->
+        <!-- No current way to get a Supervisor's phone -->
+        <!-- <div class="field-group">
           <label for="supervisor-phone">Supervisor Phone</label>
           <select name="supervisor-phone"
                   id="supervisor-phone"
@@ -35,14 +37,14 @@
               {{ item.text }}
             </option>
           </select>
-        </div>
+        </div> -->
 
         <fn1-input v-model="employeePhone"
                    label="Employee Phone (desk)"
                    @keyup.native="yooo"
                    @blur.native="yooo"
                    type="tel"
-                   placeholder="888-888-8888"
+                   placeholder="123-456-7890"
                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                    maxlength="10"
                    name="employee-phone"

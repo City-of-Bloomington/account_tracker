@@ -1,6 +1,7 @@
 <template>
   <div>
     <progressStepper
+      v-if="!showSuccessMsg"
       :step-active="stepActive"
       :previous-button="previousStep"
       :next-button="next" />

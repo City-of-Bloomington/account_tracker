@@ -14,8 +14,8 @@
       }"
 
       :application="navigation.application"
-      :navItems="navItems"
-      :subNavItems="subNavItems">
+      :navItems="navItems()"
+      :subNavItems="subNavItems()">
 
       <fn1-button slot="dropdown"
                   :title="`Logout`"
@@ -46,7 +46,18 @@ export default {
     this.routeParam = this.$route.name;
 
     this.$nextTick()
-    .then(() => this.checkAuthLevel);
+    .then(() =>
+      this.checkAuthLevel
+      .then((resolve) => {
+        this.navItems();
+        this.subNavItems();
+      })
+      .catch((reject) => {
+        console.log(`%c checkAuthLevel 🛑 `,
+                    this.consoleLog.error,
+                    `\n\n ${reject} \n\n`);
+      })
+    );
   },
   components: {
     exampleDropdown,
@@ -56,7 +67,7 @@ export default {
     return {
       routeParam:   '',
       routes: {
-        accountReq: ['index','account-requests','create'],
+        accountReq: ['index','account-requests','account-requests-id','create'],
         serviceReq: ['service-requests'],
         services:   ['services'],
         profiles:   ['profiles'],
@@ -71,15 +82,7 @@ export default {
       'auth.isAuthenticated',
       'navigation',
     ]),
-    navItems() {
-      if(this.authLevel.admin) {
-        return this.navigation.nav.admin
-      } else if (this.authLevel.regular) {
-        return this.navigation.nav.regular
-      } else if (this.authLevel.support) {
-        return this.navigation.nav.support
-      }
-    },
+
     isAccountRequestRoute() {
       if(this.routes.accountReq.includes(this.routeParam))
         return true;
@@ -96,6 +99,17 @@ export default {
       if(this.routes.profiles.includes(this.routeParam))
         return true;
     },
+  },
+  methods: {
+    navItems() {
+      if(this.authLevel.admin) {
+        return this.navigation.nav.admin
+      } else if (this.authLevel.regular) {
+        return this.navigation.nav.regular
+      } else if (this.authLevel.support) {
+        return this.navigation.nav.support
+      }
+    },
     subNavItems() {
       if(this.isAccountRequestRoute) {
         if(this.authLevel.admin) {
@@ -109,8 +123,6 @@ export default {
         return [{}]
       }
     },
-  },
-  methods: {
     logout() {
       this.resetGlobalStore();
       this.clearAuth();

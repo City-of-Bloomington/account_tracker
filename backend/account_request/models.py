@@ -26,7 +26,9 @@ class AccountRequest(models.Model):
 
     # Ideally this would reference a User object
     supervisor = models.CharField(max_length=50)
-    supervisor_phone = models.CharField(max_length=12)
+
+    # Leaving this as not required till we can get a way to access ...
+    supervisor_phone = models.CharField(max_length=12, blank=True, null=True)
 
     department = models.CharField(max_length=50)
     group = models.CharField(max_length=50)

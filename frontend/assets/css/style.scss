@@ -218,6 +218,9 @@ span.label {
 
   tbody {
     tr {
+      &.active,
+      &:active,
+      &:focus,
       &:hover {
         background-color: lighten($color-grey, 10%);
       }

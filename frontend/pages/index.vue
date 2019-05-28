@@ -58,7 +58,7 @@
           </div>
 
           <div>
-            <fn1-button @click.native="viewAccountRequest(a.id)">view</fn1-button>
+            <fn1-button @click.native="viewAccountRequest(a)">view</fn1-button>
           </div>
         </div>
       </div>
@@ -85,7 +85,17 @@ export default {
       this.$router.push(this.paths.createAccountRequest);
     },
     viewAccountRequest(id) {
-      this.$router.push(this.paths.accountRequests + id);
+      if(this.authLevel.admin && id.request_status == "new") {
+        this.$router.push(
+          {
+            name: `account-requests`,
+            params: { new: id.id }
+          }
+        );
+        console.log(this.$router);
+      } else {
+        this.$router.push(this.paths.accountRequests + id.id);
+      }
     }
   },
   computed: {

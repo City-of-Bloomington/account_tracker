@@ -1,9 +1,9 @@
 <template>
   <div>
-    <fn1-tabs>
+    <fn1-tabs v-if="authLevel.admin">
       <fn1-tab v-if="authLevel.admin"
                :name="`New (` + [[ newCount ]] + `)`"
-               :selected="authLevel.admin">
+               :selected="true">
         <div class="title-row">
           <h4><strong>New</strong> user <strong>Account Requests</strong>.</h4>
 
@@ -49,7 +49,9 @@
           </thead>
 
           <tbody>
-            <tr v-for="(item, index) in newAccounts" :key="index">
+            <tr v-for="(item, index) in newAccounts"
+                :class="[{'active': showingUserDetails && item.id == showDetailsFor.id }]"
+                :key="index">
               <!-- <th scope="row">
                 <input v-model="selected"
                        :key="index"
@@ -101,8 +103,7 @@
         </table>
       </fn1-tab>
 
-      <fn1-tab :name="`Pending (` + [[ pendingCount ]] + `)`"
-               :selected="!authLevel.admin">
+      <fn1-tab :name="`Pending (` + [[ pendingCount ]] + `)`">
         <div class="title-row">
           <h4><strong>Pending</strong> user <strong>Account Requests</strong>.</h4>
 
@@ -202,6 +203,106 @@
         </table>
       </fn1-tab>
     </fn1-tabs>
+
+    <template v-if="pendingAccounts.length && !authLevel.admin">
+      <div class="title-row">
+        <h4><strong>Pending</strong> user <strong>Account Requests</strong>.</h4>
+
+        <template v-if="batchApprovalCount > 1">
+          <fn1-modal title="Pending Request Batch Confirmation"
+                     launchButtonText="Batch Approve">
+            <p slot="body">Approve all <strong>({{ batchApprovalCount }})</strong> requests?</p>
+            <fn1-button slot="footerBtnConfirm">I Understand</fn1-button>
+          </fn1-modal>
+        </template>
+
+        <div class="field-group">
+          <input v-model="searchUsers"
+                 id="search"
+                 type="search"
+                 name="search"
+                 placeholder="Search by Name or Dept.">
+        </div>
+      </div>
+
+      <template v-if="!pendingAccounts.length">
+        <h1>Sorry, no results.</h1>
+      </template>
+
+      <table class="fixed-header">
+        <caption class="sr-only">All User Requests</caption>
+        <thead>
+          <tr>
+            <!-- <th scope="col">
+              <input v-model="batchPendingRequestApproval"
+                     id="select-all-requests"
+                     value="select-all-requests"
+                     type="checkbox"
+                     name="select-all-requests">
+            </th> -->
+            <th scope="col">Status</th>
+            <th scope="col">Name</th>
+            <th scope="col">Dept.</th>
+            <th scope="col">Created</th>
+            <th scope="col">Requested By</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="(item, index) in pendingAccounts" :key="index">
+            <!-- <th scope="row">
+              <input v-model="selected"
+                     :key="index"
+                     id="select-all-requests"
+                     :value="item.id"
+                     type="checkbox"
+                     name="select-all-requests">
+            </th> -->
+            <th class="status">
+              <fn1-badge :class="item.request_status">
+                {{ item.request_status }}
+              </fn1-badge>
+            </th>
+            <th class="icon">
+              <div class="profile-image" v-if="item.cropped_image">
+                <img :src="item.cropped_image">
+              </div>
+              <div class="avatar" v-if="!item.cropped_image">
+                {{ userInitial(item.first_name) }}{{ userInitial(item.last_name) }}
+              </div>
+              <div class="name">
+                <div>
+                  {{ item.first_name }} {{ item.middle_name }} {{ item.last_name }}<template v-if="item.suffix">, {{ item.suffix }}</template>
+                </div>
+                <div>{{ item.job }}</div>
+              </div>
+            </th>
+            <th>
+              <div>{{ item.department }}</div>
+              <div>{{ item.group }}</div>
+            </th>
+            <th>
+              <div>{{ MMDYYYYDateFormat(item.updated) }}</div>
+              <div>{{ timeAgo(item.updated) }}</div>
+            </th>
+            <th>
+              <template v-for="u, i in usersWithAcctReqs">
+                <template v-if="u.id === item.requester">
+                  <div>{{u.first_name}} {{u.last_name}}</div>
+                  <div>{{u.username}}</div>
+                </template>
+              </template>
+            </th>
+            <th>
+              <nuxt-link class="button" :to="'/account-requests/'+item.id">
+                view
+              </nuxt-link>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+    </template>
 
     <transition name="slideover-slide">
       <div v-if="showingUserDetails"
@@ -347,6 +448,15 @@ const { mapFields } = createHelpers({
 });
 
 export default {
+  // validate({ params, query }) {
+  //   if(params.new) {
+  //     console.dir(query);
+  //     console.dir(params.new);
+  //     this.showDetails();
+  //   }
+  //   // return !isNaN(+params.id)
+  //   return true
+  // },
   layout:           'account-requests',
   components: {
     exampleSelect,
@@ -369,9 +479,21 @@ export default {
       usersWithAcctReqs:   [],
     }
   },
+  created(){
+    this.authLevel;
+  },
   mounted() {
     this.getAccountRequests()
-    .then(() => this.idsToNames());
+    .then(() => {
+      this.idsToNames();
+
+      if(this.$route.params.new) {
+        let view = this.new.filter(acctReq => {
+          return acctReq.id === this.$route.params.new
+        });
+        this.showDetails(view[0]);
+      }
+    });
   },
   methods: {
     outside(e) {
@@ -720,6 +842,50 @@ export default {
       }
     }
 
+    .title-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 0 20px 0;
+      min-height: 25px;
+      // background-color: red;
+
+      h4 {
+        color: $text-color;
+        font-size: 18px;
+        line-height: 18px;
+      }
+
+      button {
+        margin: 0;
+        padding: 0 20px;
+        background-color: $color-green;
+        white-space: nowrap;
+      }
+
+      .field-group {
+        display: flex;
+        width: 350px;
+        min-width: 350px;
+        max-width: 350px;
+        margin: 0 0 0 20px;
+
+        &:hover {
+          input {
+            border-color: lighten($text-color, 30%);
+          }
+        }
+
+        input {
+          border-radius: $radius-default;
+
+          &:focus {
+            border-color: lighten($text-color, 30%);
+          }
+        }
+      }
+    }
+
     .tabs-group {
       flex: 1;
 
@@ -765,53 +931,7 @@ export default {
       }
 
       /deep/ .tab-content {
-        padding: 0;
-
-        .tab-pane {
-          .title-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 30px 0 20px 0;
-            min-height: 25px;
-            // background-color: red;
-
-            h4 {
-              color: $text-color;
-              font-size: 18px;
-              line-height: 18px;
-            }
-
-            button {
-              margin: 0;
-              padding: 0 20px;
-              background-color: $color-green;
-              white-space: nowrap;
-            }
-
-            .field-group {
-              display: flex;
-              width: 350px;
-              min-width: 350px;
-              max-width: 350px;
-              margin: 0 0 0 20px;
-
-              &:hover {
-                input {
-                  border-color: lighten($text-color, 30%);
-                }
-              }
-
-              input {
-                border-radius: $radius-default;
-
-                &:focus {
-                  border-color: lighten($text-color, 30%);
-                }
-              }
-            }
-          }
-        }
+        padding: 20px 0 0 0;
       }
     }
   }

@@ -44,13 +44,7 @@ export const defaultNavState = () => ({
       admin: [
         { name: 'Create Account Request',
           href: `${process.env.FE_BASE}create`
-        },
-        { name: 'Created',
-          href: `${process.env.FE_BASE}account-requests/created`
-        },
-        { name: 'Denied',
-          href: `${process.env.FE_BASE}account-requests/denied`
-        },
+        }
       ],
       regular: [
         { name: 'Create Account Request',

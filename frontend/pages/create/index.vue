@@ -150,13 +150,11 @@ export default {
     this.$nextTick(() => {
       if(this.full){
         this.$refs.croppieRef.bind({
-          url: this.full,
-          zoom: 0,
+          url: this.full
         });
       } else {
         this.$refs.croppieRef.bind({
-          url: this.placeholderImg,
-          zoom: 0,
+          url: this.placeholderImg
         });
       }
       if(this.cropped != "") {
@@ -219,6 +217,8 @@ export default {
       // }
 
       let options = {
+        enableResize: true,
+        enableOrientation: true,
         type:   'base64',
         format: 'jpeg',
         size:   { width: 1150, height: 1533 }
@@ -239,7 +239,7 @@ export default {
       this.full = null;
       this.cropped = null;
       this.$refs.croppieRef.bind({
-        url: "",
+        url: this.placeholderImg,
         zoom: 0,
       });
       let canvas = this.$el.querySelector('.cr-image');
@@ -315,6 +315,7 @@ export default {
     flex-wrap: wrap;
     border-right: 1px solid lighten($text-color, 50%);
     margin: 0 40px 0 0;
+    // padding: 0 0 10px;
     align-items: flex-start;
     width: 480px;
     height: fit-content;
@@ -401,6 +402,7 @@ export default {
       border-bottom: 1px solid lighten($text-color, 50%);
       width: 100%;
       margin: 20px 0;
+      padding: 0 0 0 1px;
     }
 
     /deep/  ol, ul {

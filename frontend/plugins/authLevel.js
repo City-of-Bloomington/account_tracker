@@ -36,26 +36,29 @@ Vue.mixin({
       'auth.authLevel',
     ]),
     checkAuthLevel() {
-      let adminLevel  = this.groupLevels.admin,
-      regularLevel    = this.groupLevels.regular,
-      supportLevel    = this.groupLevels.support,
-      userLevels      = this.authUser.groups,
-      isAdminLevel    = userLevels.includes(adminLevel),
-      isRegularLevel  = userLevels.includes(regularLevel),
-      isSupportLevel  = userLevels.includes(supportLevel);
+      return new Promise((resolve, reject) => {
+        let adminLevel  = this.groupLevels.admin,
+        regularLevel    = this.groupLevels.regular,
+        supportLevel    = this.groupLevels.support,
+        userLevels      = this.authUser.groups,
+        isAdminLevel    = userLevels.includes(adminLevel),
+        isRegularLevel  = userLevels.includes(regularLevel),
+        isSupportLevel  = userLevels.includes(supportLevel);
 
-      if(isAdminLevel) {
-        // alert('admin')
-        this.$store.dispatch('auth/authLevel', this.levels.admin)
-      } else if(isRegularLevel) {
-        // alert('reg')
-        this.$store.dispatch('auth/authLevel', this.levels.regular)
-      } else if(isSupportLevel) {
-        // alert('sup')
-        this.$store.dispatch('auth/authLevel', this.levels.support)
-      }
 
-      // return this.authUser.groups
+        if(isAdminLevel) {
+          // alert('admin')
+          resolve(this.$store.dispatch('auth/authLevel', this.levels.admin))
+        } else if(isRegularLevel) {
+          // alert('reg')
+          resolve(this.$store.dispatch('auth/authLevel', this.levels.regular))
+        } else if(isSupportLevel) {
+          // alert('sup')
+          resolve(this.$store.dispatch('auth/authLevel', this.levels.support))
+        } else {
+          reject('checkAuthLevel failed')
+        }
+      })
     }
   },
 })
