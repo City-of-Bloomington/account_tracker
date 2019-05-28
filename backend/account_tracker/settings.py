@@ -209,6 +209,7 @@ USE_TZ   = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 LOGIN_REDIRECT_URL = 'https://dhcp-cityhall-101-164.bloomington.in.gov:9090/frontend/'
+LOGOUT_REDIRECT_URL = 'https://dhcp-cityhall-101-164.bloomington.in.gov:9090/accounts/login/'
 
 STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
