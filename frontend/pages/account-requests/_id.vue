@@ -342,10 +342,14 @@ export default {
     return !isNaN(+params.id)
   },
   mounted(context) {
-
     this.loadData();
-
-    // console.dir(this.acctReqIsNew);
+  },
+  updated() {
+    if(this.acctReq){
+      if(this.acctReqIsNew() && !this.authLevel.admin) {
+        this.$router.push({ path: this.paths.accountRequests });
+      }
+    }
   },
   components: {
     exampleSelect,
@@ -363,6 +367,7 @@ export default {
   computed: {
     ...mapFields([
       'paths',
+      'auth.authLevel',
       'auth.authUser',
       'apiLimit',
       'services.services',
@@ -373,14 +378,6 @@ export default {
       return this.acctReqActions.sort(
         (a, b) => new Date(b.updated) - new Date(a.updated)
         );
-    },
-    acctReqIsNew() {
-      let arStatus  = this.acctReq.request_status,
-      isNew         = "new";
-
-      if(arStatus == isNew) {
-        return true
-      }
     },
     usersServices() {
       let masterServices = [];
@@ -403,6 +400,14 @@ export default {
   methods: {
     goBack() {
       this.$router.push({ path: this.paths.accountRequests });
+    },
+    acctReqIsNew() {
+      let arStatus  = this.acctReq.request_status,
+      isNew         = "new";
+
+      if(arStatus == isNew) {
+        return true
+      }
     },
     /**
      * Loads init page data required to fire up

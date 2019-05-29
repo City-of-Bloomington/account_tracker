@@ -114,7 +114,7 @@
                       <div class="actions">
                         <exampleModal ref="removeDeptServiceModal"
                                       title="Remove - Dept Service"
-                                      launchButtonText="&#10005;">
+                                      launchButtonText="✕">
 
                           <p slot="body">Remove <strong>{{s.name}}</strong> from <strong>{{deptProfile.name}}'s Services Profile</strong>?</p>
 
@@ -184,7 +184,7 @@
                       <div class="actions">
                         <exampleModal ref="removeGroupServiceModal"
                                       title="Remove - Group Service"
-                                      launchButtonText="&#10005;">
+                                      launchButtonText="✕">
 
                           <p slot="body">Remove <strong>{{s.name}}</strong> from <strong>{{selectedGroup.name}}'s Services Profile</strong>?</p>
 
@@ -293,7 +293,7 @@
 
                             <exampleModal ref="removeDeptQuestionModal"
                                   title="Remove - Department Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
@@ -352,7 +352,7 @@
 
                             <exampleModal ref="removeDeptQuestionModal"
                                   title="Remove - Department Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
@@ -404,7 +404,7 @@
 
                             <exampleModal ref="removeDeptQuestionModal"
                                   title="Remove - Department Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
@@ -456,7 +456,7 @@
 
                             <exampleModal ref="removeDeptQuestionModal"
                                   title="Remove - Department Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
@@ -568,7 +568,7 @@
 
                             <exampleModal ref="removeGroupQuestionModal"
                                   title="Remove - Group Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
@@ -628,7 +628,7 @@
 
                             <exampleModal ref="removeGroupQuestionModal"
                                   title="Remove - Group Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
@@ -682,7 +682,7 @@
 
                             <exampleModal ref="removeGroupQuestionModal"
                                   title="Remove - Group Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
@@ -735,7 +735,7 @@
 
                             <exampleModal ref="removeGroupQuestionModal"
                                   title="Remove - Group Question"
-                                  launchButtonText="&#10005;">
+                                  launchButtonText="✕">
 
                               <p slot="body">Remove question:</p>
                               <p slot="body"><strong>{{question.text}}</strong></p>
