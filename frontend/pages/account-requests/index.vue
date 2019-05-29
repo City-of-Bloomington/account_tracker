@@ -448,15 +448,6 @@ const { mapFields } = createHelpers({
 });
 
 export default {
-  // validate({ params, query }) {
-  //   if(params.new) {
-  //     console.dir(query);
-  //     console.dir(params.new);
-  //     this.showDetails();
-  //   }
-  //   // return !isNaN(+params.id)
-  //   return true
-  // },
   layout:           'account-requests',
   components: {
     exampleSelect,

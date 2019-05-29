@@ -214,7 +214,7 @@
               <th scope="col">Requested</th>
               <th scope="col">Updated</th>
               <th scope="col">Created</th>
-              <th scope="col">Actions</th>
+              <th scope="col" v-if="!authLevel.regular">Actions</th>
             </tr>
           </thead>
 
@@ -258,7 +258,8 @@
                   <div>{{timeAgo(s.created)}}</div>
                 </template>
               </th>
-              <th :class="{'disabled': acctReqIsNew}">
+              <th v-if="!authLevel.regular"
+                  :class="{'disabled': acctReqIsNew}">
                 <exampleDropdown
                   text="status"
                   navAlign="right"
@@ -341,7 +342,10 @@ export default {
     return !isNaN(+params.id)
   },
   mounted(context) {
+
     this.loadData();
+
+    // console.dir(this.acctReqIsNew);
   },
   components: {
     exampleSelect,

@@ -562,6 +562,7 @@ import exampleModal   from '~/components/exampleModal'
 import exampleSelect  from '~/components/exampleSelect'
 
 export default {
+  middleware:       ['isAdminOrSupportLevel'],
   layout:           'services',
   components: {
     exampleModal,
@@ -702,11 +703,9 @@ export default {
       .then((res) => {
         this.addingServiceManager = false;
         this.loadServices();
-        console.log(res);
         console.log(`%c addServiceManager 👌 `, this.consoleLog.success);
       })
       .catch((e) => {
-        console.log(e);
         console.log(`%c addServiceManager 🛑 `, this.errLogStyle);
       });
     },

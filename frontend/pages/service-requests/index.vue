@@ -179,6 +179,7 @@ import exampleDropdown  from '~/components/exampleDropdown'
 import servicesAside    from '~/components/service-requests/servicesAside'
 
 export default {
+  middleware:       ['isAdminOrSupportLevel'],
   layout:           'service-requests',
   components: {
     exampleDropdown,

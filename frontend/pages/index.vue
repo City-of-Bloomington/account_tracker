@@ -87,12 +87,8 @@ export default {
     viewAccountRequest(id) {
       if(this.authLevel.admin && id.request_status == "new") {
         this.$router.push(
-          {
-            name: `account-requests`,
-            params: { new: id.id }
-          }
+          { name: `account-requests`, params: { new: id.id }}
         );
-        console.log(this.$router);
       } else {
         this.$router.push(this.paths.accountRequests + id.id);
       }
@@ -106,7 +102,11 @@ export default {
       'acctReqs.accountRequests'
     ]),
     allAccountRequests() {
-      let master = [...this.accountRequests.approved,...this.accountRequests.denied,...this.accountRequests.new,...this.accountRequests.pending];
+      if(this.authLevel.regular || this.authLevel.support) {
+        var master = [...this.accountRequests.approved,...this.accountRequests.denied,...this.accountRequests.pending];
+      } else {
+        var master = [...this.accountRequests.approved,...this.accountRequests.denied,...this.accountRequests.new,...this.accountRequests.pending];
+      }
       return master
     },
     filteredAcctReqs() {

@@ -138,7 +138,7 @@ Vue.mixin({
      * A Promise returning Service Requests
      * associated with an Account Request
      *
-     * @promise     getServices
+     * @promise     getServiceReqsByAcctReqId
      * @param       { Number } id    - ID of the Account Request
      * @param       { Number } limit - Number of returned results
      * @resolve     { Array }

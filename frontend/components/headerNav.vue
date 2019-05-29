@@ -45,6 +45,8 @@ export default {
 
     this.routeParam = this.$route.name;
 
+    // this.clearAuth();
+
     this.$nextTick()
     .then(() =>
       this.checkAuthLevel

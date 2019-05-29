@@ -21,9 +21,7 @@ export default {
       'consoleLog',
     ]),
   },
-  mounted() {
-    alert(`services alert ${JSON.stringify(this.auth)}`)
-  },
+  mounted() {},
   data() {
     return {}
   }
