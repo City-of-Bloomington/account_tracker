@@ -18,7 +18,7 @@
                       class="addServiceModal"
                       title="Add - Service"
                       launchButtonText="+ add service">
-          <template slot="body">
+          <template slot="body" slot-scope="props">
             <form>
               <div class="left">
                 <exampleSelect v-model="formDeployment"
@@ -332,7 +332,7 @@
                           @displayModal="editModalHandler(s, i)"
                           launchButtonText="edit">
 
-              <template slot="body" ref="editServiceFormBody">
+              <template slot="body" ref="editServiceFormBody" slot-scope="editServiceData">
                 <template v-if="addingServiceManager">
                   <div class="search-wrapper">
                     <fn1-input v-model="serviceManagerSearch"
@@ -573,6 +573,7 @@ export default {
   },
   data() {
     return {
+      yoTesTest:        null,
       loading:          false,
       allServices:      [],
       serviceManagers:  [],
@@ -603,18 +604,20 @@ export default {
       formDeveloper:    null,
 
       // Form - Edit
-      formEditID:           null,
-      formEditName:         null,
-      formEditManagers:     null,
-      formEditDescription:  null,
-      formEditUrl:          null,
-      formEditActive:       null,
-      formEditDeployment:   null,
-      formEditBuild:        null,
-      formEditPublic:       null,
-      formEditInternal:     null,
-      formEditVersion:      null,
-      formEditDeveloper:    null,
+      editServiceData: {
+        formEditID:           null,
+        formEditName:         null,
+        formEditManagers:     null,
+        formEditDescription:  null,
+        formEditUrl:          null,
+        formEditActive:       null,
+        formEditDeployment:   null,
+        formEditBuild:        null,
+        formEditPublic:       null,
+        formEditInternal:     null,
+        formEditVersion:      null,
+        formEditDeveloper:    null,
+      }
     }
   },
   computed: {
@@ -778,6 +781,7 @@ export default {
       });
     },
     loadServices(){
+      // this.getServices(this.apiLimit)
       this.getServices(this.apiLimit)
       .then((resolve) => {
         this.allServices = resolve;
@@ -793,7 +797,9 @@ export default {
       });
     },
     editModalHandler(s, i) {
-      let copy = s;
+      let copy = Object.assign({}, s);
+      // let copy = s;
+      alert(JSON.stringify(copy));
       this.formEditID           = copy.id,
       this.formEditName         = copy.name,
       this.formEditManagers     = copy.managers,
@@ -810,6 +816,9 @@ export default {
       this.formEditDeveloper    = copy.developer;
     },
     editService(i) {
+      alert(JSON.stringify(i));
+      // alert('editing it')
+
       let fD = new FormData();
 
       fD.append(`active`,         this.formEditActive);
