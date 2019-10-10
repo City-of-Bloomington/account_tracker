@@ -1,0 +1,36 @@
+<?php
+/**
+ * @copyright 2019 City of Bloomington, Indiana
+ * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
+ */
+declare (strict_types=1);
+
+namespace Web\Users\Controllers;
+
+use Domain\Users\UseCases\Search\Request;
+use Web\Users\Views\SearchView;
+use Web\Controller;
+use Web\View;
+
+
+class ListController extends Controller
+{
+    const ITEMS_PER_PAGE = 20;
+
+    public function __invoke(array $params): View
+    {
+        global $ZEND_ACL;
+        $search   = $this->di->get('Domain\Users\UseCases\Search\Command');
+        $auth     = $this->di->get('Domain\Auth\AuthenticationService');
+		$page     =  !empty($_GET['page']) ? (int)$_GET['page'] : 1;
+        $request  = new Request($_GET, null, self::ITEMS_PER_PAGE, $page);
+        $response = $search($request);
+
+        return new SearchView($request,
+                              $response,
+                              self::ITEMS_PER_PAGE,
+                              $page,
+                              $ZEND_ACL->getRoles(),
+                              $auth->getAuthenticationMethods());
+    }
+}

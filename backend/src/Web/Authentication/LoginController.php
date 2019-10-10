@@ -1,0 +1,78 @@
+<?php
+/**
+ * @copyright 2019 City of Bloomington, Indiana
+ * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
+ */
+declare (strict_types=1);
+
+namespace Web\Authentication;
+
+use Aura\Di\Container;
+
+use Web\Controller;
+use Web\Template;
+use Web\View;
+
+class LoginController extends Controller
+{
+	private $return_url;
+	private $auth;
+
+	public function __construct(Container $container)
+	{
+        parent::__construct($container);
+        $this->auth = $this->di->get('Domain\Auth\AuthenticationService');
+	}
+
+    /**
+     * Try to do CAS authentication
+     */
+    public function __invoke(array $params): View
+    {
+		$this->return_url = !empty($_REQUEST['return_url']) ? $_REQUEST['return_url'] : BASE_URL;
+
+		// If they don't have CAS configured, send them onto the application's
+		// internal authentication system
+		if (!defined('CAS')) {
+			header('Location: '.View::generateUrl('login.login').'?return_url='.$this->return_url);
+			exit();
+		}
+
+		require_once CAS.'/CAS.php';
+		\phpCAS::client(CAS_VERSION_2_0, CAS_SERVER, 443, CAS_URI, false);
+		\phpCAS::setNoCasServerValidation();
+		\phpCAS::forceAuthentication();
+		// at this step, the user has been authenticated by the CAS server
+		// and the user's login name can be read with phpCAS::getUser().
+
+		// They may be authenticated according to CAS,
+		// but that doesn't mean they have person record
+		// and even if they have a person record, they may not
+		// have a user account for that person record.
+		try { $user = $this->auth->identify(\phpCAS::getUser()); }
+		catch (\Exception $e) {
+            $_SESSION['errorMessages'][] = $e;
+            echo "CAS did not authenticate user\n";
+            exit();
+        }
+
+		if (isset($user) && $user) { $_SESSION['USER'] = $user; }
+		else { $_SESSION['errorMessages'][] = 'users/unknownUser'; }
+
+        header("Location: {$this->return_url}");
+        exit();
+    }
+
+    public function localAuth(array $params): View
+    {
+        if (isset($_POST['username'])) {
+
+        }
+		return new LoginView(['return_url'=>$this->return_url]);
+    }
+
+    public static function password_hash(string $password): string
+    {
+        return password_hash($password, PASSWORD_BCRYPT);
+    }
+}

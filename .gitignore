@@ -10,11 +10,10 @@
 .Trashes*
 .Spotlight-V100*
 .fseventsd*
-venv
-backend/db.sqlite3
-backend/mysql.cnf
-backend/account_tracker/ldap_config.py
-backend/scripts/services.csv
+site_config.php
+*.css*
+vendor
+backend/data/sessions/*
 frontend/certs
 ansible/roles
 

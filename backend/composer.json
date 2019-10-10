@@ -1,0 +1,28 @@
+{
+    "require": {
+        "php": ">=7.2",
+        "aura/di":                            "@stable",
+        "aura/router":                        "~2",
+        "aura/sqlquery":                      "@stable",
+        "aws/aws-sdk-php":                    "@stable",
+        "guzzlehttp/guzzle":                  "@stable",
+        "jasig/phpcas":                       "@stable",
+        "graylog2/gelf-php":                  "@stable",
+        "zendframework/zend-log":             "@stable",
+        "zendframework/zend-permissions-acl": "@stable"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Web\\": "src/Web/",
+            "Domain\\": "src/Domain"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "src/Test"
+        }
+    }
+}
