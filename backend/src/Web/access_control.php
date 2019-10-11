@@ -10,8 +10,8 @@ use Zend\Permissions\Acl\Role\GenericRole as Role;
 use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 $ZEND_ACL = new Acl();
 $ZEND_ACL->addRole(new Role('Anonymous'    ))
-         ->addRole(new Role('Employee'     ))
-		 ->addRole(new Role('Support Staff'))
+         ->addRole(new Role('Employee'     ), 'Anonymous')
+		 ->addRole(new Role('Support Staff'), 'Employee' )
 		 ->addRole(new Role('Administrator'));
 
 /**
@@ -24,6 +24,8 @@ foreach ($ROUTES->getRoutes() as $r) {
     }
 }
 // Permissions for unauthenticated browsing
-$ZEND_ACL->allow(null, 'login');
+$ZEND_ACL->allow(null, 'login', 'login');
+
+$ZEND_ACL->allow('Employee', 'login');
 
 $ZEND_ACL->allow('Administrator');

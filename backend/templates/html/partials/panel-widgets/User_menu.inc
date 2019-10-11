@@ -8,7 +8,7 @@ if (isset($_SESSION['USER'])) {
     $name = self::escape("{$_SESSION['USER']->firstname} {$_SESSION['USER']->lastname}");
     $links = [
         ['url'=>parent::generateUri('login.logout' ), 'label'=>$this->_('logout'    )],
-        ['url'=>parent::generateUri('login.current'), 'label'=>$this->_('my_account')],
+        ['url'=>parent::generateUri('login.current'), 'label'=>$this->_('my_account')]
     ];
 
     $helper = $this->getHelper('dropdown');
