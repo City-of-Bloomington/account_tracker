@@ -14,7 +14,7 @@ declare (strict_types=1);
 ?>
 <section>
     <header>
-        <h1><?= $this->_('people_search'); ?></h1>
+        <h1><?= $this->_(['person', 'people', 100]); ?></h1>
     </header>
     <form method="get">
         <fieldset>

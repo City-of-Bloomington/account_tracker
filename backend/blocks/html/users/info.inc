@@ -5,10 +5,29 @@
  * @param User $this->user
  */
 declare (strict_types=1);
-
+use Web\Block;
 ?>
 <section>
     <header><h1><?= parent::escape($this->user->getFullname()); ?></h1></header>
+    <?php
+        $actions = [];
+        if (parent::isAllowed('users', 'update')) {
+            $actions['user_edit'] = [
+                'uri'   => parent::generateUri("users.update", ['id'=>$this->user->id]),
+                'class' => 'edit'
+            ];
+        }
+        if (parent::isAllowed('users', 'delete')) {
+            $actions['user_delete'] = [
+                'uri'   => parent::generateUri("users.delete", ['id'=>$this->user->id]),
+                'class' => 'delete'
+            ];
+        }
+        if ($actions) {
+            $block = new Block('toolbox.inc', ['actions' => $actions]);
+            echo $block->render('html', $this->template);
+        }
+    ?>
     <table>
     <?php
         $fields = ['username', 'email'];

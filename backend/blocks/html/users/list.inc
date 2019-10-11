@@ -4,66 +4,47 @@
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
  * @param array $this->users
  */
+declare (strict_types=1);
+use Web\Block;
 ?>
 <section>
     <header>
-        <div class="tools">
-        <?php
-            $helper = $this->template->getHelper('buttonLink');
-            $userCanEdit   = parent::isAllowed('users', 'update');
-            $userCanDelete = parent::isAllowed('users', 'delete');
-            if ($userCanEdit) {
-                echo $helper->buttonLink(
-                    self::generateUri('users.update'),
-                    $this->_('user_add'),
-                    'add'
-                );
-            }
-        ?>
-        </div>
+    <?php
+        $actions = [];
+        if (parent::isAllowed('users', 'update')) {
+            $actions['user_add'] = [
+                'uri'   => parent::generateUri("users.update"),
+                'class' => 'add'
+            ];
+        }
+        if ($actions) {
+            $block = new Block('toolbox.inc', ['actions' => $actions]);
+            echo $block->render('html', $this->template);
+        }
+    ?>
     </header>
 
 	<table>
 		<thead>
-			<tr><th></th>
-				<th><?= $this->_('username'); ?></th>
+			<tr><th><?= $this->_('username'); ?></th>
 				<th><?= $this->_('name'); ?></th>
 				<th><?= $this->_('authentication_method'); ?></th>
 				<th><?= $this->_('role'); ?></th>
-				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
 			foreach ($this->users as $user) {
-				$editButton   = '';
-				$deleteButton = '';
-				if ($userCanEdit) {
-					$editButton = $helper->buttonLink(
-                        self::generateUri('users.update', ['id'=>$user->id]),
-						$this->_('user_edit'),
-						'edit'
-					);
-                }
-                if ($userCanDelete) {
-					$deleteButton = $helper->buttonLink(
-                        self::generateUri('users.delete', ['id'=>$user->id]),
-						$this->_('user_delete'),
-						'delete'
-					);
-				}
-
 				$username = parent::escape($user->username);
 				$name     = parent::escape("{$user->firstname} {$user->lastname}");
 				$role     = parent::escape($user->role);
 				$auth     = parent::escape($user->authentication_method);
+				$uri      = parent::generateUri('users.view', ['id'=>$user->id]);
 				echo "
-				<tr><td>$editButton</td>
-					<td>{$user->username}</td>
-					<td>$name</td>
-					<td>$auth</td>
-					<td>$role</td>
-					<td>$deleteButton</td>
+				<tr><td><a href=\"$uri\">{$user->username}</a></td>
+					<td><a href=\"$uri\">$name</a></td>
+					<td><a href=\"$uri\">$auth</a></td>
+					<td><a href=\"$uri\">$role</a></td>
 				</tr>
 				";
 			}
