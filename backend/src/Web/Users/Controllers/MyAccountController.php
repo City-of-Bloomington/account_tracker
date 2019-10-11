@@ -5,19 +5,17 @@
  */
 declare (strict_types=1);
 
-namespace Web\Resources;
+namespace Web\Users\Controllers;
 
 use Web\Controller;
 use Web\View;
-use Web\Resources\Views\ListView;
+use Web\Users\Views\InfoView;
 
-class ListController extends Controller
+class MyAccountController extends Controller
 {
     public function __invoke(array $params): View
     {
-        $search = $this->di->get('Domain\Resources\UseCases\Search\Command');
-        $res    = $search();
-
-        return new ListView($res);
+        $user = $this->di->get('currentUser');
+        return new InfoView($user);
     }
 }

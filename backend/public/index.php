@@ -31,7 +31,8 @@ if ($route) {
                 $view = $c($route->params);
             }
             else {
-                if (isset($_SESSION['USER'])) {
+                if     ( isset($_SESSION['USER'])
+                    || (!empty($_REQUEST['format']) && $_REQUEST['format'] != 'html')) {
                     $view = new \Web\Views\ForbiddenView();
                 }
                 else {

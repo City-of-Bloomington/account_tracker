@@ -5,9 +5,11 @@
  */
 declare (strict_types=1);
 
-namespace Domain\Resources\DataStorage;
+namespace Domain\Resources\Entities;
 
-interface ResourcesRepository
+class Resource
 {
-    public function find(): array;
+    public $name;
+    public $description;
+    public $questions = [];
 }

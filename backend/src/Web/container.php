@@ -38,7 +38,7 @@ foreach ($repos as $t) {
 }
 
 $DI->set('Domain\Resources\DataStorage\ResourcesRepository',
-$DI->lazyNew('Web\Resources\JsonResourcesRespository'));
+$DI->lazyNew('Web\Resources\JsonResourcesRepository'));
 
 //---------------------------------------------------------
 // Services
@@ -58,6 +58,11 @@ foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
     $DI->lazyNew("Domain\\People\\UseCases\\$a\\Command"));
 }
 
+// Resources
+$DI->params[ "Domain\\Resources\\UseCases\\Search\\Command"]["repository"] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
+$DI->set(    "Domain\\Resources\\UseCases\\Search\\Command",
+$DI->lazyNew("Domain\\Resources\\UseCases\\Search\\Command"));
+
 // Users
 foreach (['Delete', 'Info', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\Users\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\Users\DataStorage\UsersRepository');
@@ -65,3 +70,5 @@ foreach (['Delete', 'Info', 'Search', 'Update'] as $a) {
     $DI->lazyNew("Domain\\Users\\UseCases\\$a\\Command"));
 }
 $DI->params['Domain\Users\UseCases\Update\Command']['auth'] = $DI->lazyGet('Domain\Auth\AuthenticationService');
+
+

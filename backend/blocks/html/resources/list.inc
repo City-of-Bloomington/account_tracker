@@ -11,7 +11,7 @@ declare (strict_types=1);
     <table>
     <?php
         foreach ($this->resources as $r) {
-            $name = parent::escape($r->name);
+            $name = parent::escape($r['name']);
             echo "<tr><td>$name</td></tr>";
         }
     ?>

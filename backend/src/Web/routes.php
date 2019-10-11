@@ -9,9 +9,10 @@ $rf = new \Aura\Router\RouterFactory(BASE_URI);
 $ROUTES = $rf->newInstance();
 $ROUTES->addTokens(['id' => '\d+']);
 
-$ROUTES->add('home.index',   '/'      )->setValues(['controller' => 'Web\HomeController']);
-$ROUTES->add('login.login',  '/login' )->setValues(['controller' => 'Web\Authentication\LoginController']);
-$ROUTES->add('login.logout', '/logout')->setValues(['controller' => 'Web\Authentication\LogoutController']);
+$ROUTES->add('home.index',   '/'        )->setValues(['controller' => 'Web\HomeController']);
+$ROUTES->add('login.login',  '/login'   )->setValues(['controller' => 'Web\Authentication\LoginController']);
+$ROUTES->add('login.logout', '/logout'  )->setValues(['controller' => 'Web\Authentication\LogoutController']);
+$ROUTES->add('login.current', '/profile')->setValues(['controller' => 'Web\Users\Controllers\MyAccountController']);
 
 $ROUTES->attach('people', '/people', function ($r) {
     $r->add('update', '/update{/id}') ->setValues(['controller' => 'Web\People\Controllers\UpdateController']);
@@ -25,6 +26,6 @@ $ROUTES->attach('users', '/users', function ($r) {
     $r->add('index',  '')             ->setValues(['controller' => 'Web\Users\Controllers\ListController'  ]);
 });
 
-$ROUTES->attach('resources', 'resources', function ($r) {
-    $r->add('index',  '')             ->setValues(['controller' => 'Web\Resources\Controllers\ListController']);
+$ROUTES->attach('resources', '/resources', function ($r) {
+    $r->add('index',  '')             ->setValues(['controller' => 'Web\Resources\ListController']);
 });

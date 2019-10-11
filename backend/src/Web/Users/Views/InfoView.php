@@ -5,25 +5,24 @@
  */
 declare (strict_types=1);
 
-namespace Web\Resources\Views;
+namespace Web\Users\Views;
 
-use Domain\Resources\UseCases\Search\Response;
+use Domain\Users\Entities\User;
+
 use Web\Block;
 use Web\Template;
 
-class ListView extends Template
+class InfoView extends Template
 {
-    public function __construct(Response $response)
+    public function __construct(User $user)
     {
         $format = !empty($_REQUEST['format']) ? $_REQUEST['format'] : 'html';
         parent::__construct('default', $format);
 
-        $vars = [
-            'resources' => $response->resources
-        ];
+        $this->vars['title'] = parent::escape($user->getFullname());
 
         $this->blocks = [
-            new Block('resources/list.inc', $vars)
+            new Block('users/info.inc', ['user'=>$user])
         ];
     }
 }
