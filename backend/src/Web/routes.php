@@ -7,7 +7,10 @@ declare (strict_types=1);
 
 $rf = new \Aura\Router\RouterFactory(BASE_URI);
 $ROUTES = $rf->newInstance();
-$ROUTES->addTokens(['id' => '\d+']);
+$ROUTES->setTokens([
+    'id'   => '\d+',
+    'code' => '[a-z_]+'
+]);
 
 $ROUTES->add('home.index',   '/'        )->setValues(['controller' => 'Web\HomeController']);
 $ROUTES->add('login.login',  '/login'   )->setValues(['controller' => 'Web\Authentication\LoginController']);
@@ -28,5 +31,7 @@ $ROUTES->attach('users', '/users', function ($r) {
 });
 
 $ROUTES->attach('resources', '/resources', function ($r) {
-    $r->add('index',  '')             ->setValues(['controller' => 'Web\Resources\ListController']);
+    $r->add('view',   '/{code}'       )->setValues(['controller' => 'Web\Resources\Controllers\InfoController'  ]);
+    $r->add('update', '/update{/code}')->setValues(['controller' => 'Web\Resources\Controllers\UpdateController']);
+    $r->add('index',  '')              ->setValues(['controller' => 'Web\Resources\Controllers\ListController'  ]);
 });

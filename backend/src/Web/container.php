@@ -29,16 +29,14 @@ $DI->set('PDO', $pdo);
 // Declare database repositories
 //---------------------------------------------------------
 $repos = [
-    'People', 'Users'
+    'People', 'Users',
+    'Resources'
 ];
 foreach ($repos as $t) {
     $DI->params[ "Web\\$t\\Pdo{$t}Repository"]["pdo"] = $pdo;
     $DI->set("Domain\\$t\\DataStorage\\{$t}Repository",
     $DI->lazyNew("Web\\$t\\Pdo{$t}Repository"));
 }
-
-$DI->set('Domain\Resources\DataStorage\ResourcesRepository',
-$DI->lazyNew('Web\Resources\JsonResourcesRepository'));
 
 //---------------------------------------------------------
 // Services
@@ -59,9 +57,11 @@ foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
 }
 
 // Resources
-$DI->params[ "Domain\\Resources\\UseCases\\Search\\Command"]["repository"] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
-$DI->set(    "Domain\\Resources\\UseCases\\Search\\Command",
-$DI->lazyNew("Domain\\Resources\\UseCases\\Search\\Command"));
+foreach (['Info', 'Search', 'Update'] as $a) {
+    $DI->params[ "Domain\\Resources\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
+    $DI->set(    "Domain\\Resources\\UseCases\\$a\\Command",
+    $DI->lazyNew("Domain\\Resources\\UseCases\\$a\\Command"));
+}
 
 // Users
 foreach (['Delete', 'Info', 'Search', 'Update'] as $a) {

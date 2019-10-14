@@ -5,8 +5,7 @@
  */
 declare (strict_types=1);
 
-namespace Domain\Resources\UseCases\Search;
-
+namespace Domain\Resources\UseCases\Info;
 use Domain\Resources\DataStorage\ResourcesRepository;
 
 class Command
@@ -18,14 +17,13 @@ class Command
         $this->repo = $repository;
     }
 
-    public function __invoke(): Response
+    public function __invoke(string $code): Response
     {
         try {
-            $result = $this->repo->find([]);
-            return new Response($result['rows'], $result['total']);
+            return new Response($this->repo->load($code));
         }
         catch (\Exception $e) {
-            return new Response(null, null, [$e->getMessage]);
+            return new Response(null, [$e->getMessage()]);
         }
     }
 }

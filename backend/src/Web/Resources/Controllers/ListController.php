@@ -5,7 +5,7 @@
  */
 declare (strict_types=1);
 
-namespace Web\Resources;
+namespace Web\Resources\Controllers;
 
 use Web\Controller;
 use Web\View;
