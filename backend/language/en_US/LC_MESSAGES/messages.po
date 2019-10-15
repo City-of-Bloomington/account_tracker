@@ -21,3 +21,9 @@ msgstr "Signed in as %s"
 
 msgid "no_results"
 msgstr "No %s found"
+
+msgid "resources.add"
+msgstr "Register a new resource"
+
+msgid "resources.edit"
+msgstr "Edit this resource"

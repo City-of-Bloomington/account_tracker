@@ -19,6 +19,7 @@ class InfoView extends Template
         parent::__construct('default', $format);
 
         $vars = [
+            'id'   => $res->resourceEntity->id,
             'code' => parent::escape($res->resourceEntity->code),
             'name' => parent::escape($res->resourceEntity->name),
             'type' => parent::escape($res->resourceEntity->type),

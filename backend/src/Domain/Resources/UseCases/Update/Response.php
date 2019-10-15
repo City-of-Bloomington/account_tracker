@@ -9,12 +9,12 @@ namespace Domain\Resources\UseCases\Update;
 
 class Response
 {
-    public $code;
+    public $id;
     public $errors = [];
 
-    public function __construct(?string $code=null, ?array $errors=null)
+    public function __construct(?int $id=null, ?array $errors=null)
     {
-        $this->code   = $code;
+        $this->id     = $id;
         $this->errors = $errors;
     }
 }

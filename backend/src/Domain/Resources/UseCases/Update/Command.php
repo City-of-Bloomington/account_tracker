@@ -7,6 +7,7 @@ declare (strict_types=1);
 
 namespace Domain\Resources\UseCases\Update;
 use Domain\Resources\Entities\ResourceEntity;
+use Domain\Resources\DataStorage\ResourcesRepository;
 
 class Command
 {

@@ -15,13 +15,15 @@ class InfoController extends Controller
 {
     public function __invoke(array $params): View
     {
-        $info = $this->di->get('Domain\Resources\UseCases\Info\Command');
-        $res  = $info($params['code']);
-        if ($res->resourceEntity) {
-            return new InfoView($res);
-        }
+        if (!empty($_REQUEST['id'])) {
+            $info = $this->di->get('Domain\Resources\UseCases\Info\Command');
+            $res  = $info((int)$_REQUEST['id']);
+            if ($res->resourceEntity) {
+                return new InfoView($res);
+            }
 
-        $_SESSION['errorMessages'] = $res->errors;
+            $_SESSION['errorMessages'] = $res->errors;
+        }
         return new \Web\Views\NotFoundView();
     }
 }

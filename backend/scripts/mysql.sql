@@ -10,10 +10,11 @@ create table people (
 );
 
 create table resources (
-	code         varchar(32) not null unique,
-	type         varchar(32) not null,
-	name         varchar(32) not null,
-	definition   json        not null
+	id         int unsigned not null primary key auto_increment,
+	code       varchar(32)  not null unique,
+	type       varchar(32)  not null,
+	name       varchar(32)  not null,
+	definition json         not null
 );
 
 create table resource_managers (

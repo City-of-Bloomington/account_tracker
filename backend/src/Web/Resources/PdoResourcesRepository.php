@@ -37,11 +37,11 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
         return new ResourceEntity($row);
     }
 
-    public function load(string $code): ResourceEntity
+    public function load(int $id): ResourceEntity
     {
         $select = $this->queryFactory->newSelect();
         $select->cols($this->columns())->from(self::TABLE);
-        $select->where('code=?', $code);
+        $select->where('id=?', $id);
 
         $result = $this->performSelect($select);
         if (count($result['rows'])) {
@@ -72,28 +72,13 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
     /**
      * Saves a resource and returns the id for the resource
      */
-    public function save(ResourceEntity $res): string
+    public function save(ResourceEntity $res): int
     {
-        $data = [
-            'code'       => $res->code,
-            'name'       => $res->name,
-            'type'       => $res->type,
-            'definition' => json_encode($res->definition)
-        ];
-
-        $sql = 'select count(*) from resources where code=?';
-        $query = $pdo->prepare($sql);
-        $query->execute([$res->code]);
-        $count = $query->fetchColumn();
-
-        $st = $count
-            ? $this->queryFactory->newUpdate()->table(self::TABLE)->cols($data)->where('code=?', $res->code)
-            : $this->queryFactory->newInsert()->into (self::TABLE)->cols($data);
-        $query = $this->pdo->prepare($st->getStatement());
-        $query->execute($st->getBindValues());
-        return $res->code;
-
-        parent::saveToTable((array)$res, self::TABLE);
-
+        return parent::saveToTable(['id'         => $res->id,
+                                    'code'       => $res->code,
+                                    'name'       => $res->name,
+                                    'type'       => $res->type,
+                                    'definition' => json_encode($res->definition)
+                                   ], self::TABLE);
     }
 }

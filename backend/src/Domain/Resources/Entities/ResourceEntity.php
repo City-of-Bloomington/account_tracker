@@ -9,6 +9,7 @@ namespace Domain\Resources\Entities;
 
 class ResourceEntity
 {
+    public $id;
     public $code;
     public $name;
     public $type;
@@ -16,9 +17,10 @@ class ResourceEntity
 
     public function __construct(array $data)
     {
-        if (!empty($data['code'      ])) { $this->code = $data['code']; }
-        if (!empty($data['name'      ])) { $this->name = $data['name']; }
-        if (!empty($data['type'      ])) { $this->type = $data['type']; }
+        if (!empty($data['id'        ])) { $this->id = (int)$data['id'  ]; }
+        if (!empty($data['code'      ])) { $this->code =    $data['code']; }
+        if (!empty($data['name'      ])) { $this->name =    $data['name']; }
+        if (!empty($data['type'      ])) { $this->type =    $data['type']; }
         if (!empty($data['definition'])) {
             $this->definition = is_array(   $data['definition'])
                               ?             $data['definition']

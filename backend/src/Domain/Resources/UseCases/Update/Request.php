@@ -10,16 +10,18 @@ use Domain\Resources\Entities\ResourceEntity;
 
 class Request
 {
+    public $id;
     public $code;
     public $name;
     public $type;
     public $definition;
 
-    public function __construct(array $data)
+    public function __construct(?array $data=null)
     {
-        if (!empty($data['code'      ])) { $this->code = $data['code']; }
-        if (!empty($data['name'      ])) { $this->name = $data['name']; }
-        if (!empty($data['type'      ])) { $this->type = $data['type']; }
+        if (!empty($data['id'        ])) { $this->id = (int)$data['id'  ]; }
+        if (!empty($data['code'      ])) { $this->code =    $data['code']; }
+        if (!empty($data['name'      ])) { $this->name =    $data['name']; }
+        if (!empty($data['type'      ])) { $this->type =    $data['type']; }
         if (!empty($data['definition'])) {
             $this->definition = is_array(   $data['definition'])
                               ?             $data['definition']

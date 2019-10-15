@@ -17,10 +17,10 @@ class Command
         $this->repo = $repository;
     }
 
-    public function __invoke(string $code): Response
+    public function __invoke(int $id): Response
     {
         try {
-            return new Response($this->repo->load($code));
+            return new Response($this->repo->load($id));
         }
         catch (\Exception $e) {
             return new Response(null, [$e->getMessage()]);
