@@ -119,3 +119,8 @@ msgid "resource"
 msgid_plural "resources"
 msgstr[0] "Resource"
 msgstr[1] "Resources"
+
+msgid "account_request"
+msgid_plural "account_requests"
+msgstr[0] "Account Request"
+msgstr[1] "Account Requests"

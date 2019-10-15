@@ -8,13 +8,13 @@
     <div class="container">
     <?php
         $routes = [
-            'people'        => 'person',
+            'account_requests' => 'account_request',
         ];
         foreach ($routes as $plural=>$singular) {
             if (parent::isAllowed($plural, 'index')) {
                 echo sprintf("<a href=\"%s\">%s</a>",
                              parent::generateUri("$plural.index"),
-                             $this->_([$singular, $plural, 2]));
+                             $this->_([$singular, $plural, 10]));
             }
         }
     ?>

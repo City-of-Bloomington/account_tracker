@@ -14,6 +14,11 @@ $ROUTES->add('login.login',  '/login'   )->setValues(['controller' => 'Web\Authe
 $ROUTES->add('login.logout', '/logout'  )->setValues(['controller' => 'Web\Authentication\LogoutController']);
 $ROUTES->add('login.current', '/profile')->setValues(['controller' => 'Web\Users\Controllers\MyAccountController']);
 
+$ROUTES->attach('account_requests', '/account_requests', function ($r) {
+    $r->add('view',   '/{id}')        ->setValues(['controller' => 'Web\AccountRequests\Controllers\InfoController']);
+    $r->add('index',  '')             ->setValues(['controller' => 'Web\AccountRequests\Controllers\ListController']);
+});
+
 $ROUTES->attach('people', '/people', function ($r) {
     $r->add('update', '/update{/id}') ->setValues(['controller' => 'Web\People\Controllers\UpdateController']);
     $r->add('view',   '/{id}')        ->setValues(['controller' => 'Web\People\Controllers\ViewController'  ]);

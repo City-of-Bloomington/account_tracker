@@ -30,7 +30,7 @@ $DI->set('PDO', $pdo);
 //---------------------------------------------------------
 $repos = [
     'People', 'Users',
-    'Resources'
+    'AccountRequests', 'Resources'
 ];
 foreach ($repos as $t) {
     $DI->params[ "Web\\$t\\Pdo{$t}Repository"]["pdo"] = $pdo;
@@ -49,6 +49,13 @@ $DI->lazyNew('Domain\Auth\AuthenticationService'));
 //---------------------------------------------------------
 // Use Cases
 //---------------------------------------------------------
+// Account Requests
+foreach (['Info', 'Search'] as $a) {
+    $DI->params[ "Domain\\AccountRequests\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\AccountRequests\DataStorage\AccountRequestsRepository');
+    $DI->set(    "Domain\\AccountRequests\\UseCases\\$a\\Command",
+    $DI->lazyNew("Domain\\AccountRequests\\UseCases\\$a\\Command"));
+}
+
 // People
 foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\People\\UseCases\\$a\\Command"]['repository'] = $DI->lazyGet('Domain\People\DataStorage\PeopleRepository');
