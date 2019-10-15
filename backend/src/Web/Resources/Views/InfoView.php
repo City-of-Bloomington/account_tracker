@@ -18,13 +18,14 @@ class InfoView extends Template
         $format = !empty($_REQUEST['format']) ? $_REQUEST['format'] : 'html';
         parent::__construct('default', $format);
 
-        $vars = [
-            'id'   => $res->resourceEntity->id,
-            'code' => parent::escape($res->resourceEntity->code),
-            'name' => parent::escape($res->resourceEntity->name),
-            'type' => parent::escape($res->resourceEntity->type),
-            'definition' => $res->resourceEntity->definition
-        ];
+        $vars = $this->outputFormat == 'html'
+              ? ['id'   => $res->resourceEntity->id,
+                 'code' => parent::escape($res->resourceEntity->code),
+                 'name' => parent::escape($res->resourceEntity->name),
+                 'type' => parent::escape($res->resourceEntity->type),
+                 'definition' => $res->resourceEntity->definition
+                ]
+              : ['resourceEntity' => $res->resourceEntity];
 
         $this->blocks = [
             new Block('resources/info.inc', $vars)

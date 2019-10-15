@@ -36,13 +36,24 @@ class Command
     /**
      * Returns an array of errors for the request
      */
-    public static function validate(Request $r): array
+    private function validate(Request $r): array
     {
         $errors = [];
         if (!$r->code      ) { $errors[] = 'resources/missingCode'      ; }
         if (!$r->name      ) { $errors[] = 'missingName'                ; }
         if (!$r->type      ) { $errors[] = 'missingType'                ; }
         if (!$r->definition) { $errors[] = 'resources/missingDefinition'; }
+
+        if ($this->isDuplicate($r)) { $errors[] = 'resources/duplicate'; }
+
         return $errors;
+    }
+
+    private function isDuplicate(Request $r): bool
+    {
+        $result = $this->repo->find(['code' => $r->code]);
+        return $r->id
+            ? $result['total'] > 1
+            : $result['total'] > 0;
     }
 }
