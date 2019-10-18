@@ -10,6 +10,7 @@ use Aura\Di\Container;
 
 class Controller
 {
+    protected const ITEMS_PER_PAGE = 20;
     protected $di;
 
     public function __construct(Container $container)

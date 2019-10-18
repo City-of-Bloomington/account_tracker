@@ -5,7 +5,7 @@
  */
 declare (strict_types=1);
 
-namespace Web\Resources;
+namespace Web\Resources\Controllers;
 
 use Web\Controller;
 use Web\View;
@@ -15,8 +15,8 @@ class ListController extends Controller
 {
     public function __invoke(array $params): View
     {
-        $list = $this->di->get('Domain\Resources\UseCases\List\Command');
-        $res  = $list();
+        $search = $this->di->get('Domain\Resources\UseCases\Search\Command');
+        $res    = $search();
 
         return new ListView($res);
     }

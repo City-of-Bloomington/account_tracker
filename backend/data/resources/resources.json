@@ -1,0 +1,151 @@
+[
+    {
+        "id": "active_directory",
+        "name": "Active Directory",
+        "type": "directory",
+        "managers": ["tierneys", "routonr"],
+        "actions": {
+            "create"   : {"method": "POST",  "url":"https://bloomington.in.gov/directory/users/add"   },
+            "change"  :  {"method": "POST",  "url":"https://bloomington.in.gov/directory/users/update"},
+            "terminate": {"method": "POST",  "url":"https://bloomington.in.gov/directory/users/delete"}
+
+        },
+        "fields": {
+            "username":       {"type": "text"        , "required": true  },
+            "cardNumber":     {"type": "number"      , "required": false },
+            "employeeNumber": {"type": "number"      , "required": false },
+            "firstname":      {"type": "text"        , "required": true  },
+            "middlename":     {"type": "text"        , "required": false },
+            "lastname":       {"type": "text"        , "required": true  },
+            "nickname":       {"type": "text"        , "required": true  },
+            "displayName":    {"type": "text"        , "required": true  },
+            "email":          {"type": "email"       , "required": true  },
+            "phone":          {"type": "phone"       , "required": true  },
+            "fax":            {"type": "phone"       , "required": false },
+            "suffix":         {"type": "singleChoice", "required": false, "options": [
+                {"value": "Jr."},
+                {"value": "Sr."},
+                {"value": "3rd"},
+                {"value": "2nd"},
+                {"value": "II" },
+                {"value": "III"},
+                {"value": "IV" },
+                {"value": "V"  },
+                {"value": "VI" }
+            ]},
+            "department":     {"type": "singleChoice", "required": true , "options": [
+                {"value": "OU=Bloomington Transit,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                             , "label": "Bloomington Transit"},
+                {"value": "OU=City Clerk,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                         , "label": "City Clerk"},
+                {"value": "OU=Community and Family Resources,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                     , "label": "Community and Family Resources"},
+                {"value": "OU=Controller,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                         , "label": "Controller"},
+                {"value": "OU=Council Office,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                     , "label": "Council Office"},
+                {"value": "OU=Economic & Sustainable Development,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                 , "label": "Economic & Sustainable Development"},
+                {"value": "OU=HAND,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                               , "label": "HAND"},
+                {"value": "OU=Human Resources,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                    , "label": "Human Resources"},
+                {"value": "OU=ITS,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                                , "label": "ITS"},
+                {"value": "OU=Legal,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                              , "label": "Legal"},
+                {"value": "OU=Risk Management,OU=Legal,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                           , "label": "Risk Management"},
+                {"value": "OU=Office of the Mayor,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                , "label": "Office of the Mayor"},
+                {"value": "OU=Adams Street,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"               , "label": "Adams Street"},
+                {"value": "OU=Banneker Center,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"            , "label": "Banneker Center"},
+                {"value": "OU=Cascades Golf Course,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"       , "label": "Cascades Golf Course"},
+                {"value": "OU=Frank Southern Center,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"      , "label": "Frank Southern Center"},
+                {"value": "OU=Juke Box Community Building,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov", "label": "Juke Box Community Building"},
+                {"value": "OU=Multiple Locations,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"         , "label": "Multiple Locations"},
+                {"value": "OU=Rose Hill,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                  , "label": "Rose Hill"},
+                {"value": "OU=Showers,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                    , "label": "Showers"},
+                {"value": "OU=TLRC,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                       , "label": "TLRC"},
+                {"value": "OU=Twin Lakes Softball,OU=Parks and Recreation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"        , "label": "Twin Lakes Softball"},
+                {"value": "OU=Planning and Transportation,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                        , "label": "PLanning and Transportation"},
+                {"value": "OU=Animal Shelter,OU=Public Works,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                     , "label": "Animal Shelter"},
+                {"value": "OU=Facilities,OU=Public Works,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                         , "label": "Facilities"},
+                {"value": "OU=Fleet Maintenance,OU=Public Works,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                  , "label": "Fleet"},
+                {"value": "OU=Parking Garages,OU=Public Works,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                    , "label": "Parking Garages"},
+                {"value": "OU=Sanitation,OU=Public Works,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                         , "label": "Sanitation"},
+                {"value": "OU=Showers,OU=Public Works,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                            , "label": "Showers"},
+                {"value": "OU=Street and Traffic,OU=Public Works,OU=City Hall,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                 , "label": "Street and Traffic"},
+                {"value": "OU=Administration,OU=Fire,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                          , "label": "Administration"},
+                {"value": "OU=HQ,OU=Fire,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                                      , "label": "HQ"},
+                {"value": "OU=Station 2,OU=Fire,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                               , "label": "Station 2"},
+                {"value": "OU=Station 3,OU=Fire,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                               , "label": "Station 3"},
+                {"value": "OU=Station 4,OU=Fire,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                               , "label": "Station 4"},
+                {"value": "OU=Station 5,OU=Fire,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                               , "label": "Station 5"},
+                {"value": "OU=Administration,OU=Police,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                        , "label": "Administration"},
+                {"value": "OU=Detectives,OU=Police,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                            , "label": "Detectives"},
+                {"value": "OU=Dispatch,OU=Police,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                              , "label": "Dispatch"},
+                {"value": "OU=Parking Enforcement,OU=Police,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                   , "label": "Parking Enforcement"},
+                {"value": "OU=Records,OU=Police,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                               , "label": "Records"},
+                {"value": "OU=Uniformed Officers,OU=Police,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                    , "label": "Uniformed Officers"},
+                {"value": "OU=Accounting,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                         , "label": "Accounting"},
+                {"value": "OU=Administration,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                     , "label": "Administration"},
+                {"value": "OU=Blucher Poole,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                      , "label": "Blucher Poole"},
+                {"value": "OU=Communication,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                      , "label": "Communication"},
+                {"value": "OU=Customer Services,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                  , "label": "Customer Services"},
+                {"value": "OU=Admin,OU=Dillman Plant,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                             , "label": "Admin"},
+                {"value": "OU=Labs,OU=Dillman Plant,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                              , "label": "Labs"},
+                {"value": "OU=Maintenance,OU=Dillman Plant,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                       , "label": "Maintenance"},
+                {"value": "OU=Ops,OU=Dillman Plant,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                               , "label": "Ops"},
+                {"value": "OU=Solids,OU=Dillman Plant,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                            , "label": "Solids"},
+                {"value": "OU=Engineering,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                        , "label": "Engineering"},
+                {"value": "OU=Environmental,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                      , "label": "Environmental"},
+                {"value": "OU=Monroe Plant,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                       , "label": "Monroe"},
+                {"value": "OU=Purchasing,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                         , "label": "Purchasing"},
+                {"value": "OU=T&D,OU=Utilities,OU=Departments,DC=cob,DC=bloomington,DC=in,DC=gov"                                                , "label": "T&D"}
+            ]}
+        }
+    },
+    {
+        "id": "timetrack",
+        "name": "Time Track",
+        "type": "timesheet",
+        "managers": ["sibow", "schertza"],
+        "actions": {
+            "create"   : {"method": "POST",  "url":"https://bloomington.in.gov/timetrack/users/add"   },
+            "changet"  : {"method": "POST",  "url":"https://bloomington.in.gov/timetrack/users/update"},
+            "terminate": {"method": "POST",  "url":"https://bloomington.in.gov/timetrack/users/delete"}
+
+        },
+        "fields": {
+            "username":       {"type": "text"        , "required": true  },
+            "cardNumber":     {"type": "number"      , "required": false },
+            "employeeNumber": {"type": "number"      , "required": false },
+            "firstname":      {"type": "text"        , "required": true  },
+            "middlename":     {"type": "text"        , "required": false },
+            "lastname":       {"type": "text"        , "required": true  },
+            "email":          {"type": "email"       , "required": true  }
+        },
+        "read_from": {
+            "username":       "active_directory",
+            "cardNumber":     "active_directory",
+            "employeeNumber": "active_directory",
+            "firstname":      "active_directory",
+            "middlename":     "active_directory",
+            "lastname":       "active_directory",
+            "email":          "active_directory"
+        }
+    },
+    {
+        "id": "account_tracker",
+        "name": "Account Tracker",
+        "type": "web application",
+        "managers": ["inghamn", "butcherad"],
+        "actions": {
+            "create"   : {"method": "POST",  "url":"https://bloomington.in.gov/account_tracker/users/add"   },
+            "changet"  : {"method": "POST",  "url":"https://bloomington.in.gov/account_tracker/users/update"},
+            "terminate": {"method": "POST",  "url":"https://bloomington.in.gov/account_tracker/users/delete"}
+        },
+        "fields": {
+            "username":    {"type": "text"        , "required": true },
+            "firstname":   {"type": "text"        , "required": true },
+            "lastname":    {"type": "text"        , "required": true },
+            "email":       {"type": "email"       , "required": true },
+            "role":        {"type": "singleChoice", "required": true, "options": ["Employee", "Support Staff", "Administrator"]}
+        },
+        "read_from": {
+            "username":       "active_directory",
+            "firstname":      "active_directory",
+            "lastname":       "active_directory",
+            "email":          "active_directory"
+        }
+    }
+]

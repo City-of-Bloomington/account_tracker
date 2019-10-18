@@ -18,7 +18,7 @@
 ?>
 <section>
     <header>
-        <h1><?= $this->_('users_search'); ?></h1>
+        <h1><?= $this->_(['user', 'users', 100]); ?></h1>
     </header>
     <form method="get" action="<?= parent::generateUri('users.index'); ?>">
         <fieldset>

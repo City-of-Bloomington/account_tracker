@@ -11,7 +11,10 @@
 .Spotlight-V100*
 .fseventsd*
 site_config.php
+*.cache
 *.css*
+*.mo
+build
 vendor
 backend/data/sessions/*
 frontend/certs

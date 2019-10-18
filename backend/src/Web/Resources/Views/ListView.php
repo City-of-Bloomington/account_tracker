@@ -7,7 +7,7 @@ declare (strict_types=1);
 
 namespace Web\Resources\Views;
 
-use Domain\Resources\UseCases\List\Response;
+use Domain\Resources\UseCases\Search\Response;
 use Web\Block;
 use Web\Template;
 

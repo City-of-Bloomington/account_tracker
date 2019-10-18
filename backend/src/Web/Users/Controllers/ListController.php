@@ -15,20 +15,18 @@ use Web\View;
 
 class ListController extends Controller
 {
-    const ITEMS_PER_PAGE = 20;
-
     public function __invoke(array $params): View
     {
         global $ZEND_ACL;
         $search   = $this->di->get('Domain\Users\UseCases\Search\Command');
         $auth     = $this->di->get('Domain\Auth\AuthenticationService');
 		$page     =  !empty($_GET['page']) ? (int)$_GET['page'] : 1;
-        $request  = new Request($_GET, null, self::ITEMS_PER_PAGE, $page);
+        $request  = new Request($_GET, null, parent::ITEMS_PER_PAGE, $page);
         $response = $search($request);
 
         return new SearchView($request,
                               $response,
-                              self::ITEMS_PER_PAGE,
+                              parent::ITEMS_PER_PAGE,
                               $page,
                               $ZEND_ACL->getRoles(),
                               $auth->getAuthenticationMethods());

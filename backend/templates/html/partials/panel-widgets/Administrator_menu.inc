@@ -7,6 +7,7 @@ declare (strict_types=1);
 $links  = [];
 $routes = [
     'resources'     => 'resource',
+    'people'        => 'person',
     'users'         => 'user'
 ];
 foreach ($routes as $plural=>$singular) {

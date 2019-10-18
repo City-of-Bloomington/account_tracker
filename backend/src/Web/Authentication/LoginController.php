@@ -29,12 +29,12 @@ class LoginController extends Controller
      */
     public function __invoke(array $params): View
     {
-		$this->return_url = !empty($_REQUEST['return_url']) ? $_REQUEST['return_url'] : BASE_URL;
+		$_SESSION['return_url'] = !empty($_REQUEST['return_url']) ? $_REQUEST['return_url'] : BASE_URL;
 
 		// If they don't have CAS configured, send them onto the application's
 		// internal authentication system
 		if (!defined('CAS')) {
-			header('Location: '.View::generateUrl('login.login').'?return_url='.$this->return_url);
+			header('Location: '.View::generateUrl('login.login').'?return_url='.parent::generateUrl('login.login'));
 			exit();
 		}
 
@@ -52,14 +52,18 @@ class LoginController extends Controller
 		try { $user = $this->auth->identify(\phpCAS::getUser()); }
 		catch (\Exception $e) {
             $_SESSION['errorMessages'][] = $e;
-            echo "CAS did not authenticate user\n";
-            exit();
+            return new \Web\Views\ForbiddenView();
         }
 
 		if (isset($user) && $user) { $_SESSION['USER'] = $user; }
-		else { $_SESSION['errorMessages'][] = 'users/unknownUser'; }
+		else {
+            $_SESSION['errorMessages'][] = 'users/unknownUser';
+            return new \Web\Views\ForbiddenView();
+        }
 
-        header("Location: {$this->return_url}");
+        $return_url = $_SESSION['return_url'];
+        unset($_SESSION['return_url']);
+        header("Location: $return_url");
         exit();
     }
 

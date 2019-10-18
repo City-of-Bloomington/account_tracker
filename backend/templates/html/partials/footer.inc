@@ -12,3 +12,4 @@
 		}
 	}
 ?>
+<script type="text/javascript" src="<?= BASE_URI; ?>/js/resources/resources.js"></script>

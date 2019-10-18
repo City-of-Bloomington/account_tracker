@@ -16,15 +16,13 @@ use Web\View;
 
 class ListController extends Controller
 {
-    const ITEMS_PER_PAGE = 20;
-
     public function __invoke(array $params): View
     {
 		$page     =  !empty($_GET['page']) ? (int)$_GET['page'] : 1;
         $search   = $this->di->get('Domain\People\UseCases\Search\Command');
-        $request  = new SearchRequest($_GET, null, self::ITEMS_PER_PAGE, $page);
+        $request  = new SearchRequest($_GET, null, parent::ITEMS_PER_PAGE, $page);
         $response = $search($request);
 
-        return new SearchView($request, $response, self::ITEMS_PER_PAGE, $page);
+        return new SearchView($request, $response, parent::ITEMS_PER_PAGE, $page);
     }
 }

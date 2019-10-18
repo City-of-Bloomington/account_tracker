@@ -6,7 +6,14 @@
 declare (strict_types=1);
 
 namespace Domain\Resources\DataStorage;
+use Domain\Resources\Entities\ResourceEntity;
 
-class ResourcesRepository
+interface ResourcesRepository
 {
+    // Read functions
+    public function load(int $id): ResourceEntity;
+    public function find(array $fields, ?array $order=null, ?int $itemsPerPage=null, ?int $currentPage=null): array;
+
+    // Write functions
+    public function save(ResourceEntity $resource): int;
 }

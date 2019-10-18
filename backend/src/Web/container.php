@@ -29,16 +29,14 @@ $DI->set('PDO', $pdo);
 // Declare database repositories
 //---------------------------------------------------------
 $repos = [
-    'People', 'Users'
+    'People', 'Users',
+    'AccountRequests', 'Resources'
 ];
 foreach ($repos as $t) {
     $DI->params[ "Web\\$t\\Pdo{$t}Repository"]["pdo"] = $pdo;
     $DI->set("Domain\\$t\\DataStorage\\{$t}Repository",
     $DI->lazyNew("Web\\$t\\Pdo{$t}Repository"));
 }
-
-$DI->set('Domain\Resources\DataStorage\ResourcesRepository',
-$DI->lazyNew('Web\Resources\JsonResourcesRespository'));
 
 //---------------------------------------------------------
 // Services
@@ -51,11 +49,25 @@ $DI->lazyNew('Domain\Auth\AuthenticationService'));
 //---------------------------------------------------------
 // Use Cases
 //---------------------------------------------------------
+// Account Requests
+foreach (['Info', 'Search'] as $a) {
+    $DI->params[ "Domain\\AccountRequests\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\AccountRequests\DataStorage\AccountRequestsRepository');
+    $DI->set(    "Domain\\AccountRequests\\UseCases\\$a\\Command",
+    $DI->lazyNew("Domain\\AccountRequests\\UseCases\\$a\\Command"));
+}
+
 // People
 foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\People\\UseCases\\$a\\Command"]['repository'] = $DI->lazyGet('Domain\People\DataStorage\PeopleRepository');
     $DI->set(    "Domain\\People\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\People\\UseCases\\$a\\Command"));
+}
+
+// Resources
+foreach (['Info', 'Search', 'Update'] as $a) {
+    $DI->params[ "Domain\\Resources\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
+    $DI->set(    "Domain\\Resources\\UseCases\\$a\\Command",
+    $DI->lazyNew("Domain\\Resources\\UseCases\\$a\\Command"));
 }
 
 // Users
@@ -65,3 +77,5 @@ foreach (['Delete', 'Info', 'Search', 'Update'] as $a) {
     $DI->lazyNew("Domain\\Users\\UseCases\\$a\\Command"));
 }
 $DI->params['Domain\Users\UseCases\Update\Command']['auth'] = $DI->lazyGet('Domain\Auth\AuthenticationService');
+
+
