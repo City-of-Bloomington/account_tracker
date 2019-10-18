@@ -1,29 +1,22 @@
-## Dev / Build Setup
-**Note:** *Account Tracker* is an internal application to the City of Bloomington, Indiana. Some parts of this application may be specific to our intranet & require additional setup. This must be ran over HTTPS.
+# AccountTracker
 
-In this directory *(frontend)*:
+> Account Tracker manages requests for accounts on systems in use at an organization. Tracking these in a central location helps ensure that users have access to all of the resources they need. 
 
-**Install Dependencies:**
-```
-npm i
-```
+## Build Setup
 
-**Local Dev:**
-```
-npm run dev
-```
+``` bash
+# install dependencies
+$ npm run install
 
-**Build:**
-```
-npm run build
-```
+# serve with hot reload at localhost:3000
+$ npm run dev
 
-**Start Build:**
-```
-npm run start
+# build for production and launch server
+$ npm run build
+$ npm run start
+
+# generate static project
+$ npm run generate
 ```
 
-**Test Build Env:**
-> coming soon
-
-For an additional detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org) as well as the nuxt.config & package files in this directory.
+For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

@@ -1,20 +1,21 @@
-const pkg = require('./package')
 require('dotenv').config()
-const {
-  Nuxt,
-  Builder }         = require('nuxt'),
+
+const pkg           = require('./package'),
+{ Nuxt, Builder }   = require('nuxt'),
 config              = require('./nuxt.config.js'),
-https               = require('https'),
+// https               = require('https'),
+https               = require('http'),
 fs                  = require('fs'),
 port                = process.env.NUXT_PORT,
 isProd              = (process.env.NODE_ENV === 'production'),
 nuxt                = new Nuxt(config);
-options             = {
-  key:  fs.readFileSync('certs/server.key', 'utf8'),
-  cert: fs.readFileSync('certs/wildcard.bloomington.in.gov-fullChain.crt', 'utf8')
-},
+// options             = {
+//   key:  fs.readFileSync('certs/server.key', 'utf8'),
+//   cert: fs.readFileSync('certs/wildcard.bloomington.in.gov-fullChain.crt', 'utf8')
+// },
 envMsg              = config.dev ? 'Development' : 'Production',
 devUrl              = `https://dhcp-cityhall-xxx-xxx.bloomington.in.gov`,
+frontEndBase        = process.env.FE_BASE,
 dividerMsg          = `🛠️\xa0\xa0⛓️\xa0\xa0👩‍💻\xa0🔮\xa0👨‍💻\xa0⛓️\xa0\xa0🛠️`,
 dividerStars        = `★\xa0\xa0`,
 starRepeatCount     = 22;
@@ -33,10 +34,9 @@ if (config.dev) {
 
 function listen() {
   https
-  .createServer(options, nuxt.render)
+  // .createServer(options, nuxt.render)
+  .createServer(nuxt.render)
   .listen(port);
-
-  console.log();
 
   console.log(`\n\n${dividerMsg}\n`
             + `${dividerStars.repeat(starRepeatCount)}\n`
@@ -44,7 +44,7 @@ function listen() {
             + `Env:  ${envMsg}\n`
             + `Who:  ${pkg.company}\n`
             + `Repo: ${pkg.repository.url}\n`
-            + `Url:  ${devUrl}:${port}`
+            + `Url:  ${devUrl}:${port}/${frontEndBase}`
             + `\n${dividerStars.repeat(starRepeatCount)}\n`
             + `${dividerMsg}\n\n`);
 }

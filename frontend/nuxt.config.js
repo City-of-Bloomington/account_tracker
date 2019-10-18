@@ -1,5 +1,5 @@
 const pkg = require('./package')
-require('dotenv').config()
+require('dotenv').config({path: `${process.env.SITE_HOME}/env`})
 
 module.exports = {
   mode: 'universal',
@@ -7,7 +7,7 @@ module.exports = {
   dev:  (process.env.NODE_ENV !== 'production'),
 
   router: {
-    base: '/frontend/'
+    base: process.env.FE_BASE || '/frontend/'
   },
 
   head: {
@@ -20,21 +20,17 @@ module.exports = {
   },
 
   env: {
+    siteHome:       process.env.SITE_HOME,
     repo:           pkg.repository.url,
-    nuxtPort:       process.env.NUXT_PORT || 9090,
-
-    api:            process.env.AT_API || `https://dhcp-cityhall-101-164.bloomington.in.gov:9090/`,
-    login:          process.env.AT_LOGIN               || `accounts/login/`,
-    logout:         process.env.AT_LOGOUT              || `accounts/logout/`,
-    user:           process.env.AT_API_USER            || `api/user/`,
-    employee:       process.env.AT_API_EMPLOYEE        || `api/employee/`,
-    action:         process.env.AT_API_ACTION          || `api/action/`,
-    profile:        process.env.AT_API_PROFILE         || `api/profile/`,
-    service:        process.env.AT_API_SERVICE         || `api/service/`,
-    serviceReq:     process.env.AT_API_SERVICE_REQ     || `api/service-request/`,
-    serviceManager: process.env.AT_API_SERVICE_MANAGER || `api/service-manager/`,
-    accountRequest: process.env.AT_API_ACCOUNT_REQUEST || `api/account-request/`,
-
+    nuxtPort:       process.env.NUXT_PORT         || 9090,
+    appName:        process.env.APP_NAME,
+    cityName:       process.env.CITY_NAME,
+    logoHeading:    process.env.LOGO_HEADING,
+    logoSubHeading: process.env.LOGO_SUB_HEADING,
+    cityWebsiteUrl: process.env.CITY_WEBSITE_URL,
+    frontendBase:   process.env.FE_BASE           || '/frontend/',
+    backendUrl:     process.env.BACKEND_URL       || 'https://aoi.bloomington.in.gov/test/',
+    frontendUrl:    process.env.FRONTEND_URL      || 'https://dhcp-cityhall-101-164.bloomington.in.gov:9090',
     ttApi:          process.env.TT_API || `https://outlaw.bloomington.in.gov/timetrack/`,
     deptService:    process.env.TT_API_DEPT_SERVICE     || `DepartmentService`,
     groupService:   process.env.TT_API_GROUP_SERVICE    || `GroupService`,
@@ -42,35 +38,21 @@ module.exports = {
     posService:     process.env.TT_API_POSITION_SERVICE || `PositionService`,
     managerService: process.env.TT_API_MANAGER_SERVICE  || `ManagerService`,
 
-    adApi:          process.env.AD_API || `https://dhcp-vm-218.bloomington.in.gov:5004/api/NovellDirectory/`,
-    allUsers:       process.env.AD_API_ALL_USERS || `*`,
-    userAttribute:  process.env.AD_API_USER_ATTRIBUTE || `searchByAttr?attribute=`
   },
 
   loading: { color: '#fff' },
 
   plugins: [
-    { src: '~/plugins/design-system' },
     { src: '~/plugins/axios' },
-    { src: '~/plugins/filters' },
-    { src: '~/plugins/mixins' },
-    { src: '~/plugins/authLevel' },
-    { src: '~/plugins/resetForm' },
-    { src: '~/plugins/resetGlobalStore' },
-    { src: '~/plugins/clearAuth' },
-    { src: '~/plugins/clearStorage' },
-    { src: '~/plugins/api-methods' },
-    { src: '~/plugins/ttApi-methods' },
-    { src: '~/plugins/adApi-methods' },
-    { src: '~/plugins/localStorage', ssr: false },
-    { src: '~/plugins/croppie.js',   ssr: false },
-    { src: '~/plugins/vue-virtual-scroller.js' }
+    { src: '~/plugins/design-system' },
+    { src: '~/plugins/universal-data'},
+    { src: '~/plugins/timetrack/api-methods'}
   ],
 
   modules: [
     ['@nuxtjs/style-resources'],
     ['@nuxtjs/axios'],
-    ['@nuxtjs/redirect-module'],
+    // ['@nuxtjs/redirect-module'],
     // @nuxtjs/pwa breaks
     // ['@nuxtjs/pwa', {
     //   icon: true,
@@ -79,14 +61,14 @@ module.exports = {
   ],
 
   css: [
-    '@/assets/css/style.scss',
-    '@/assets/css/cobDS-tokens.scss',
+    '@/assets/scss/style.scss',
+    // '@/assets/css/cobDS-tokens.scss',
   ],
 
   styleResources: {
     scss: [
-      './assets/css/style.scss',
-      './assets/css/cobDS-tokens.scss',
+      // './assets/css/style.scss',
+      './assets/scss/cobDS-tokens.scss',
     ]
   },
 
@@ -96,45 +78,35 @@ module.exports = {
    *
    */
   axios: {
-    proxy: true,
+    // proxy: true,
+    // credentials: true,
   },
   proxy: {
-    '/api/': {
-      target: 'http://127.0.0.1:8000/api/',
-      pathRewrite: {
-        '^/api/': ''
-      }
-    },
-    '/accounts/login': {
-      target: `http://127.0.0.1:8000/accounts/login/`,
-      pathRewrite: {
-        '^/accounts/login': ''
-      }
-    },
-    '/accounts/logout': {
-      target: 'http://127.0.0.1:8000/accounts/logout/',
-      pathRewrite: {
-        '^/accounts/logout': ''
-      }
-    },
+    // '/api/': {
+    //   target: 'http://127.0.0.1:8000/api/',
+    //   pathRewrite: {
+    //     '^/api/': ''
+    //   }
+    // },
+    // '/accounts/login': {
+    //   target: `http://127.0.0.1:8000/accounts/login/`,
+    //   pathRewrite: {
+    //     '^/accounts/login': ''
+    //   }
+    // },
+    // '/accounts/logout': {
+    //   target: 'http://127.0.0.1:8000/accounts/logout/',
+    //   pathRewrite: {
+    //     '^/accounts/logout': ''
+    //   }
+    // },
   },
 
   build: {
     extend(config, ctx) {
       if(!ctx.isDev) {
-        config.output.publicPath = '/frontend/_nuxt/'
+        config.output.publicPath = '/account-tracker/_nuxt/'
       }
     }
-    // ESLint needs config for Nuxt
-    // extend (config, { isDev, isClient }) {
-    //   if (isDev && isClient) {
-    //     config.module.rules.push({
-    //       enforce: 'pre',
-    //       test: /\.(js|vue)$/,
-    //       loader: 'eslint-loader',
-    //       exclude: /(node_modules)/
-    //     })
-    //   }
-    // }
   }
 }

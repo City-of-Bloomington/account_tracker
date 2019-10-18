@@ -1,14 +1,7 @@
-export default function ({ $axios, app, store, redirect, route }) {
-  $axios.onRequest(config => {
-    if(process.env.NODE_ENV === 'development')
-      console.log(`${config.method.toUpperCase()} :: ${config.url}`)
-  })
+export default function ({ $axios, redirect }) {
+  $axios.defaults.withCredentials = true;
 
   $axios.onError(error => {
-    const code = parseInt(error.response && error.response.status)
-
-    if (code > 500) {
-      redirect('/error')
-    }
+    console.dir('AXIOS interceptor failure notice');
   })
 }
