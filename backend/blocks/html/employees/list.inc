@@ -5,7 +5,7 @@
  * @param array $this->employees
  */
 declare (strict_types=1);
-$fields = ['firstname', 'lastname', 'title', 'department'];
+$fields = ['firstname', 'lastname', 'department'];
 ?>
 <table>
     <thead>
@@ -20,10 +20,12 @@ $fields = ['firstname', 'lastname', 'title', 'department'];
     <tbody>
     <?php
         foreach ($this->employees as $e) {
+            $uri = parent::generateUri('employees.view', ['id'=>$e->number]);
+
             echo '<tr>';
             foreach ($fields as $f) {
                 $$f = parent::escape($e->$f);
-                echo "<td>{$$f}</td>";
+                echo "<td><a href=\"$uri\">{$$f}</a></td>";
             }
             echo '</tr>';
         }

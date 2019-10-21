@@ -20,7 +20,8 @@ $ROUTES->attach('account_requests', '/account_requests', function ($r) {
 });
 
 $ROUTES->attach('employees', '/employees', function ($r) {
-    $r->add('index', '')              ->setValues(['controller' => 'Web\Employees\Controllers\ListController']);
+    $r->add('view',   '/{id}')->setValues(['controller' => 'Web\Employees\Controllers\ViewController']);
+    $r->add('index', '')      ->setValues(['controller' => 'Web\Employees\Controllers\ListController']);
 });
 
 $ROUTES->attach('people', '/people', function ($r) {

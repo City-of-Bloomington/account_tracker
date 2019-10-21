@@ -41,15 +41,9 @@ class PdoEmployeesRepository extends PdoRepository implements EmployeesRepositor
                        'e.EmployeeName                 as name',
                        'e.LastName                     as lastname',
                        'e.FirstName                    as firstname',
-                       'isnull(x.Title, job.JobTitle)  as title',
                        'e.OrgStructureDescconcatenated as department',
                        'udf.ValString                  as username'])
                ->from(         'HR.vwEmployeeInformation     e')
-               ->join('INNER', 'HR.vwEmployeeJobWithPosition job', "e.EmployeeId=job.EmployeeId
-                                                                    and job.IsPrimaryJob = 1
-                                                                    and GETDATE() between job.EffectiveDate     and job.EffectiveEndDate
-                                                                    and GETDATE() between job.PositionDetailESD and job.PositionDetailEED")
-               ->join('LEFT',  'COB.jobTitleCrosswalk        x',   'job.JobTitle=x.Code')
                ->join('INNER', 'HR.EmployeeName              n',   'e.EmployeeId=n.EmployeeId and GETDATE() between n.EffectiveDate and n.EffectiveEndDate')
                ->join('LEFT',  'dbo.UDFEntry                 udf', "n.EmployeeNameId=udf.AttachedFKey and udf.UDFAttributeID=$attrId and udf.TableID=$tableId")
                ->where("e.vsEmploymentStatusId=$status");
@@ -62,10 +56,31 @@ class PdoEmployeesRepository extends PdoRepository implements EmployeesRepositor
             'number'     => $row['employeeNum'],
             'firstname'  => $row['firstname'  ],
             'lastname'   => $row['lastname'   ],
-            'title'      => $row['title'      ],
             'department' => $row['department' ],
             'username'   => $row['username'   ]
         ]);
+    }
+
+    public function load(int $number): Employee
+    {
+        $attrId  = self::UDFAttributeID;
+        $tableId = self::TableID;
+        $status  = self::StatusID;
+
+        $sql = "select  e.EmployeeNumber               as employeeNum,
+                        e.EmployeeName                 as name,
+                        e.LastName                     as lastname,
+                        e.FirstName                    as firstname,
+                        e.OrgStructureDescconcatenated as department,
+                        udf.ValString                  as username
+                from HR.vwEmployeeInformation     e
+                join HR.EmployeeName              n    on e.EmployeeId=n.EmployeeId
+                                                        and GETDATE() between   n.EffectiveDate     and   n.EffectiveEndDate
+                left join dbo.UDFEntry            udf  on n.EmployeeNameId=udf.AttachedFKey and udf.UDFAttributeID=$attrId and udf.TableID=$tableId
+                where e.EmployeeNumber=$number";
+        $query  = $this->pdo->query($sql);
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        return self::hydrate($result[0]);
     }
 
     /**

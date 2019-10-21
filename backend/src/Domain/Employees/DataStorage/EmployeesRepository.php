@@ -11,5 +11,6 @@ use Domain\Employees\UseCases\Search\Request as SearchRequest;
 
 interface EmployeesRepository
 {
+    public function load(int $number): Employee;
     public function search(SearchRequest $req): array;
 }

@@ -12,7 +12,6 @@ class Employee
     public $number;
     public $firstname;
     public $lastname;
-    public $title;
     public $department;
     public $username;
 
@@ -21,8 +20,12 @@ class Employee
         if (!empty($data['number'    ])) { $this->number     = (int)$data['number']; }
         if (!empty($data['firstname' ])) { $this->firstname  = $data['firstname' ]; }
         if (!empty($data['lastname'  ])) { $this->lastname   = $data['lastname'  ]; }
-        if (!empty($data['title'     ])) { $this->title      = $data['title'     ]; }
         if (!empty($data['department'])) { $this->department = $data['department']; }
         if (!empty($data['username'  ])) { $this->username   = $data['username'  ]; }
+    }
+
+    public function fullname(): string
+    {
+        return "{$this->firstname} {$this->lastname}";
     }
 }
