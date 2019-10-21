@@ -19,7 +19,7 @@ class HMACTest extends TestCase
 
     public function testAwsSignatureGeneration()
     {
-        $request     = ServerRequest::fromGlobals();
+        $request     = ServerRequest::fromGlobals()
                                     ->withHeader('AccessKeyId',$this->accessKeyId)
                                     ->withHeader('AccountTrackerUsername', $this->username);
 

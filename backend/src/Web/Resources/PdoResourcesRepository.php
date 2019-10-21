@@ -66,7 +66,11 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
                 }
             }
         }
-        return parent::performHydratedSelect($select, __CLASS__.'::hydrate', $itemsPerPage, $currentPage);
+        return parent::performHydratedSelect($select,
+                                             __CLASS__.'::hydrate',
+                                             null,
+                                             $itemsPerPage,
+                                             $currentPage);
     }
 
     /**

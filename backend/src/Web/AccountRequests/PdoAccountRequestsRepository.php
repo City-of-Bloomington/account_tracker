@@ -61,7 +61,10 @@ class PdoAccountRequestsRepository extends PdoRepository implements AccountReque
                 $select->where("$f=?", $req->$f);
             }
         }
-        $select->orderBy(self::$DEFAULT_SORT);
-        return parent::performHydratedSelect($select, __CLASS__.'::hydrate', $req->itemsPerPage, $req->currentPage);
+        return parent::performHydratedSelect($select,
+                                             __CLASS__.'::hydrate',
+                                             self::$DEFAULT_SORT,
+                                             $req->itemsPerPage,
+                                             $req->currentPage);
     }
 }

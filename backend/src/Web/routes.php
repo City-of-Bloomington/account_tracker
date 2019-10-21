@@ -19,6 +19,10 @@ $ROUTES->attach('account_requests', '/account_requests', function ($r) {
     $r->add('index',  '')             ->setValues(['controller' => 'Web\AccountRequests\Controllers\ListController']);
 });
 
+$ROUTES->attach('employees', '/employees', function ($r) {
+    $r->add('index', '')              ->setValues(['controller' => 'Web\Employees\Controllers\ListController']);
+});
+
 $ROUTES->attach('people', '/people', function ($r) {
     $r->add('update', '/update{/id}') ->setValues(['controller' => 'Web\People\Controllers\UpdateController']);
     $r->add('view',   '/{id}')        ->setValues(['controller' => 'Web\People\Controllers\ViewController'  ]);

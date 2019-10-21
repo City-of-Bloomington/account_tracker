@@ -52,9 +52,12 @@ class PdoPeopleRepository extends PdoRepository implements PeopleRepository
                 $select->where("lower($f) like ?", strtolower($req->$f).'%');
             }
         }
-        $select->orderBy(self::$DEFAULT_SORT);
 
-        return parent::performHydratedSelect($select, __CLASS__.'::hydrate', $req->itemsPerPage, $req->currentPage);
+        return parent::performHydratedSelect($select,
+                                             __CLASS__.'::hydrate',
+                                             self::$DEFAULT_SORT,
+                                             $req->itemsPerPage,
+                                             $req->currentPage);
     }
 
     /**
@@ -67,8 +70,7 @@ class PdoPeopleRepository extends PdoRepository implements PeopleRepository
 
     private function doSelect(SelectInterface $select, ?array $order=null, ?int $itemsPerPage=null, ?int $currentPage=null): array
     {
-        $select->orderBy(self::$DEFAULT_SORT);
-        $result = parent::performSelect($select, $itemsPerPage, $currentPage);
+        $result = parent::performSelect($select, self::$DEFAULT_SORT, $itemsPerPage, $currentPage);
 
         $people = [];
         foreach ($result['rows'] as $r) { $people[] = new Person($r); }
