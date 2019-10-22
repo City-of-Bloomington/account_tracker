@@ -12,5 +12,5 @@ $DI = $builder->newInstance();
 //---------------------------------------------------------
 // Services
 //---------------------------------------------------------
-$DI->set(    'Domain\Auth\AuthenticationService',
+$DI->set(    'Web\Authentication\AuthenticationService',
 $DI->lazyNew('Test\DataStorage\StubAuthenticationService'));

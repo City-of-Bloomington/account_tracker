@@ -21,8 +21,8 @@
  */
 namespace Site;
 
-use Domain\Auth\AuthenticationInterface;
-use Domain\Auth\ExternalIdentity;
+use Web\Authentication\AuthenticationInterface;
+use Web\Authentication\ExternalIdentity;
 
 class Ldap implements AuthenticationInterface
 {

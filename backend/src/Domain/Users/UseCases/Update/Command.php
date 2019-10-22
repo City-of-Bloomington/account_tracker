@@ -6,7 +6,7 @@
 declare (strict_types=1);
 namespace Domain\Users\UseCases\Update;
 
-use Domain\Auth\AuthenticationService;
+use Web\Authentication\AuthenticationService;
 use Domain\Users\Entities\User;
 use Domain\Users\DataStorage\UsersRepository;
 

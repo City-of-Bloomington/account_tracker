@@ -33,10 +33,10 @@ $DI->lazyNew('Web\Employees\PdoEmployeesRepository'));
 //---------------------------------------------------------
 // Services
 //---------------------------------------------------------
-$DI->params[ 'Domain\Auth\AuthenticationService']['repository'] = $DI->lazyGet('Domain\Users\DataStorage\UsersRepository');
-$DI->params[ 'Domain\Auth\AuthenticationService']['config'    ] = $DIRECTORY_CONFIG;
-$DI->set(    'Domain\Auth\AuthenticationService',
-$DI->lazyNew('Domain\Auth\AuthenticationService'));
+$DI->params[ 'Web\Authentication\AuthenticationService']['repository'] = $DI->lazyGet('Domain\Users\DataStorage\UsersRepository');
+$DI->params[ 'Web\Authentication\AuthenticationService']['config'    ] = $DIRECTORY_CONFIG;
+$DI->set(    'Web\Authentication\AuthenticationService',
+$DI->lazyNew('Web\Authentication\AuthenticationService'));
 
 //---------------------------------------------------------
 // Use Cases
@@ -75,4 +75,4 @@ foreach (['Delete', 'Info', 'Search', 'Update'] as $a) {
     $DI->set(    "Domain\\Users\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\Users\\UseCases\\$a\\Command"));
 }
-$DI->params['Domain\Users\UseCases\Update\Command']['auth'] = $DI->lazyGet('Domain\Auth\AuthenticationService');
+$DI->params['Domain\Users\UseCases\Update\Command']['auth'] = $DI->lazyGet('Web\Authentication\AuthenticationService');
