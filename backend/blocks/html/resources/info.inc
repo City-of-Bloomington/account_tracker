@@ -6,7 +6,10 @@
  * @param string $this->code
  * @param string $this->name
  * @param string $this->type
- * @param array  $this->definition
+ * @param string $this->class
+ * @param string $this->api_key
+ * @param string $this->api_secret
+ * @param array  $this->fields
  */
 declare (strict_types=1);
 use Web\Block;
@@ -28,10 +31,14 @@ use Web\Block;
         ?>
     </header>
     <table>
-        <tr><th><?= $this->_('id'  ); ?></th><td><?= $this->id;   ?></td></tr>
-        <tr><th><?= $this->_('code'); ?></th><td><?= $this->code; ?></td></tr>
-        <tr><th><?= $this->_('type'); ?></th><td><?= $this->type; ?></td></tr>
+        <tr><th><?= $this->_('id'        ); ?></th><td><?= $this->id;         ?></td></tr>
+        <tr><th><?= $this->_('code'      ); ?></th><td><?= $this->code;       ?></td></tr>
+        <tr><th><?= $this->_('type'      ); ?></th><td><?= $this->type;       ?></td></tr>
+        <tr><th><?= $this->_('class'     ); ?></th><td><?= $this->class;      ?></td></tr>
+        <tr><th><?= $this->_('api_key'   ); ?></th><td><?= $this->api_key;    ?></td></tr>
+        <tr><th><?= $this->_('api_secret'); ?></th><td><?= $this->api_secret; ?></td></tr>
     </table>
-    <code><?= json_encode($this->definition, JSON_PRETTY_PRINT); ?>
+    <h2><?= $this->_(['field', 'fields', 10]); ?></h2>
+    <code><?= json_encode($this->fields, JSON_PRETTY_PRINT); ?>
     </code>
 </section>

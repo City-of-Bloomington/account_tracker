@@ -7,23 +7,36 @@ declare (strict_types=1);
 namespace Domain\Employees\UseCases\Info;
 
 use Domain\Employees\DataStorage\EmployeesRepository;
+use Domain\Resources\DataStorage\ResourcesRepository;
+use Domain\Users\Entities\User;
 
 class Command
 {
-    private $repo;
+    private $employeeRepo;
+    private $resourceRepo;
 
-    public function __construct(EmployeesRepository $repository)
+    public function __construct(EmployeesRepository $repository, ResourcesRepository $resources)
     {
-        $this->repo = $repository;
+        $this->employeeRepo = $repository;
+        $this->resourceRepo = $resources;
     }
 
-    public function __invoke(int $number): Response
+    public function __invoke(int $number, User $user): Response
     {
         try {
-            return new Response($this->repo->load($number));
+            $employee = $this->employeeRepo->load($number);
         }
         catch (\Exception $e) {
-            return new Response(null, [$e->getMessage()]);
+            return new Response(null, null, [$e->getMessage()]);
         }
+
+        $resources = [];
+        $result = $this->resourceRepo->find([]);
+        foreach ($result['rows'] as $r) {
+            $service = $r->serviceFactory($user->username);
+            $resources[$r->code] = $service->load($employee);
+        }
+
+        return new Response($employee, $resources);
     }
 }

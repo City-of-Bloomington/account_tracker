@@ -54,6 +54,7 @@ foreach (['Info', 'Search'] as $a) {
     $DI->set(    "Domain\\Employees\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\Employees\\UseCases\\$a\\Command"));
 }
+$DI->params['Domain\Employees\UseCases\Info\Command']['resources'] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
 
 // People
 foreach(['Info', 'Load', 'Search', 'Update'] as $a) {

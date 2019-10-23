@@ -1,5 +1,7 @@
 <?php
 /**
+ * An Employee is a record in the HR system
+ *
  * @copyright 2019 City of Bloomington, Indiana
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
  */

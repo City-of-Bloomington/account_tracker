@@ -6,7 +6,10 @@
  * @param string $this->code
  * @param string $this->name
  * @param string $this->type
- * @param string $this->definition  JSON string
+ * @param string $this->class
+ * @param string $this->api_key
+ * @param string $this->api_secret
+ * @param string $this->fields  JSON string
  * @param string $this->return_url
  */
 declare (strict_types=1);
@@ -35,6 +38,14 @@ declare (strict_types=1);
                 ]);
 
                 echo $h->field([
+                    'name'     => 'class',
+                    'id'       => 'class',
+                    'label'    => $this->_('class'),
+                    'value'    => $this->class,
+                    'required' => true
+                ]);
+
+                echo $h->field([
                     'name'     => 'type',
                     'id'       => 'type',
                     'label'    => $this->_('type'),
@@ -43,10 +54,24 @@ declare (strict_types=1);
                 ]);
 
                 echo $h->field([
-                    'name'     => 'definition',
-                    'id'       => 'definition',
-                    'label'    => $this->_('definition'),
-                    'value'    => $this->definition,
+                    'name'     => 'api_key',
+                    'id'       => 'api_key',
+                    'label'    => $this->_('api_key'),
+                    'value'    => $this->api_key
+                ]);
+
+                echo $h->field([
+                    'name'     => 'api_secret',
+                    'id'       => 'api_secret',
+                    'label'    => $this->_('api_secret'),
+                    'value'    => $this->api_secret
+                ]);
+
+                echo $h->field([
+                    'name'     => 'fields',
+                    'id'       => 'fields',
+                    'label'    => $this->_('fields'),
+                    'value'    => $this->fields,
                     'type'     => 'textarea',
                     'required' => true
                 ]);

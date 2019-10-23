@@ -25,7 +25,7 @@ class InfoView extends Template
 
         $this->vars['title'] = parent::escape("{$employee->firstname} {$employee->lastname}");
 		$this->blocks = [
-            new Block('employees/info.inc', ['employee'=>$employee])
+            new Block('employees/info.inc', ['employee'=>$employee, 'resources'=>$response->resources])
         ];
     }
 }

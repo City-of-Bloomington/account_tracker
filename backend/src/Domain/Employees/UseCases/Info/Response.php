@@ -11,11 +11,13 @@ use Domain\Employees\Entities\Employee;
 class Response
 {
     public $employee;
-    public $errors = [];
+    public $resources = [];  // An array of resource values for the employee
+    public $errors    = [];
 
-    public function __construct(?Employee $employee=null, ?array $errors=null)
+    public function __construct(?Employee $employee=null, ?array $resources=null, ?array $errors=null)
     {
-        $this->employee = $employee;
-        $this->errors   = $errors;
+        $this->employee  = $employee;
+        $this->resources = $resources;
+        $this->errors    = $errors;
     }
 }

@@ -21,14 +21,14 @@ class UpdateView extends Template
         $this->vars['title'] = $req->id ? $this->_('resources.edit', 'messages') : $this->_('resources.add', 'messages');
 
         $vars = [
-            'title' => $this->vars['title'],
-            'id'    => $req->id,
-            'code'  => parent::escape($req->code),
-            'name'  => parent::escape($req->name),
-            'type'  => parent::escape($req->type),
-            'definition' => $req->definition ? json_encode($req->definition, JSON_PRETTY_PRINT) : '',
+            'title'      => $this->vars['title'],
             'return_url' => $return_url
         ];
+        foreach ((array)$req as $k=>$v) {
+            $vars[$k] = $k == 'fields'
+                      ? json_encode($v, JSON_PRETTY_PRINT)
+                      : parent::escape($v);
+        }
 
         $this->blocks = [
             new Block('resources/updateForm.inc', $vars)
