@@ -9,6 +9,7 @@
     <?php
         $routes = [
             'account_requests' => 'account_request',
+            'employees'        => 'employee'
         ];
         foreach ($routes as $plural=>$singular) {
             if (parent::isAllowed($plural, 'index')) {

@@ -20,7 +20,9 @@ declare (strict_types=1);
             ";
                 foreach ($fields as $k=>$v) {
                     $k = parent::escape($k);
-                    $v = parent::escape($v);
+                    $v = is_array($v)
+                            ? parent::escape(implode(',', $v))
+                            : parent::escape($v);
                     echo "<tr><th>$k</th><td>$v</td></tr>";
                 }
             echo "

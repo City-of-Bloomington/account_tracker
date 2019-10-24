@@ -41,6 +41,15 @@ class ResourceEntity
     public function ServiceFactory(string $username): ResourceService
     {
         $class = $this->class;
-        return new $class($this->api_key, $this->api_secret, $username);
+        switch ($this->type) {
+            case 'directory':
+                global $DIRECTORY_CONFIG;
+                return new $class($DIRECTORY_CONFIG['Ldap']);
+            break;
+
+            default:
+                return new $class($this->api_key, $this->api_secret, $username);
+        }
+
     }
 }
