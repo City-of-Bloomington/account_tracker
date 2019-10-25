@@ -21,31 +21,15 @@
  */
 namespace Site;
 
-use Domain\Auth\AuthenticationInterface;
-use Domain\Auth\ExternalIdentity;
+use Web\Authentication\AuthenticationInterface;
+use Web\Authentication\ExternalIdentity;
 
-class Ldap implements AuthenticationInterface
+class Ldap extends LdapService implements AuthenticationInterface
 {
-	private static $connection;
-	private $config;
-
-
-	public function __construct(array $config)
-	{
-        $this->config = $config;
-	}
-
 	public function identify(string $username): ?ExternalIdentity
 	{
-		$this->openConnection();
-
-		$result = ldap_search(
-			self::$connection,
-			$this->config['base_dn'],
-			$this->config['username_attribute']."=$username"
-		);
-		if (ldap_count_entries(self::$connection,$result)) {
-			$entries = ldap_get_entries(self::$connection, $result);
+		$entries = parent::search([$this->config['username_attribute']."=$username"]);
+		if ($entries) {
 			$entry = $entries[0];
 			return new ExternalIdentity([
                 'username'  => $username,
@@ -70,35 +54,6 @@ class Ldap implements AuthenticationInterface
 		}
 	}
 
-	/**
-	 * Creates the connection to the LDAP server
-	 */
-	private function openConnection()
-	{
-		if (!self::$connection) {
-			if (self::$connection = ldap_connect($this->config['server'])) {
-				ldap_set_option(self::$connection, LDAP_OPT_PROTOCOL_VERSION,3);
-				ldap_set_option(self::$connection, LDAP_OPT_REFERRALS, 0);
-				if (!empty($this->config['admin_binding'])) {
-					if (!ldap_bind(
-							self::$connection,
-							$this->config['admin_binding'],
-							$this->config['admin_pass']
-						)) {
-						throw new \Exception(ldap_error(self::$connection));
-					}
-				}
-				else {
-					if (!ldap_bind(self::$connection)) {
-						throw new \Exception(ldap_error(self::$connection));
-					}
-				}
-			}
-			else {
-				throw new \Exception(ldap_error(self::$connection));
-			}
-		}
-	}
 
 	/**
 	 * Maps Domain fields to LDAP fields

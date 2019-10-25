@@ -53,10 +53,12 @@ class PdoUsersRepository extends PdoRepository implements UsersRepository
                 $select->where("$f=?", $req->$f);
             }
         }
-        $order = $req->order ? $req->order : self::$DEFAULT_SORT;
-        $select->orderBy($order);
 
-        return parent::performHydratedSelect($select, __CLASS__.'::hydrate', $req->itemsPerPage, $req->currentPage);
+        return parent::performHydratedSelect($select,
+                                             __CLASS__.'::hydrate',
+                                             $req->order ?? self::$DEFAULT_SORT,
+                                             $req->itemsPerPage,
+                                             $req->currentPage);
     }
 
 
@@ -72,10 +74,12 @@ class PdoUsersRepository extends PdoRepository implements UsersRepository
                 $select->where("lower($f) like ?", strtolower("{$req->$f}%"));
             }
         }
-        $order = $req->order ? $req->order : self::$DEFAULT_SORT;
-        $select->orderBy($order);
 
-        return parent::performHydratedSelect($select, __CLASS__.'::hydrate', $req->itemsPerPage, $req->currentPage);
+        return parent::performHydratedSelect($select,
+                                             __CLASS__.'::hydrate',
+                                             $req->order ?? self::$DEFAULT_SORT,
+                                             $req->itemsPerPage,
+                                             $req->currentPage);
     }
 
     /**

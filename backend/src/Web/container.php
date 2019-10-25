@@ -10,20 +10,8 @@ use Aura\Di\ContainerBuilder;
 $builder = new ContainerBuilder();
 $DI = $builder->newInstance();
 
-$conf = $DATABASES['default'];
-try {
-    $pdo = new PDO("$conf[driver]:dbname=$conf[dbname];host=$conf[host]", $conf['username'], $conf['password'], $conf['options']);
-}
-catch (\Exception $e) {
-    die("Could not connect to database server\n");
-}
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$platform = ucfirst($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
-if ($platform == 'Pgsql' && !empty($conf['schema'])) {
-    $pdo->exec("set search_path=$conf[schema],public");
-}
-
-$DI->set('PDO', $pdo);
+$DI->set('db.default', \Web\Database::getConnection('default', $DATABASES['default']));
+$DI->set('db.hr',      \Web\Database::getConnection('hr',      $DATABASES['hr'     ]));
 
 //---------------------------------------------------------
 // Declare database repositories
@@ -33,18 +21,22 @@ $repos = [
     'AccountRequests', 'Resources'
 ];
 foreach ($repos as $t) {
-    $DI->params[ "Web\\$t\\Pdo{$t}Repository"]["pdo"] = $pdo;
+    $DI->params[ "Web\\$t\\Pdo{$t}Repository"]["pdo"] = $DI->lazyGet('db.default');
     $DI->set("Domain\\$t\\DataStorage\\{$t}Repository",
     $DI->lazyNew("Web\\$t\\Pdo{$t}Repository"));
 }
 
+$DI->params[ 'Web\Employees\PdoEmployeesRepository']['pdo'] = $DI->lazyGet('db.hr');
+$DI->set( 'Domain\Employees\DataStorage\EmployeesRepository',
+$DI->lazyNew('Web\Employees\PdoEmployeesRepository'));
+
 //---------------------------------------------------------
 // Services
 //---------------------------------------------------------
-$DI->params[ 'Domain\Auth\AuthenticationService']['repository'] = $DI->lazyGet('Domain\Users\DataStorage\UsersRepository');
-$DI->params[ 'Domain\Auth\AuthenticationService']['config'    ] = $DIRECTORY_CONFIG;
-$DI->set(    'Domain\Auth\AuthenticationService',
-$DI->lazyNew('Domain\Auth\AuthenticationService'));
+$DI->params[ 'Web\Authentication\AuthenticationService']['repository'] = $DI->lazyGet('Domain\Users\DataStorage\UsersRepository');
+$DI->params[ 'Web\Authentication\AuthenticationService']['config'    ] = $DIRECTORY_CONFIG;
+$DI->set(    'Web\Authentication\AuthenticationService',
+$DI->lazyNew('Web\Authentication\AuthenticationService'));
 
 //---------------------------------------------------------
 // Use Cases
@@ -55,6 +47,14 @@ foreach (['Info', 'Search'] as $a) {
     $DI->set(    "Domain\\AccountRequests\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\AccountRequests\\UseCases\\$a\\Command"));
 }
+
+// Employees
+foreach (['Info', 'Search'] as $a) {
+    $DI->params[ "Domain\\Employees\\UseCases\\$a\\Command"]['repository'] = $DI->lazyGet('Domain\Employees\DataStorage\EmployeesRepository');
+    $DI->set(    "Domain\\Employees\\UseCases\\$a\\Command",
+    $DI->lazyNew("Domain\\Employees\\UseCases\\$a\\Command"));
+}
+$DI->params['Domain\Employees\UseCases\Info\Command']['resources'] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
 
 // People
 foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
@@ -76,6 +76,4 @@ foreach (['Delete', 'Info', 'Search', 'Update'] as $a) {
     $DI->set(    "Domain\\Users\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\Users\\UseCases\\$a\\Command"));
 }
-$DI->params['Domain\Users\UseCases\Update\Command']['auth'] = $DI->lazyGet('Domain\Auth\AuthenticationService');
-
-
+$DI->params['Domain\Users\UseCases\Update\Command']['auth'] = $DI->lazyGet('Web\Authentication\AuthenticationService');

@@ -14,7 +14,10 @@ create table resources (
 	code       varchar(32)  not null unique,
 	type       varchar(32)  not null,
 	name       varchar(32)  not null,
-	definition json         not null
+	class      varchar(128) not null,
+	api_key    varchar(64),
+	api_secret varchar(128),
+	fields     json         not null
 );
 
 create table resource_managers (

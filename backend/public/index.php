@@ -13,8 +13,6 @@ $startTime = microtime(true);
 
 include '../bootstrap.php';
 
-$user = Auth::getAuthenticatedUser();
-if ($user) { $DI->set('currentUser', $user); }
 
 $p = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $route = $ROUTES->match($p, $_SERVER);
@@ -23,6 +21,7 @@ if ($route) {
         $controller = $route->params['controller'];
         $c = new $controller($DI);
         if (is_callable($c)) {
+            $user = Auth::getAuthenticatedUser($DI->get('Web\Authentication\AuthenticationService'));
             if (Auth::isAuthorized($route->name, $user)) {
                 if (!empty($route->params['id'])) {
                         $_GET['id'] = $route->params['id'];

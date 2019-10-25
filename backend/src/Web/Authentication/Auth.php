@@ -15,31 +15,29 @@ use Psr\Http\Message\RequestInterface;
 
 class Auth
 {
-    public static function getAuthenticatedUser(): ?User
-    {
-//         $keys        = include SITE_HOME.'/api_keys.php';
-//         $accessKeyId = 'test';
-//         $username    = $_SESSION['USER']->username;
-//
-//         $request     = ServerRequest::fromGlobals()
-//                                     ->withHeader('AccessKeyId',$accessKeyId)
-//                                     ->withHeader('AccountTrackerUsername', $_SESSION['USER']->username);
-//
-//         $credentials = new Credentials($accessKeyId, $keys[$accessKeyId]);
-//         $signer      = new SignatureV4('account_tracker', 'bloomington');
-//         $output      = $signer->signRequest($request, $credentials);
-//
-//         if (   self::isHMACRequest       ($output)
-//             && self::isValidHMACSignature($output)) {
-//             print_r($output);
-//         }
-//         exit();
+    const HMAC_ALGORITHM       = 'AWS4-HMAC-SHA256';
+    const HMAC_SERVICE         = 'account_tracker';
+    const HMAC_REGION          = 'bloomington';
 
+    const HEADER_AUTHORIZATION = 'Authorization';
+    const HEADER_KEY_NAME      = 'AccessKeyId';
+    // Header containing the username that's attempting to make the request
+    const HEADER_USERNAME      = 'AccountTrackerUsername';
+
+    public static function getAuthenticatedUser(AuthenticationService $service): ?User
+    {
         if ( isset($_SESSION['USER'])) {
             return $_SESSION['USER'];
         }
-        return null;
 
+        $request = ServerRequest::fromGlobals();
+        if (   self::isHMACRequest       ($request)
+            && self::isValidHMACSignature($request)) {
+
+            $user = $service->identify($request->getHeader(self::HEADER_USERNAME)[0]);
+            if ($user) { return $user; }
+        }
+        return null;
     }
 
     public static function isAuthorized(string $routeName, ?User $user): bool
@@ -55,21 +53,22 @@ class Auth
 
     public static function isHMACRequest(RequestInterface $request): bool
     {
-        return $request->hasHeader('Authorization')
-            && $request->hasHeader('AccessKeyId'  )
-            && $request->hasHeader('AccountTrackerUsername')
-            && substr($request->getHeader('Authorization')[0], 0, 16) == 'AWS4-HMAC-SHA256';
+        return $request->hasHeader(self::HEADER_AUTHORIZATION)
+            && $request->hasHeader(self::HEADER_KEY_NAME     )
+            && $request->hasHeader(self::HEADER_USERNAME     )
+            && substr($request->getHeader(self::HEADER_AUTHORIZATION)[0], 0, 16) == self::HMAC_ALGORITHM;
     }
 
     public static function isValidHMACSignature(RequestInterface $request): bool
     {
         $keys        = include SITE_HOME.'/api_keys.php';
-        $accessKeyId = $request->getHeader('AccessKeyId')[0];
+        $accessKeyId = $request->getHeader(self::HEADER_KEY_NAME)[0];
+        if (!array_key_exists($accessKeyId, $keys)) { return false; }
 
         $credentials = new Credentials($accessKeyId, $keys[$accessKeyId]);
-        $signer      = new SignatureV4('account_tracker', 'bloomington');
+        $signer      = new SignatureV4(self::HMAC_SERVICE, self::HMAC_REGION);
         $output      = $signer->signRequest($request, $credentials);
 
-        return $output->getHeader('Authorization')[0] === $request->getHeader('Authorization')[0];
+        return $output->getHeader(self::HEADER_AUTHORIZATION)[0] === $request->getHeader(self::HEADER_AUTHORIZATION)[0];
     }
 }

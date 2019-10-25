@@ -9,18 +9,28 @@ use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
 {
-    protected static $pdo;
+    protected static $di;
 
     public static function setUpBeforeClass(): void
     {
         global $DI;
-        self::$pdo = $DI->get('PDO');
+        self::$di = $DI;
     }
 
-    public function testDatabaseConnection()
+    public function testDefaultDatabaseConnection()
     {
+        $pdo    = self::$di->get('db.default');
         $sql    = 'select count(*) from people';
-        $result = self::$pdo->query($sql);
+        $result = $pdo->query($sql);
+        $count  = $result->fetchColumn();
+        $this->assertGreaterThan(1, $count);
+    }
+
+    public function testHRDatabaseConnection()
+    {
+        $pdo    = self::$di->get('db.hr');
+        $sql    = 'select count(*) from HR.vwEmployeeInformation';
+        $result = $pdo->query($sql);
         $count  = $result->fetchColumn();
         $this->assertGreaterThan(1, $count);
     }

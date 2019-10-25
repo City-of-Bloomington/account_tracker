@@ -32,7 +32,7 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
 
     public static function hydrate(array $row): ResourceEntity
     {
-        $row['definition'] = json_decode($row['definition'], true);
+        $row['fields'] = json_decode($row['fields'], true);
 
         return new ResourceEntity($row);
     }
@@ -66,7 +66,11 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
                 }
             }
         }
-        return parent::performHydratedSelect($select, __CLASS__.'::hydrate', $itemsPerPage, $currentPage);
+        return parent::performHydratedSelect($select,
+                                             __CLASS__.'::hydrate',
+                                             null,
+                                             $itemsPerPage,
+                                             $currentPage);
     }
 
     /**
@@ -74,11 +78,8 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
      */
     public function save(ResourceEntity $res): int
     {
-        return parent::saveToTable(['id'         => $res->id,
-                                    'code'       => $res->code,
-                                    'name'       => $res->name,
-                                    'type'       => $res->type,
-                                    'definition' => json_encode($res->definition)
-                                   ], self::TABLE);
+        $data = (array)$res;
+        $data['fields'] = json_encode($res->fields);
+        return parent::saveToTable($data, self::TABLE);
     }
 }

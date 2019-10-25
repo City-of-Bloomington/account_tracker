@@ -25,18 +25,20 @@ use Web\Block;
     </header>
     <table>
         <theader>
-            <tr><th><?= $this->_('id'  ); ?></th>
-                <th><?= $this->_('code'); ?></th>
-                <th><?= $this->_('name'); ?></th>
-                <th><?= $this->_('type'); ?></th>
+            <tr><th><?= $this->_('id'   ); ?></th>
+                <th><?= $this->_('code' ); ?></th>
+                <th><?= $this->_('name' ); ?></th>
+                <th><?= $this->_('type' ); ?></th>
+                <th><?= $this->_('class'); ?></th>
             </tr>
         </theader>
     <?php
         foreach ($this->resources as $r) {
-            $id   = parent::escape($r->id  );
-            $code = parent::escape($r->code);
-            $name = parent::escape($r->name);
-            $type = parent::escape($r->type);
+            $id    = parent::escape($r->id   );
+            $code  = parent::escape($r->code );
+            $name  = parent::escape($r->name );
+            $type  = parent::escape($r->type );
+            $class = parent::escape($r->class);
 
             $uri  = parent::generateUri('resources.view', ['id'=>$r->id]);
             echo "
@@ -44,6 +46,7 @@ use Web\Block;
                 <td><a href=\"$uri\">$code</a></td>
                 <td><a href=\"$uri\">$name</a></td>
                 <td><a href=\"$uri\">$type</a></td>
+                <td><a href=\"$uri\">$class</a></td>
             </tr>
             ";
         }

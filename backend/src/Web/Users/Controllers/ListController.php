@@ -19,7 +19,7 @@ class ListController extends Controller
     {
         global $ZEND_ACL;
         $search   = $this->di->get('Domain\Users\UseCases\Search\Command');
-        $auth     = $this->di->get('Domain\Auth\AuthenticationService');
+        $auth     = $this->di->get('Web\Authentication\AuthenticationService');
 		$page     =  !empty($_GET['page']) ? (int)$_GET['page'] : 1;
         $request  = new Request($_GET, null, parent::ITEMS_PER_PAGE, $page);
         $response = $search($request);

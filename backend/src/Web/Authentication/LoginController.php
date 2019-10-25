@@ -21,7 +21,7 @@ class LoginController extends Controller
 	public function __construct(Container $container)
 	{
         parent::__construct($container);
-        $this->auth = $this->di->get('Domain\Auth\AuthenticationService');
+        $this->auth = $this->di->get('Web\Authentication\AuthenticationService');
 	}
 
     /**

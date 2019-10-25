@@ -22,7 +22,10 @@ abstract class PdoRepository
         $this->queryFactory = new QueryFactory(ucfirst($pdo->getAttribute(\PDO::ATTR_DRIVER_NAME)));
     }
 
-	public function performSelect(SelectInterface $select, int $itemsPerPage=null, int $currentPage=null) : array
+	public function performSelect(SelectInterface $select,
+                                  ?array          $order        = null,
+                                  int             $itemsPerPage = null,
+                                  int             $currentPage  = null) : array
 	{
         $total = null;
 
@@ -43,6 +46,8 @@ abstract class PdoRepository
             $select->offset($itemsPerPage * ($currentPage-1));
         }
 
+        if ($order) { $select->orderBy($order); }
+
 
         $query = $this->pdo->prepare($select->getStatement());
         $query->execute($select->getBindValues());
@@ -53,9 +58,13 @@ abstract class PdoRepository
         ];
 	}
 
-    public function performHydratedSelect(SelectInterface $select, callable $hydrate, ?int $itemsPerPage=null, ?int $currentPage=null): array
+    public function performHydratedSelect(SelectInterface $select,
+                                          callable        $hydrate,
+                                          ?array          $order        = null,
+                                          ?int            $itemsPerPage = null,
+                                          ?int            $currentPage  = null): array
     {
-        $result = $this->performSelect($select, $itemsPerPage, $currentPage);
+        $result = $this->performSelect($select, $order, $itemsPerPage, $currentPage);
 
         $objects = [];
         foreach ($result['rows'] as $r) { $objects[] = $hydrate($r); }
