@@ -62,3 +62,7 @@ media
 # Certs
 certs/*
 certs
+
+# OSX pList sync
+nuxt-watcher.plist
+sync.sh

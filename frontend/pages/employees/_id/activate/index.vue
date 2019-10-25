@@ -1,145 +1,85 @@
 <template>
   <div>
-    <h1>Employee - Activate</h1>
+    <h1 class="page-title">
+      Employee: Activate
+      <template v-if="employee.employee">
+        - {{ employee.employee.firstname }} {{ employee.employee.lastname }}
+      </template>
+    </h1>
 
-    <section>
+    <form>
+      <!-- Profiles -->
       <div class="field-group">
-        <label for="department">Department</label>
+        <label
+          for="profile">
+          Profile
+        </label>
         <select
-          name="department"
-          id="department"
+          name="profile"
+          id="profile"
           type="select"
-          v-model="exampleUser.department">
+          v-model="exampleUser.profile"
+          required>
           <option
-            v-for="d, i in departments"
-            :key="d.id"
-            :value="{id: d.id, name: d.name}">
-            {{ d.name }}
+            v-for="p, i in profiles.profiles"
+            :key="p.id"
+            :value="p">
+            {{ p.name }}
           </option>
         </select>
       </div>
 
-      <div
-        v-if="exampleUser.department"
-        class="field-group">
-        <label for="group">Group</label>
-        <select
-          name="group"
-          id="group"
-          type="select"
-          v-model="exampleUser.group">
-          <option
-            v-for="g, i in groups"
-            :key="g.id"
-            :value="{id: g.id, name: g.name}">
-            {{ g.name }}
-          </option>
-        </select>
-      </div>
+      <!-- Fields for Profile - resource_defaults -->
+      <template v-if="exampleUser.profile.resource_defaults">
+        <div
+          v-for="f, i in profileDefaultQuestions"
+          :key="i"
+          class="field-group">
 
-       <div
-        v-if="exampleUser.group"
-        class="field-group">
-        <label for="job">Job</label>
-        <select
-          name="job"
-          id="job"
-          type="select"
-          v-model="exampleUser.job">
-          <option
-            v-for="j, i in jobs"
-            :key="j.id"
-            :value="{id: j.id, name: j.name}">
-            {{ j.name }}
-          </option>
-        </select>
-      </div>
-    </section>
-
-    <section>
-      <div
-        v-for="f, i in userDefinition.fields"
-        :key="f.code">
-
-        <div class="field-group">
           <template v-if="f.type === 'text'">
-            <label :for="f.code">
+            <label :for="i">
               {{ f.label }}
+              <template v-if="f.required">*</template>
             </label>
 
             <input
-              v-model="exampleUser[f.code]"
+              v-model="exampleUser.questions[i]"
               :type="f.type"
-              :id="f.code"
-              :name="f.code"
+              :id="i"
+              :name="i"
               :required="f.required" />
           </template>
 
           <template v-if="f.type === 'tel'">
-            <label :for="f.code">
+            <label :for="i">
               {{ f.label }}
+              <template v-if="f.required">*</template>
             </label>
 
             <input
-              v-model="exampleUser[f.code]"
+              v-model="exampleUser.questions[i]"
               pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
               :type="f.type"
-              :id="f.code"
-              :name="f.code"
+              :id="i"
+              :name="i"
               :required="f.required" />
           </template>
         </div>
-      </div>
-    </section>
-
-    <button
-      v-if="enableAccountRequestActivationButton"
-      @click="activateAccountRequest">
-      Activate Account Request
-    </button>
-
-    <!-- <template
-      v-if="false"
-      v-for="r, i in profileResources">
-      <h2>Setup - {{ r.name }}</h2>
-      <template v-for="f, i in r.definition.fields">
-        <div class="field-group">
-          <template v-if="f.type === 'text'">
-            <label :for="f.code">
-              {{ f.label }}
-            </label>
-            <input
-              :type="f.type"
-              :id="f.code"
-              :name="f.code" />
-          </template>
-
-          <template v-if="f.type === 'email'">
-            <label :for="f.code">
-              {{ f.label }}
-            </label>
-            <input
-              :type="f.type"
-              :id="f.code"
-              :name="f.code" />
-          </template>
-
-          <template v-if="f.type === 'singleChoice'">
-            <label :for="f.code">
-              {{ f.label }}
-            </label>
-            <select
-              :id="f.code">
-              <option
-                v-for="o in f.options"
-                :value="o"
-                :key="o">{{ o }}
-              </option>
-            </select>
-          </template>
-        </div>
       </template>
-    </template> -->
+
+      <button
+        v-if="enableFormSubmitBtn"
+        type="submit"
+        @click.prevent="activateAccountRequest()">
+        Activate {{ employee.employee.firstname }}'s Account Request
+      </button>
+    </form>
+
+    <ul v-if="examplePostUser">
+      <li v-for="f, i in examplePostUser">
+        <strong>{{ i }} :: </strong>{{f}}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -149,263 +89,207 @@
 
   export default {
     created() {
-      this.getDepts()
-      .then((res) => {
-        this.departments = res;
-      })
-      .catch((e)  => {
-        console.log(e);
-      });
+      // this.getDepts()
+      // .then((res) => {
+      //   this.departments = res;
+      // })
+      // .catch((e)  => {
+      //   console.log(e);
+      // });
+
+      // this.getResources();
+
+
+      if(!this.employee.employee){
+        console.dir('no employee - get it');
+        let backendEmployee = `${process.env.backendUrl}employees/${this.$route.params.id}?format=json`;
+
+        this.$axios.get(backendEmployee, { withCredentials: true })
+        .then((res) => {
+          console.dir('hello');
+          this.$store.dispatch('employee/setEmployee', res.data);
+        })
+        .catch((e)  => {
+          this.employeeData.error = e;
+          this.$store.dispatch('employee/resetEmployeeState');
+        })
+      }
+
+      this.getProfiles();
+      this.userNumber
     },
     data () {
       return  {
-        departments: null,
-        groups:      null,
-        jobs:        null,
-        userDefinition: {
-          fields: [
-            {
-              label:    "Desktop Phone",
-              code:     "phone",
-              type:     "tel",
-              required: true
-            },
-            {
-              label:    "Public Phone",
-              code:     "pager",
-              type:     "tel",
-              required: true
-            },
-          ],
+        // activeDirectoryCode: 'active_directory',
+        // activeDirectoryResource: null,
+        // departments: null,
+        // groups:      null,
+        // jobs:        null,
+        resourcesData:  {
+          response: null,
+          error:    null
         },
-        exampleUser: {},
-        profileResources: [
-          {
-            id: 1,
-            code: "account_tracker",
-            name: "Account Tracker",
-            type: "Web Application",
-            definition: {
-              fields: [
-                {
-                  label: "First Name",
-                  code: "firstname",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Last Name",
-                  code: "lastname",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Username",
-                  code: "username",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Email",
-                  code: "email",
-                  type: "email",
-                  required: true
-                },
-                {
-                  label: "User Role",
-                  code: "userrole",
-                  type: "singleChoice",
-                  options: [
-                    "Employee",
-                    "Support Staff",
-                    "Administrator"
-                  ],
-                  required: true
-                }
-              ],
-              actions: {
-                create: {
-                  url: "https://bloomington.in.gov/account_tracker/users/add",
-                  method: "POST"
-                },
-                changet: {
-                  url: "https://bloomington.in.gov/account_tracker/users/update",
-                  method: "POST"
-                },
-                terminate: {
-                  url: "https://bloomington.in.gov/account_tracker/users/delete",
-                  method: "POST"
-                }
-              },
-              read_from: {
-                email: "active_directory",
-                lastname: "active_directory",
-                username: "active_directory",
-                firstname: "active_directory"
-              }
-            }
-          },
-          {
-            id: 2,
-            code: "account_tracker2",
-            name: "Account Tracker 2",
-            type: "Web Application",
-            definition: {
-              fields: [
-                {
-                  label: "First Name",
-                  code: "firstname",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Middle Name",
-                  code: "middlename",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Nickname",
-                  code: "nickname",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Last Name",
-                  code: "lastname",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Username",
-                  code: "username",
-                  type: "text",
-                  required: true
-                },
-                {
-                  label: "Email",
-                  code: "email",
-                  type: "email",
-                  required: true
-                },
-                {
-                  label: "User Role",
-                  code: "userrole",
-                  type: "singleChoice",
-                  options: [
-                    "Employee",
-                    "Support Staff",
-                    "Administrator"
-                  ],
-                  required: true
-                }
-              ],
-              actions: {
-                create: {
-                  url: "https://bloomington.in.gov/account_tracker/users/add",
-                  method: "POST"
-                },
-                changet: {
-                  url: "https://bloomington.in.gov/account_tracker/users/update",
-                  method: "POST"
-                },
-                terminate: {
-                  url: "https://bloomington.in.gov/account_tracker/users/delete",
-                  method: "POST"
-                }
-              },
-              read_from: {
-                email: "active_directory",
-                lastname: "active_directory",
-                username: "active_directory",
-                firstname: "active_directory"
-              }
-            }
-          },
-        ],
+        exampleUser: {
+          profile:   {},
+          questions: {},
+          userId:    '',
+        },
+        examplePostUser: {},
       }
     },
     watch: {
-      "exampleUser.department.id": {
-        handler(val, oldVal) {
-          if(val) {
-            this.getTimeTrackGroups(val);
-          }
+      // "exampleUser.profile": {
+      //   handler(val, oldVal) {
+      //     if(val) {
+      //       // this.getTimeTrackJobs(val);
+      //       this.$router.push(
+      //         {
+      //           query: { 'profile': this.exampleUser.profile.id }
+      //         }
+      //       );
+      //     }
 
-          if(val != oldVal) {
-            if(this.exampleUser.group) {
-              delete this.exampleUser.group;
-            }
+      //     // if(val != oldVal) {
+      //     //   if(this.exampleUser.job) {
+      //     //     delete this.exampleUser.job;
+      //     //   }
+      //     // }
+      //   },
+      //   deep: true,
+      // }
+      // "exampleUser.department.id": {
+      //   handler(val, oldVal) {
+      //     if(val) {
+      //       this.getTimeTrackGroups(val);
+      //     }
 
-            if(this.exampleUser.job) {
-              delete this.exampleUser.job;
-            }
-          }
-        },
-        deep: true,
-      },
-      "exampleUser.group.id": {
-        handler(val, oldVal) {
-          if(val) {
-            this.getTimeTrackJobs(val);
-          }
+      //     if(val != oldVal) {
+      //       if(this.exampleUser.group) {
+      //         delete this.exampleUser.group;
+      //       }
 
-          if(val != oldVal) {
-            if(this.exampleUser.job) {
-              delete this.exampleUser.job;
-            }
-          }
-        },
-        deep: true,
-      }
+      //       if(this.exampleUser.job) {
+      //         delete this.exampleUser.job;
+      //       }
+      //     }
+      //   },
+      //   deep: true,
+      // },
+      // "exampleUser.group.id": {
+      //   handler(val, oldVal) {
+      //     if(val) {
+      //       this.getTimeTrackJobs(val);
+      //     }
+
+      //     if(val != oldVal) {
+      //       if(this.exampleUser.job) {
+      //         delete this.exampleUser.job;
+      //       }
+      //     }
+      //   },
+      //   deep: true,
+      // }
     },
     computed: {
-      ...mapFields([]),
-      enableAccountRequestActivationButton() {
-        let hasDepartment = this.exampleUser.department,
-            hasGroup      = this.exampleUser.group,
-            hasJob        = this.exampleUser.job,
-            hasPhone      = this.exampleUser.phone,
-            hasPager      = this.exampleUser.pager;
-
-        if(hasDepartment  &&
-           hasGroup       &&
-           hasJob         &&
-           hasPhone       &&
-           hasPager
-          ) {
-          return true
-        }
+      ...mapFields([
+        'employee.employee',
+        'resources.resources',
+        'profiles.profiles'
+      ]),
+      userNumber() {
+        if(this.employee.employee)
+          return this.exampleUser.userId = this.employee.employee.number;
+      },
+      enableFormSubmitBtn() {
+        if(this.exampleUser.profile.id)
+          return true;
+      },
+      profileDefaultQuestions() {
+        if(this.exampleUser.profile)
+          return this.exampleUser.profile.resource_defaults.questions
       }
+      // activeDirectoryResourceDepartments() {
+      //   // NOTE OLD - NOT NEEDED
+      //   if(this.resources) {
+      //     this.activeDirectoryResource = this.resources.filter((r) => {
+      //       return r.code === this.activeDirectoryCode;
+      //     });
+
+      //     return this.activeDirectoryResource[0].fields.department
+      //   }
+      // },
     },
     methods: {
-      getTimeTrackGroups(id) {
-        this.getGroups(id)
-        .then((res) => {
-          this.groups = res;
-        })
-        .catch((e)  => {
-          console.log(e);
-        });
-      },
-      getTimeTrackJobs(id) {
-        this.getJobs(id)
-        .then((res) => {
-          this.jobs = res;
-        })
-        .catch((e)  => {
-          console.log(e);
-        });
-      },
+      // getTimeTrackGroups(id) {
+      //   this.getGroups(id)
+      //   .then((res) => {
+      //     this.groups = res;
+      //   })
+      //   .catch((e)  => {
+      //     console.log(e);
+      //   });
+      // },
+      // getTimeTrackJobs(id) {
+      //   this.getJobs(id)
+      //   .then((res) => {
+      //     this.jobs = res;
+      //   })
+      //   .catch((e)  => {
+      //     console.log(e);
+      //   });
+      // },
       activateAccountRequest() {
-        alert('woot')
+
+        let fD = new FormData();
+        // fD.append(...this.exampleUser.questions);
+        fD.append(`employee.number`, this.userNumber);
+        fD.append(`profile.id`, this.exampleUser.profile.id);
+
+        this.examplePostUser = {
+          ...this.exampleUser.questions,
+          "employee.number": this.userNumber,
+          "profile.id":      this.exampleUser.profile.id,
+        };
+
+        console.dir(this.examplePostUser)
+      },
+      // getResources() {
+      //   // OLD - NOTE NEEDED
+      //   let backendResources = `${process.env.backendUrl}resources?format=json`;
+
+      //   this.$axios.get(backendResources, { withCredentials: true })
+      //   .then((res) => {
+      //     console.dir(res.data);
+      //     this.$store.dispatch('resources/setResources', res.data);
+      //   })
+      //   .catch((e)  => {
+      //     this.resourcesData.error = e;
+      //     this.$store.dispatch('resources/resetResourcesState');
+      //   })
+      // }
+      getProfiles() {
+        let backendProfiles = `${process.env.backendUrl}profiles?format=json`;
+
+        this.$axios.get(backendProfiles, { withCredentials: true })
+        .then((res) => {
+          console.dir(res.data);
+          this.$store.dispatch('profiles/setProfiles', res.data);
+        })
+        .catch((e)  => {
+          this.resourcesData.error = e;
+          this.$store.dispatch('profiles/setProfiles');
+        })
       }
     }
   }
 </script>
 
-<style>
-li {
-  margin: 0 0 10px 0;
+<style lang="scss">
+
+ul {
+  margin: 40px 0 0 0;
+  li {
+    margin: 0 0 10px 0;
+  }
 }
 </style>

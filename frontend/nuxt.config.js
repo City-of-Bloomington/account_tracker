@@ -1,5 +1,6 @@
 const pkg = require('./package')
-require('dotenv').config({path: `${process.env.SITE_HOME}/env`})
+require('dotenv').config()
+// require('dotenv').config({path: `${process.env.SITE_HOME}/env`})
 
 module.exports = {
   mode: 'universal',
@@ -29,7 +30,7 @@ module.exports = {
     logoSubHeading: process.env.LOGO_SUB_HEADING,
     cityWebsiteUrl: process.env.CITY_WEBSITE_URL,
     frontendBase:   process.env.FE_BASE           || '/frontend/',
-    backendUrl:     process.env.BACKEND_URL       || 'https://aoi.bloomington.in.gov/test/',
+
     frontendUrl:    process.env.FRONTEND_URL      || 'https://dhcp-cityhall-101-164.bloomington.in.gov:9090',
     ttApi:          process.env.TT_API || `https://outlaw.bloomington.in.gov/timetrack/`,
     deptService:    process.env.TT_API_DEPT_SERVICE     || `DepartmentService`,
@@ -38,11 +39,14 @@ module.exports = {
     posService:     process.env.TT_API_POSITION_SERVICE || `PositionService`,
     managerService: process.env.TT_API_MANAGER_SERVICE  || `ManagerService`,
 
+    backendUrl:     process.env.BACKEND_URL       || 'https://aoi.bloomington.in.gov/test/',
+    backendEmployees: process.env.BACKEND_EMPLOYEES || `employees?format=json&`
   },
 
   loading: { color: '#fff' },
 
   plugins: [
+    // { src: '~/plugins/persisted-state', ssr: false },
     { src: '~/plugins/axios' },
     { src: '~/plugins/design-system' },
     { src: '~/plugins/universal-data'},

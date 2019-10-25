@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>ACCOUNT TRACKER</h1>
-    <h2>INDEX</h2>
+    <h2>123</h2>
   </div>
 </template>
 

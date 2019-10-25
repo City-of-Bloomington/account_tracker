@@ -6,32 +6,13 @@ import {
   updateField }     from 'vuex-map-fields'
 
 import auth         from './modules/auth'
+import employee     from './modules/employee/employee'
+import resources    from './modules/resources/resources'
+import profiles     from './modules/profiles/profiles'
 
 export const strict = false;
 
 export const defaultState = () => ({
-  exampleNewWorldUsers: [
-    {
-      id:         1,
-      name:       "Adam Butcher",
-      department: "ITS"
-    },
-    {
-      id:         2,
-      name:       "Cliff Ingham",
-      department: "ITS"
-    },
-    {
-      id:         3,
-      name:       "Seth Tierney",
-      department: "ITS"
-    },
-    {
-      id:         4,
-      name:       "Matt Swinney",
-      department: "HAND"
-    }
-  ]
 })
 
 const state = () => defaultState();
@@ -62,6 +43,9 @@ export default {
   namespaced:       true,
   modules: {
     auth:           auth,
+    employee:       employee,
+    resources:      resources,
+    profiles:       profiles,
   },
   mutations,
   actions,

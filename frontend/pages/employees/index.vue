@@ -1,51 +1,60 @@
 <template>
   <div>
-    <h1>Staff Page</h1>
-    <ul>
-      <li><strong>/employees</strong><br>
-        -- Search for staff and list them
-      </li>
+    <h1 class="page-title">
+      Employee Search
+    </h1>
 
-      <li><strong>/employees/{username}</strong><br>
-        -- Display someone's current accounts in the city
-      </li>
+    <form
+      id="employee-search"
+      class="inline">
+      <fn1-input
+        v-model="searchFields.firstname"
+        label="First Name"
+        placeholder="First Name"
+        name="firstname"
+        id="firstname" />
 
-      <li><strong>/employees/{username}/change</strong><br>
-        -- Create an account_request changing someone
-      </li>
+      <fn1-input
+        v-model="searchFields.lastname"
+        label="Last Name"
+        placeholder="Last Name"
+        name="lastname"
+        id="lastname" />
 
-      <li><strong>/employees/{username}/terminate</strong><br>
-        -- Create an account_request terminating someone
-      </li>
+      <button
+        @click.prevent="searchEmployees(searchFields)"
+        type="submit">Search</button>
+    </form>
 
-      <li>
-        <strong>/employees/{ID}/activate</strong><br>
-        -- Create an account_request for a Employees [Activation]
-      </li>
-    </ul>
+    <fn1-alert
+      v-if="employees.error"
+      variant="warning">
+      <p><strong>{{ employees.error }}</strong></p>
+    </fn1-alert>
 
-    <table v-if="exampleNewWorldUsers">
+    <table v-if="employees.response">
       <caption class="sr-only">
-        Example New World Users Table
+        New World Users Table
       </caption>
 
       <thead>
         <tr>
-          <th scope="col">ID</th>
           <th scope="col">Name</th>
+          <th scope="col">Username</th>
           <th scope="col">Department</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr v-for="u, i in exampleNewWorldUsers">
-          <th scope="row">{{ u.id }}</th>
-          <td>{{ u.name }}</td>
-          <td>{{ u.department }}</td>
+        <tr v-for="p, i in employees.response">
+          <th scope="row">{{ p.firstname }} {{ p.lastname }}</th>
+          <td>{{ p.username }}</td>
+          <td>{{ p.department }}</td>
           <td>
             <nuxt-link
-              :to="`/employees/${u.id}`">
+              class="button"
+              :to="`/employees/${p.number}`">
               view
             </nuxt-link>
           </td>
@@ -58,23 +67,115 @@
 <script>
   import {
     mapFields }       from 'vuex-map-fields'
+  import axios        from 'axios'
 
   export default {
-    created() {},
+    beforeRouteEnter(to, from, next) {
+      console.dir(to.query);
+      if(to.query){
+        next(vm => {
+          console.dir('TOOOOOO');
+          vm.searchEmployees(to.query);
+        })
+      }
+      next();
+    },
     data () {
       return  {
-
+        searchFields: {
+          firstname:  this.$route.query.firstname || '',
+          lastname:   this.$route.query.lastname  || '',
+        },
+        employees: {
+          response: null,
+          error:    null,
+        }
       }
     },
+    created() {},
+    mounted() {},
     computed: {
       ...mapFields(['exampleNewWorldUsers'])
     },
-    methods: {}
+    methods: {
+      getSearchEmployees(params) {
+        let regExTest        = /[a-zA-Z]{2,}/,
+            fieldsTest       = regExTest.test(params.firstname || params.lastname),
+            backendEmployees = `${process.env.backendUrl}${process.env.backendEmployees}firstname=${params.firstname}&lastname=${params.lastname}`;
+
+        return new Promise((resolve, reject) => {
+          if(fieldsTest) {
+            axios.get(backendEmployees, { withCredentials: true })
+            .then((res) => {
+              if(res.data.length) {
+                resolve(res.data)
+              } else {
+                reject('Sorry no results.')
+              }
+            })
+          .catch((e)  => { reject(e)});
+          } else {
+            reject('Note: Search field should be at least 2 characters.')
+          }
+        })
+      },
+      searchEmployees(params) {
+        this.getSearchEmployees(params)
+        .then((res) => {
+          // let queryParams = params;
+
+          // for(var field in queryParams)
+          //   if(!queryParams[field])
+          //     delete queryParams[field];
+
+          // this.$router.push({ query: queryParams });
+          this.$router.push({ query: params});
+
+          this.employees.response = res;
+          this.employees.error = null;
+        })
+        .catch((e) => {
+          this.employees.response = null;
+          this.employees.error = e;
+        })
+      }
+    }
   }
 </script>
 
-<style>
-li {
-  margin: 0 0 10px 0;
+<style lang="scss">
+form {
+  &#employee-search {
+    margin: 0 0 20px 0;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid lighten($text-color, 50%);
+  }
+}
+
+table {
+  thead {
+    tr {
+      th {
+        &:last-of-type {
+          text-align: right;
+          padding-right: 8px;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      th {
+        text-align: left;
+      }
+
+      td {
+        &:last-of-type {
+          text-align: right;
+        }
+      }
+    }
+  }
 }
 </style>

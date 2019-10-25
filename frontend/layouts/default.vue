@@ -57,9 +57,10 @@
     },
     methods: {
       getUserProfile() {
+        let loginRoute = `${process.env.backendUrl}account?format=json`;
+
         return new Promise((resolve, reject) => {
-          this.$axios
-          .get(`${process.env.backendUrl}profile?format=json`)
+          this.$axios.get(loginRoute)
           .then((res) => { resolve(res.data) })
           .catch((e)  => { reject(e) });
         })
@@ -68,8 +69,18 @@
   }
 </script>
 
-<style>
+<style lang="scss">
 .nuxt-wrapper {
   padding: 20px;
+}
+
+h1 {
+  &.page-title {
+    color: $text-color;
+    font-weight: $weight-semi-bold;
+    border-bottom: 1px solid lighten($text-color, 50%);
+    margin: 0 0 40px 0;
+    padding: 0 0 20px 0;
+  }
 }
 </style>
