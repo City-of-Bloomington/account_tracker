@@ -8,8 +8,9 @@ module.exports = {
   dev:  (process.env.NODE_ENV !== 'production'),
 
   router: {
-    base: process.env.FE_BASE || '/frontend/'
+    base: process.env.FE_BASE || '/frontend/',
   },
+
 
   head: {
     title: pkg.prettyName,

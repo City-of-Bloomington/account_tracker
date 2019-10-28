@@ -73,14 +73,4 @@
 .nuxt-wrapper {
   padding: 20px;
 }
-
-h1 {
-  &.page-title {
-    color: $text-color;
-    font-weight: $weight-semi-bold;
-    border-bottom: 1px solid lighten($text-color, 50%);
-    margin: 0 0 40px 0;
-    padding: 0 0 20px 0;
-  }
-}
 </style>

@@ -247,8 +247,8 @@
 
         this.examplePostUser = {
           ...this.exampleUser.questions,
-          "employee.number": this.userNumber,
-          "profile.id":      this.exampleUser.profile.id,
+          "employee_number": this.userNumber,
+          "profile_id":      this.exampleUser.profile.id,
         };
 
         console.dir(this.examplePostUser)

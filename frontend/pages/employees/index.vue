@@ -1,9 +1,8 @@
 <template>
   <div>
-    <h1 class="page-title">
-      Employee Search
-    </h1>
-
+    <pageTitleHeader
+      page-title="Employees" />
+      
     <form
       id="employee-search"
       class="inline">
@@ -69,12 +68,20 @@
     mapFields }       from 'vuex-map-fields'
   import axios        from 'axios'
 
+  import pageTitleHeader  from '~/components/pageTitleHeader'
+
   export default {
+    components: { pageTitleHeader },
     beforeRouteEnter(to, from, next) {
-      console.dir(to.query);
-      if(to.query){
+      
+      let firstNameParam = to.query.firstname,
+           lastNameParam = to.query.lastname;
+
+      if(
+        firstNameParam !== undefined ||
+        lastNameParam  !== undefined
+        ){
         next(vm => {
-          console.dir('TOOOOOO');
           vm.searchEmployees(to.query);
         })
       }
@@ -94,9 +101,7 @@
     },
     created() {},
     mounted() {},
-    computed: {
-      ...mapFields(['exampleNewWorldUsers'])
-    },
+    computed: {},
     methods: {
       getSearchEmployees(params) {
         let regExTest        = /[a-zA-Z]{2,}/,
