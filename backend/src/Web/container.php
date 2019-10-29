@@ -56,6 +56,15 @@ foreach (['Info', 'Search'] as $a) {
 }
 $DI->params['Domain\Employees\UseCases\Info\Command']['resources'] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
 
+$DI->params[ 'Domain\Employees\UseCases\Activate\Command']['employees'] = $DI->lazyGet('Domain\Employees\DataStorage\EmployeesRepository');
+$DI->params[ 'Domain\Employees\UseCases\Activate\Command']['profiles' ] = $DI->lazyGet('Domain\Profiles\DataStorage\ProfilesRepository');
+$DI->params[ 'Domain\Employees\UseCases\Activate\Command']['resources'] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
+$DI->params[ 'Domain\Employees\UseCases\Activate\Command']['users'    ] = $DI->lazyGet('Domain\Users\DataStorage\UsersRepository');
+$DI->params[ 'Domain\Employees\UseCases\Activate\Command']['accounts' ] = $DI->lazyGet('Domain\AccountRequests\DataStorage\AccountRequestsRepository');
+$DI->set(    'Domain\Employees\UseCases\Activate\Command',
+$DI->lazyNew('Domain\Employees\UseCases\Activate\Command'));
+
+
 // People
 foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\People\\UseCases\\$a\\Command"]['repository'] = $DI->lazyGet('Domain\People\DataStorage\PeopleRepository');

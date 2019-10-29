@@ -5,9 +5,9 @@
  */
 declare (strict_types=1);
 
-namespace Domain\AccountRequests\Entities;
+namespace Domain\AccountRequests\UseCases\Update;
 
-class AccountRequest
+class Request
 {
     public $id;
     public $requester_id;    // The person making the request
@@ -15,14 +15,8 @@ class AccountRequest
     public $type;
     public $status;
 
-    public $created;
-    public $modified;
-    public $completed;
-    public $employee  = []; // JSON array
-    public $resources = []; // JSON array
-
-    // Fields from foreign keys
-    public $requester_username;
+    public $employee  = [];  // JSON array
+    public $resources = [];  // JSON array
 
     public function __construct(array $data=null)
     {
@@ -30,13 +24,8 @@ class AccountRequest
         if (!empty($data['requester_id'   ])) { $this->requester_id    = (int)$data['requester_id'   ]; }
         if (!empty($data['employee_number'])) { $this->employee_number = (int)$data['employee_number']; }
 
-        if (!empty($data['type'     ])) { $this->type      = $data['type'  ]; }
-        if (!empty($data['status'   ])) { $this->status    = $data['status']; }
-        if (!empty($data['created'  ])) { $this->created   = new \DateTime($data['created'  ]); }
-        if (!empty($data['modified' ])) { $this->modified  = new \DateTime($data['modified' ]); }
-        if (!empty($data['completed'])) { $this->completed = new \DateTime($data['completed']); }
-
-        if (!empty($data['requester_username'])) { $this->requester_username = $data['requester_username']; }
+        if (!empty($data['type'  ])) { $this->type   = $data['type'  ]; }
+        if (!empty($data['status'])) { $this->status = $data['status']; }
 
         if (!empty($data['employee'])) {
             $this->employee =    is_array($data['employee'])

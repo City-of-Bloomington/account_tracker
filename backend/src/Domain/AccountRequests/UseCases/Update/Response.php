@@ -7,7 +7,7 @@ declare (strict_types=1);
 
 namespace Domain\Employees\UseCases\Activate;
 
-class Response
+class Reponse
 {
     public $id;
     public $errors;

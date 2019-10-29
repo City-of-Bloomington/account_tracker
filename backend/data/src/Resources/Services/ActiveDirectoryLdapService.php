@@ -9,6 +9,7 @@ namespace Site\Resources\Services;
 
 use Domain\Resources\ResourceService;
 use Domain\Employees\Entities\Employee;
+use Domain\Profiles\Entities\Profile;
 use Site\LdapService;
 
 class ActiveDirectoryLdapService extends LdapService implements ResourceService
@@ -44,6 +45,53 @@ class ActiveDirectoryLdapService extends LdapService implements ResourceService
      */
     public function delete(Employee $employee)
     {
+    }
+
+    /**
+     * Create values for an Active Directory account
+     *
+     * @param Employee $employee
+     * @param Profile  $profile
+     * @param array    $questions  User input for declared questions
+     * @param array    $values     Values already generated from previous resources
+     */
+    public static function generateValues(Employee $employee,
+                                          Profile  $profile,
+                                          array    $questions,
+                                          array    $values): array
+    {
+        $fullname = "{$employee->firstname} {$employee->lastname}";
+        $username = strtolower("{$employee->firstname}.{$employee->lastname}");
+        $email    = "$username@bloomington.in.gov";
+
+        $request  = [
+            'objectClass'       => ['user'],
+            "distinguishedname" => "CN=$fullname,".$profile->resources['active_directory']['ou'],
+            "samaccountname"    => $username,
+            "cn"                => $fullname,
+            "mail"              => $email,
+            "userprincipalname" => $email,
+            "employeenumber"    => $employee->number,
+            "employeeid"        => '',
+            "uid"               => '',
+            "title"             => '',
+            "givenname"         => $employee->firstname,
+            "sn"                => $employee->lastname,
+            "name"              => $fullname,
+            "displayname"       => $fullname,
+            "telephonenumber"            => $questions['office_phone'],
+            "pager"                      => $questions['public_phone'],
+            "l"                          => 'Bloomington',
+            "st"                         => 'Indiana',
+            "street"                     => $profile->resources['active_directory']['street'],
+            "postalcode"                 => $profile->resources['active_directory']['postalcode'],
+            "physicaldeliveryofficename" => $profile->resources['active_directory']['physicaldeliveryofficename'],
+            "businesscategory"           => $profile->resources['active_directory']['businesscategory'],
+            "department"                 => $profile->resources['active_directory']['department'],
+            "facsimiletelephonenumber"   => $profile->resources['active_directory']['facsimiletelephonenumber'],
+            "memberof"                   => $profile->resources['active_directory']['memberof'],
+        ];
+        return $request;
     }
 
     /**

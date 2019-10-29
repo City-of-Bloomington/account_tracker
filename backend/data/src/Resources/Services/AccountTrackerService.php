@@ -9,6 +9,7 @@ namespace Site\Resources\Services;
 
 use Domain\Resources\ResourceService;
 use Domain\Employees\Entities\Employee;
+use Domain\Profiles\Entities\Profile;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Web\Authentication\HMACService;
@@ -33,6 +34,9 @@ class AccountTrackerService extends HMACService implements ResourceService
         if ($list[0]) {
             return $list[0];
         }
+        else {
+            throw new \Exception('no response from '. __CLASS__);
+        }
     }
 
     /**
@@ -54,5 +58,25 @@ class AccountTrackerService extends HMACService implements ResourceService
      */
     public function delete(Employee $employee)
     {
+    }
+
+    /**
+     * @param Employee $employee
+     * @param Profile  $profile
+     * @param array    $questions  User input for declared questions
+     * @param array    $values     Values already generated from previous resources
+     */
+    public static function generateValues(Employee $employee,
+                                          Profile  $profile,
+                                          array    $questions,
+                                          array    $values): array
+    {
+        $values = [
+            'username'  => $values['active_directory']['samaccountname'],
+            'firstname' => $employee->firstname,
+            'lastname'  => $employee->lastname,
+            'email'     => $values['active_directory']['mail']
+        ];
+        return $values;
     }
 }

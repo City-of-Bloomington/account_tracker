@@ -14,11 +14,16 @@ use Domain\Resources\Entities\ResourceEntity;
 class PdoResourcesRepository extends PdoRepository implements ResourcesRepository
 {
     const TABLE = 'resources';
+    public static $DEFAULT_SORT = [self::TABLE.'.order'];
 
     public function columns(): array
     {
         static $columns;
-        if (!$columns) { $columns = array_keys(get_class_vars('Domain\Resources\Entities\ResourceEntity')); }
+        if (!$columns) {
+            foreach (array_keys(get_class_vars('Domain\Resources\Entities\ResourceEntity')) as $f) {
+                $columns[] = self::TABLE.'.'.$f;
+            }
+        }
         return $columns;
     }
 
@@ -66,7 +71,7 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
         }
         return parent::performHydratedSelect($select,
                                              __CLASS__.'::hydrate',
-                                             null,
+                                             self::$DEFAULT_SORT,
                                              $itemsPerPage,
                                              $currentPage);
     }

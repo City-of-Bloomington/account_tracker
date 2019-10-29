@@ -7,6 +7,7 @@
  * @param string $this->name
  * @param string $this->type
  * @param string $this->class
+ * @param int    $this->order
  * @param string $this->api_key
  * @param string $this->api_secret
  * @param string $this->return_url
@@ -41,6 +42,15 @@ declare (strict_types=1);
                     'id'       => 'class',
                     'label'    => $this->_('class'),
                     'value'    => $this->class,
+                    'required' => true
+                ]);
+
+                echo $h->field([
+                    'name'     => 'order',
+                    'id'       => 'order',
+                    'label'    => $this->_('order'),
+                    'value'    => $this->order,
+                    'type'     => 'number',
                     'required' => true
                 ]);
 

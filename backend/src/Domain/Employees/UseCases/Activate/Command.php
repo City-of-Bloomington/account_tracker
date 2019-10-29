@@ -18,6 +18,7 @@ use Domain\Profiles\DataStorage\ProfilesRepository;
 use Domain\Resources\DataStorage\ResourcesRepository;
 use Domain\Users\DataStorage\UsersRepository;
 
+use Domain\AccountRequests\Entities\AccountRequest;
 use Domain\Employees\Entities\Employee;
 use Domain\Profiles\Entities\Profile;
 use Domain\Users\Entities\User;
@@ -52,19 +53,21 @@ class Command
             $employee  = $this->employees->load($request->employee_number);
             $profile   = $this->profiles ->load($request->profile_id     );
             $user      = $this->users->loadById($request->requester_id   );
-            $resources = $this->resources->find([]);
+            $resources = $this->resources->find([])['rows'];
         }
         catch (\Exception $e) { return new Response(null, [$e->getMessage()]); }
 
 
         try {
-            $id = $this->account_requests->save(new AccountRequest([
-                'requester_id'    => $request->user->id,
-                'employee_number' => $request->employee->number,
+            $ar = new AccountRequest([
+                'requester_id'    => $request->requester_id,
+                'employee_number' => $request->employee_number,
                 'type'            => 'activate',
                 'status'          => 'pending',
-                'resources'       => self::generateResourceValues($employee, $profile, $resources)
-            ]));
+                'employee'        => (array)$employee,
+                'resources'       => self::generateResourceValues($employee, $profile, $request->questions, $resources)
+            ]);
+            $id = $this->accounts->save($ar);
         }
         catch (\Exception $e) { return new Response(null, [$e->getMessage()]); }
         return new Response($id);
@@ -81,12 +84,13 @@ class Command
 
     private static function generateResourceValues(Employee $employee,
                                                    Profile  $profile,
+                                                   array    $questions,
                                                    array    $resources): array
     {
         $values = [];
         foreach ($resources as $r) {
             $class  = $r->class;
-            $values[$r->code] = $class::generateValues($employee, $profile);
+            $values[$r->code] = $class::generateValues($employee, $profile, $questions, $values);
         }
         return $values;
     }

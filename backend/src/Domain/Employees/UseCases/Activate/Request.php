@@ -19,9 +19,9 @@ class Request
 
     public function __construct(?array $data=null)
     {
-        if (!empty($employee_number)) { $this->employee_number = (int)$data['employee_number']; }
-        if (!empty($requester_id   )) { $this->requester_id    = (int)$data['requester_id'   ]; }
-        if (!empty($profile_id     )) { $this->profile_id      = (int)$data['profile_id'     ]; }
-        if (!empty($questions      )) { $this->questions       =      $data['questions'      ]; }
+        if (!empty($data['employee_number'])) { $this->employee_number = (int)$data['employee_number']; }
+        if (!empty($data['requester_id'   ])) { $this->requester_id    = (int)$data['requester_id'   ]; }
+        if (!empty($data['profile_id'     ])) { $this->profile_id      = (int)$data['profile_id'     ]; }
+        if (!empty($data['questions'      ])) { $this->questions       =      $data['questions'      ]; }
     }
 }

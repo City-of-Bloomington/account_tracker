@@ -15,6 +15,7 @@ create table resources (
 	type       varchar(32)  not null,
 	name       varchar(32)  not null,
 	class      varchar(128) not null,
+	`order`    int unsigned,
 	api_key    varchar(64),
 	api_secret varchar(128)
 );
@@ -35,6 +36,7 @@ create table account_requests (
 	created         timestamp    not null default CURRENT_TIMESTAMP,
 	modified        timestamp    not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 	completed       timestamp        null,
+	employee        json         not null,
 	resources       json         not null,
 	foreign key (requester_id) references people(id)
 );
