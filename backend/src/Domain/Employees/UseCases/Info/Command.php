@@ -46,7 +46,10 @@ class Command
         foreach ($result['rows'] as $r) {
             // Query each resource service for the employee
             $service = $r->serviceFactory($user->username);
-            $resources[$r->code] = $service->load($employee);
+            $resources[] = [
+                'definition' => $r,
+                'values'     => $service->load($employee)
+            ];
         }
 
         return new Response($employee, $resources);

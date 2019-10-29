@@ -13,12 +13,13 @@ declare (strict_types=1);
         <h2><?= parent::escape($this->employee->department); ?></h2>
     </header>
     <?php
-        foreach ($this->resources as $code=>$fields) {
+        foreach ($this->resources as $r) {
+            $code = $r['definition']->code;
             echo "
             <table>
                 <caption>$code</caption>
             ";
-                foreach ($fields as $k=>$v) {
+                foreach ($r['values'] as $k=>$v) {
                     $k = parent::escape($k);
                     $v = is_array($v)
                             ? parent::escape(implode(',', $v))
