@@ -27,11 +27,12 @@ declare (strict_types=1);
 
                     foreach ($questions as $f => $q) {
                         echo $h->field([
-                            'name'  => "questions[$f]",
-                            'id'    => $f,
-                            'label' => $q['label'],
-                            'type'  => $q['type' ],
-                            'value' => !empty($this->questions[$f]) ? parent::escape($this->questions[$f]) : null
+                            'name'     => "questions[$f]",
+                            'id'       => $f,
+                            'label'    => $q['label'],
+                            'type'     => $q['type' ],
+                            'value'    => !empty($this->questions[$f]) ? parent::escape($this->questions[$f]) : null,
+                            'required' => !empty($q['required']) && $q['required']
                         ]);
                     }
                 }
