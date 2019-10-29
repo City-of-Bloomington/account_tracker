@@ -7,6 +7,7 @@ declare (strict_types=1);
 $links  = [];
 $routes = [
     'resources'     => 'resource',
+    'profiles'      => 'profile',
     'people'        => 'person',
     'users'         => 'user'
 ];

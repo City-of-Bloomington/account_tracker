@@ -32,8 +32,6 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
 
     public static function hydrate(array $row): ResourceEntity
     {
-        $row['fields'] = json_decode($row['fields'], true);
-
         return new ResourceEntity($row);
     }
 
@@ -78,8 +76,6 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
      */
     public function save(ResourceEntity $res): int
     {
-        $data = (array)$res;
-        $data['fields'] = json_encode($res->fields);
-        return parent::saveToTable($data, self::TABLE);
+        return parent::saveToTable((array)$res, self::TABLE);
     }
 }

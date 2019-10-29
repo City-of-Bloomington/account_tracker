@@ -9,10 +9,10 @@ $rf = new \Aura\Router\RouterFactory(BASE_URI);
 $ROUTES = $rf->newInstance();
 $ROUTES->setTokens(['id' => '\d+']);
 
-$ROUTES->add('home.index',   '/'        )->setValues(['controller' => 'Web\HomeController']);
-$ROUTES->add('login.login',  '/login'   )->setValues(['controller' => 'Web\Authentication\LoginController']);
-$ROUTES->add('login.logout', '/logout'  )->setValues(['controller' => 'Web\Authentication\LogoutController']);
-$ROUTES->add('login.current', '/profile')->setValues(['controller' => 'Web\Users\Controllers\MyAccountController']);
+$ROUTES->add('home.index',    '/'       )->setValues(['controller' => 'Web\HomeController']);
+$ROUTES->add('login.login',   '/login'  )->setValues(['controller' => 'Web\Authentication\LoginController']);
+$ROUTES->add('login.logout',  '/logout' )->setValues(['controller' => 'Web\Authentication\LogoutController']);
+$ROUTES->add('login.current', '/account')->setValues(['controller' => 'Web\Users\Controllers\MyAccountController']);
 
 $ROUTES->attach('account_requests', '/account_requests', function ($r) {
     $r->add('view',   '/{id}')        ->setValues(['controller' => 'Web\AccountRequests\Controllers\InfoController']);
@@ -20,8 +20,10 @@ $ROUTES->attach('account_requests', '/account_requests', function ($r) {
 });
 
 $ROUTES->attach('employees', '/employees', function ($r) {
-    $r->add('view',   '/{id}')->setValues(['controller' => 'Web\Employees\Controllers\ViewController']);
-    $r->add('index', '')      ->setValues(['controller' => 'Web\Employees\Controllers\ListController']);
+    $r->add('activate',   '/{employee_number}/activate')->setTokens(['employee_number' => '\d+'])
+                                           ->setValues(['controller' => 'Web\Employees\Controllers\ActivateController']);
+    $r->add('view',       '/{id}')         ->setValues(['controller' => 'Web\Employees\Controllers\ViewController']);
+    $r->add('index',      '')              ->setValues(['controller' => 'Web\Employees\Controllers\ListController']);
 });
 
 $ROUTES->attach('people', '/people', function ($r) {
@@ -41,4 +43,10 @@ $ROUTES->attach('resources', '/resources', function ($r) {
     $r->add('update', '/update{/id}')->setValues(['controller' => 'Web\Resources\Controllers\UpdateController']);
     $r->add('view',   '/{id}'       )->setValues(['controller' => 'Web\Resources\Controllers\InfoController'  ]);
     $r->add('index',  '')            ->setValues(['controller' => 'Web\Resources\Controllers\ListController'  ]);
+});
+
+$ROUTES->attach('profiles', '/profiles', function ($r) {
+    $r->add('update', '/update{/id}')->setValues(['controller' => 'Web\Profiles\Controllers\UpdateController']);
+    $r->add('view',   '/{id}'       )->setValues(['controller' => 'Web\Profiles\Controllers\InfoController'  ]);
+    $r->add('index',  '')            ->setValues(['controller' => 'Web\Profiles\Controllers\ListController'  ]);
 });

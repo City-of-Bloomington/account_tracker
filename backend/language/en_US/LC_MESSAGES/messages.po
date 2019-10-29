@@ -27,3 +27,9 @@ msgstr "Register a new resource"
 
 msgid "resources.edit"
 msgstr "Edit this resource"
+
+msgid "profiles.add"
+msgstr "Create a new profile"
+
+msgid "profiles.edit"
+msgstr "Edit this profile"

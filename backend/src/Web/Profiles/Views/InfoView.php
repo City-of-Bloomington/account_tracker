@@ -5,9 +5,9 @@
  */
 declare (strict_types=1);
 
-namespace Web\Resources\Views;
+namespace Web\Profiles\Views;
 
-use Domain\Resources\UseCases\Info\Response;
+use Domain\Profiles\UseCases\Info\Response;
 use Web\Block;
 use Web\Template;
 
@@ -19,16 +19,16 @@ class InfoView extends Template
         parent::__construct('default', $format);
 
         if ($this->outputFormat == 'html') {
-            foreach ((array)$res->resourceEntity as $f=>$v) {
-                $vars[$f] = parent::escape($v);
+            foreach ((array)$res->profile as $f=>$v) {
+                $vars[$f] = is_array($v) ? $v : parent::escape($v);
             }
         }
         else {
-            $vars['resourceEntity'] = $res->resourceEntity;
+            $vars['profile'] = $res->profile;
         }
 
         $this->blocks = [
-            new Block('resources/info.inc', $vars)
+            new Block('profiles/info.inc', $vars)
         ];
     }
 }

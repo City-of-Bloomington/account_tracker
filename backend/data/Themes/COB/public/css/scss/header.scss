@@ -37,6 +37,7 @@ body > header {
 
     .utilityBar {
         position: absolute; right:10px; top:10px;
+        display: flex;
         details { background-color: $color-content-background; }
         nav a {
             display: block;

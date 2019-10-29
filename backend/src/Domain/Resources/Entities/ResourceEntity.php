@@ -17,7 +17,6 @@ class ResourceEntity
     public $class;
     public $api_key;
     public $api_secret;
-    public $fields;
 
     public function __construct(array $data)
     {
@@ -28,17 +27,12 @@ class ResourceEntity
         if (!empty($data['class'     ])) { $this->class      = $data['class'     ]; }
         if (!empty($data['api_key'   ])) { $this->api_key    = $data['api_key'   ]; }
         if (!empty($data['api_secret'])) { $this->api_secret = $data['api_secret']; }
-        if (!empty($data['fields'    ])) {
-            $this->fields = is_array(       $data['fields'])
-                              ?             $data['fields']
-                              : json_decode($data['fields'], true);
-        }
     }
 
     /**
      * @param string $username  The username of the person doing the request
      */
-    public function ServiceFactory(string $username): ResourceService
+    public function serviceFactory(string $username): ResourceService
     {
         $class = $this->class;
         switch ($this->type) {

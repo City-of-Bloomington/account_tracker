@@ -5,11 +5,8 @@
  * @param int    $this->id
  * @param string $this->code
  * @param string $this->name
- * @param string $this->type
- * @param string $this->class
- * @param string $this->api_key
- * @param string $this->api_secret
- * @param string $this->return_url
+ * @param string $this->questions  JSON string
+ * @param string $this->resources  JSON string
  */
 declare (strict_types=1);
 ?>
@@ -37,35 +34,22 @@ declare (strict_types=1);
                 ]);
 
                 echo $h->field([
-                    'name'     => 'class',
-                    'id'       => 'class',
-                    'label'    => $this->_('class'),
-                    'value'    => $this->class,
+                    'name'     => 'questions',
+                    'id'       => 'questions',
+                    'label'    => $this->_('questions'),
+                    'value'    => $this->questions,
+                    'type'     => 'textarea',
                     'required' => true
                 ]);
 
                 echo $h->field([
-                    'name'     => 'type',
-                    'id'       => 'type',
-                    'label'    => $this->_('type'),
-                    'value'    => $this->type,
+                    'name'     => 'resources',
+                    'id'       => 'resources',
+                    'label'    => $this->_('resources'),
+                    'value'    => $this->resources,
+                    'type'     => 'textarea',
                     'required' => true
                 ]);
-
-                echo $h->field([
-                    'name'     => 'api_key',
-                    'id'       => 'api_key',
-                    'label'    => $this->_('api_key'),
-                    'value'    => $this->api_key
-                ]);
-
-                echo $h->field([
-                    'name'     => 'api_secret',
-                    'id'       => 'api_secret',
-                    'label'    => $this->_('api_secret'),
-                    'value'    => $this->api_secret
-                ]);
-
                 $h = $this->template->getHelper('saveAndCancelButtons');
                 echo $h->saveAndCancelButtons($this->return_url);
             ?>

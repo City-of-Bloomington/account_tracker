@@ -11,7 +11,7 @@ class Request
 {
     public $id;
     public $requester_id;
-    public $username;
+    public $employee_number;
     public $type;
     public $status;
 
@@ -20,11 +20,12 @@ class Request
 
     public function __construct(array $data=null, ?int $itemsPerPage=null, ?int $currentPage=null)
     {
-        if (!empty($data['id'            ])) { $this->id           = (int)$data['id'          ]; }
-        if (!empty($data['requesterer_id'])) { $this->requester_id = (int)$data['requester_id']; }
-        if (!empty($data['username'      ])) { $this->username     =      $data['username'    ]; }
-        if (!empty($data['type'          ])) { $this->type         =      $data['type'        ]; }
-        if (!empty($data['status'        ])) { $this->status       =      $data['status'      ]; }
+        if (!empty($data['id'             ])) { $this->id              = (int)$data['id'          ]; }
+        if (!empty($data['requesterer_id' ])) { $this->requester_id    = (int)$data['requester_id']; }
+        if (!empty($data['employee_number'])) { $this->employee_number = (int)$data['employee_number']; }
+
+        if (!empty($data['type'  ])) { $this->type   = $data['type'  ]; }
+        if (!empty($data['status'])) { $this->status = $data['status']; }
 
         if ($itemsPerPage) { $this->itemsPerPage = $itemsPerPage; }
         if ($currentPage ) { $this->currentPage  = $currentPage;  }

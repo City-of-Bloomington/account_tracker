@@ -43,7 +43,6 @@ class Command
         if (!$r->name  ) { $errors[] = 'missingName'            ; }
         if (!$r->type  ) { $errors[] = 'missingType'            ; }
         if (!$r->class ) { $errors[] = 'missingClass'           ; }
-        if (!$r->fields) { $errors[] = 'resources/missingFields'; }
 
         if ($this->isDuplicate($r)) { $errors[] = 'resources/duplicate'; }
 

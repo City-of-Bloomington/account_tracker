@@ -17,7 +17,6 @@ class Request
     public $class;
     public $api_key;
     public $api_secret;
-    public $fields;
 
     public function __construct(?array $data=null)
     {
@@ -28,10 +27,5 @@ class Request
         if (!empty($data['class'     ])) { $this->class      = $data['class'     ]; }
         if (!empty($data['api_key'   ])) { $this->api_key    = $data['api_key'   ]; }
         if (!empty($data['api_secret'])) { $this->api_secret = $data['api_secret']; }
-        if (!empty($data['fields'])) {
-            $this->fields = is_array(       $data['fields'])
-                              ?             $data['fields']
-                              : json_decode($data['fields'], true);
-        }
     }
 }

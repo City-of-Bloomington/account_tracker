@@ -18,7 +18,7 @@ $DI->set('db.hr',      \Web\Database::getConnection('hr',      $DATABASES['hr'  
 //---------------------------------------------------------
 $repos = [
     'People', 'Users',
-    'AccountRequests', 'Resources'
+    'AccountRequests', 'Profiles', 'Resources'
 ];
 foreach ($repos as $t) {
     $DI->params[ "Web\\$t\\Pdo{$t}Repository"]["pdo"] = $DI->lazyGet('db.default');
@@ -61,6 +61,13 @@ foreach(['Info', 'Load', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\People\\UseCases\\$a\\Command"]['repository'] = $DI->lazyGet('Domain\People\DataStorage\PeopleRepository');
     $DI->set(    "Domain\\People\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\People\\UseCases\\$a\\Command"));
+}
+
+// Profiles
+foreach (['Info', 'Search', 'Update'] as $a) {
+    $DI->params[ "Domain\\Profiles\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\Profiles\DataStorage\ProfilesRepository');
+    $DI->set(    "Domain\\Profiles\\UseCases\\$a\\Command",
+    $DI->lazyNew("Domain\\Profiles\\UseCases\\$a\\Command"));
 }
 
 // Resources

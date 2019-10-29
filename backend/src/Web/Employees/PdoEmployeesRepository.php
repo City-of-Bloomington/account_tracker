@@ -16,9 +16,9 @@ use Web\PdoRepository;
 
 class PdoEmployeesRepository extends PdoRepository implements EmployeesRepository
 {
-    const UDFAttributeID = 52;
-    const TableID        = 66;
-    const StatusID       = 258;
+    const UDFAttributeID = 52;  // Employee Record
+    const TableID        = 66;  // Names
+    const StatusID       = 258; // Active
 
     public static $DEFAULT_SORT = ['lastname', 'firstname'];
 
