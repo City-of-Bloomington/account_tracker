@@ -7,6 +7,9 @@ declare (strict_types=1);
 
 namespace Domain\AccountRequests\UseCases\Update;
 
+use Domain\AccountRequests\DataStorage\AccountRequestsRepository;
+use Domain\AccountRequests\Entities\AccountRequest;
+
 class Command
 {
     private $repo;
@@ -21,7 +24,7 @@ class Command
         $errors = $this->validate($request);
         if ($errors) { return new Response(null, $errors); }
 
-        $ar = new AcccountRequest((array)$request);
+        $ar = new AccountRequest((array)$request);
         try {
             $id = $this->repo->save($ar);
             return new Response($id);

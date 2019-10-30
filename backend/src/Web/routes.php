@@ -15,6 +15,7 @@ $ROUTES->add('login.logout',  '/logout' )->setValues(['controller' => 'Web\Authe
 $ROUTES->add('login.current', '/account')->setValues(['controller' => 'Web\Users\Controllers\MyAccountController']);
 
 $ROUTES->attach('account_requests', '/account_requests', function ($r) {
+    $r->add('update', '/update{/id}') ->setValues(['controller' => 'Web\AccountRequests\Controllers\UpdateController']);
     $r->add('view',   '/{id}')        ->setValues(['controller' => 'Web\AccountRequests\Controllers\InfoController']);
     $r->add('index',  '')             ->setValues(['controller' => 'Web\AccountRequests\Controllers\ListController']);
 });

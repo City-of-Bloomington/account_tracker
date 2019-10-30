@@ -42,7 +42,7 @@ $DI->lazyNew('Web\Authentication\AuthenticationService'));
 // Use Cases
 //---------------------------------------------------------
 // Account Requests
-foreach (['Info', 'Search'] as $a) {
+foreach (['Info', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\AccountRequests\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\AccountRequests\DataStorage\AccountRequestsRepository');
     $DI->set(    "Domain\\AccountRequests\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\AccountRequests\\UseCases\\$a\\Command"));

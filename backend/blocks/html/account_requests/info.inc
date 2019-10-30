@@ -19,6 +19,17 @@ declare (strict_types=1);
 <section>
     <header>
         <h1><?= $this->type; ?></h1>
+        <?php
+            if (parent::isAllowed('account_requests', 'update')) {
+                $block = new \Web\Block('toolbox.inc', ['actions' => [
+                    'account_request_edit' => [
+                        'uri'   => parent::generateUri('account_requests.update', ['id'=>$this->id]),
+                        'class' => 'edit'
+                    ]
+                ]]);
+                echo $block->render('html', $this->template);
+            }
+        ?>
     </header>
     <table>
     <?php

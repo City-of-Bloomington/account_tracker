@@ -5,9 +5,9 @@
  */
 declare (strict_types=1);
 
-namespace Domain\Employees\UseCases\Activate;
+namespace Domain\AccountRequests\UseCases\Update;
 
-class Reponse
+class Response
 {
     public $id;
     public $errors;

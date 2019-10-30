@@ -40,7 +40,7 @@ class ActivateController extends Controller
             if (!$response->errors) {
                 if (!empty($_REQUEST['format']) && $_REQUEST['fornat']!='html') {
                     $info = $this->di->get('Domain\AccountRequests\UseCases\Info\Command');
-                    $ar   = $info($response->id)
+                    $ar   = $info($response->id);
                     return new \Web\AccountRequests\Views\InfoView($ar);
                 }
                 else {
