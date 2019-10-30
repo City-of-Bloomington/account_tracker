@@ -38,8 +38,15 @@ class ActivateController extends Controller
             $req      = new ActivateRequest($_POST);
             $response = $activate($req);
             if (!$response->errors) {
-                header('Location: '.View::generateUrl('account_requests.view', ['id'=>$response->id]));
-                exit();
+                if (!empty($_REQUEST['format']) && $_REQUEST['fornat']!='html') {
+                    $info = $this->di->get('Domain\AccountRequests\UseCases\Info\Command');
+                    $ar   = $info($response->id)
+                    return new \Web\AccountRequests\Views\InfoView($ar);
+                }
+                else {
+                    header('Location: '.View::generateUrl('account_requests.view', ['id'=>$response->id]));
+                    exit();
+                }
             }
             else {
                 $_SESSION['errorMessages'] = $response->errors;
