@@ -8,6 +8,8 @@
  * @param int    $this->currentPage
  */
 declare (strict_types=1);
+use Web\Block;
+use Web\Paginator;
 ?>
 <section>
     <header>

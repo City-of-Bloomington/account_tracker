@@ -110,7 +110,7 @@ class Url
 	 *
 	 * @return string
 	 */
-	public function getUrl()
+	public function getUrl(): string
 	{
 		$url = $this->getScript();
 
@@ -122,6 +122,20 @@ class Url
 			$url.= '#'.$this->anchor;
 		}
 		return $url;
+	}
+
+	public function getUri(): string
+	{
+        $uri = $this->path;
+
+		if (count($this->parameters)) {
+			$uri.= '?'.http_build_query($this->parameters,'');
+		}
+
+		if ($this->anchor) {
+			$uri.= '#'.$this->anchor;
+		}
+		return $uri;
 	}
 
 	/**
