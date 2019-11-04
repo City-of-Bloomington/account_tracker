@@ -25,15 +25,7 @@
         {
           name: 'Account Requests',
           href: '/account_requests'
-        },
-        {
-          name: 'Resource Requests',
-          href: '/resource_requests'
-        },
-        {
-          name: 'Resources',
-          href: '/resources'
-        },
+        }
       ]"
 
       :subNavItems="null"

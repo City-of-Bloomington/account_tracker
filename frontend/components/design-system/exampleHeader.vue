@@ -16,21 +16,6 @@
         v-html="application.name"
         :title="application.name"
       ></a>
-
-      <!-- <nav>
-        <router-link
-          to="/eeee"
-          v-slot="{ href, route, navigate, isActive, isExactActive }">
-          <li
-            :class="[isActive && 'active', isExactActive && 'active']">
-            test
-            <a :href="href" @click="navigate">
-              {{ route.fullPath }}test
-            </a>
-          </li>
-        </router-link>
-      </nav> -->
-      
   
       <nav
         v-if="navItems"
@@ -41,7 +26,6 @@
         <ul >
           <li v-for="(item, index) in navItems" :key="index">
             <nuxt-link
-              exact
               :to="item.href"
               :disabled="item.disabled"
               :title="item.name"

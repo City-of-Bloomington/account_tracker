@@ -1,65 +1,120 @@
 <template>
   <div>
-    <pageTitleHeader
-      page-title="Employees" />
+    <pageTitleHeader page-title="Employees">
+    
+      <form
+        slot="buttons"
+        id="employee-search"
+        class="inline">
+        <fn1-input
+          v-model="searchFields.firstname"
+          label="First Name"
+          placeholder="First Name"
+          name="firstname"
+          id="firstname" />
+
+        <fn1-input
+          v-model="searchFields.lastname"
+          label="Last Name"
+          placeholder="Last Name"
+          name="lastname"
+          id="lastname" />
+        
+        <fn1-button-group>
+          <fn1-button
+            class="search icon"
+            @click.prevent.native="searchEmployees(searchFields)">
+            search
+          </fn1-button>
+
+          <fn1-button
+            class="cancel icon"
+            @click.prevent.native="clearSearchEmployees()">
+            clear
+          </fn1-button>
+        </fn1-button-group>
+      </form>
+    </pageTitleHeader>
+
+    <main class="page-wrapper">
+
+      <fn1-alert
+        v-if="employees.error"
+        variant="warning">
+        <template v-if="employees.error">
+          <p><strong>{{ employees.error }}</strong></p>
+        </template>
+      </fn1-alert>
+
+      <template v-if="employeesData.length">
+        <p>Showing <strong>{{ resultsCount }}</strong> results for:
+        
+        <strong>
+          <template v-if="searchFields.firstname && searchFields.lastname">
+            {{ searchFields.firstname }} {{ searchFields.lastname }}
+          </template>
+          
+          <template v-else-if="searchFields.firstname">
+            {{ searchFields.firstname }}
+          </template>
+
+          <template v-else-if="searchFields.lastname">
+            {{ searchFields.lastname }}
+          </template>
+        </strong>
+        </p>
       
-    <form
-      id="employee-search"
-      class="inline">
-      <fn1-input
-        v-model="searchFields.firstname"
-        label="First Name"
-        placeholder="First Name"
-        name="firstname"
-        id="firstname" />
+        <table class="fixed-header">
+          <caption class="sr-only">
+            New World Users Table
+          </caption>
 
-      <fn1-input
-        v-model="searchFields.lastname"
-        label="Last Name"
-        placeholder="Last Name"
-        name="lastname"
-        id="lastname" />
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Username</th>
+              <th scope="col">Department</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
 
-      <button
-        @click.prevent="searchEmployees(searchFields)"
-        type="submit">Search</button>
-    </form>
-
-    <fn1-alert
-      v-if="employees.error"
-      variant="warning">
-      <p><strong>{{ employees.error }}</strong></p>
-    </fn1-alert>
-
-    <table v-if="employees.response">
-      <caption class="sr-only">
-        New World Users Table
-      </caption>
-
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Username</th>
-          <th scope="col">Department</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr v-for="p, i in employees.response">
-          <th scope="row">{{ p.firstname }} {{ p.lastname }}</th>
-          <td>{{ p.username }}</td>
-          <td>{{ p.department }}</td>
-          <td>
-            <nuxt-link
-              class="button"
-              :to="`/employees/${p.number}`">
-              view
-            </nuxt-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          <tbody>
+            <tr v-for="p, i in employeesData">
+              <th scope="row">
+                <strong>{{ p.firstname }} {{ p.lastname }}</strong>
+              </th>
+              <td>
+                <template v-if="p.username">
+                  {{ p.username }}
+                </template>
+                <template v-else>
+                  - - -
+                </template>
+              </td>
+              <td>
+                <template v-if="p.department">
+                  {{ p.department }}
+                </template>
+                <template v-else>
+                  - - -
+                </template>
+              </td>
+              <td>
+                <template v-for="l, i in p._links">
+                  <template v-if="i == 'self'">
+                    <nuxt-link
+                      class="button"
+                      :to="`/employees/${p.number}`">
+                      View
+                    </nuxt-link>
+                  </template>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </main>
   </div>
 </template>
 
@@ -82,6 +137,7 @@
         lastNameParam  !== undefined
         ){
         next(vm => {
+          console.dir(to.query)
           vm.searchEmployees(to.query);
         })
       }
@@ -94,55 +150,101 @@
           lastname:   this.$route.query.lastname  || '',
         },
         employees: {
-          response: null,
+          data:     null,
           error:    null,
         }
       }
     },
     created() {},
     mounted() {},
-    computed: {},
+    computed: {
+      resultsCount() {
+        if(this.employeesData)
+          return this.employeesData.length
+      },
+      employeesData() {
+        if(this.employees.data) {
+          return this.employees.data._embedded.employees
+        } else {
+          return false;
+        }
+      },
+    },
     methods: {
       getSearchEmployees(params) {
-        let regExTest        = /[a-zA-Z]{2,}/,
-            fieldsTest       = regExTest.test(params.firstname || params.lastname),
-            backendEmployees = `${process.env.backendUrl}${process.env.backendEmployees}firstname=${params.firstname}&lastname=${params.lastname}`;
+        let employeeParams,
+            regExTest        = /[a-zA-Z]{2,}/,
+            fieldsTest       = regExTest.test(params.firstname || params.lastname);
+
+        if(params.firstname && params.lastname) {
+          employeeParams = `firstname=${params.firstname}&lastname=${params.lastname}`;
+        } else if(params.firstname) {
+          employeeParams = `firstname=${params.firstname}`;
+        } else if(params.lastname) {
+          employeeParams = `lastname=${params.lastname}`;
+        }
+
+        let backendEmployees = `${process.env.backendUrl}${process.env.backendEmployees}${employeeParams}`;
+
+        console.dir(backendEmployees)
 
         return new Promise((resolve, reject) => {
           if(fieldsTest) {
             axios.get(backendEmployees, { withCredentials: true })
             .then((res) => {
-              if(res.data.length) {
+              if(res.data) {
                 resolve(res.data)
               } else {
                 reject('Sorry no results.')
               }
             })
-          .catch((e)  => { reject(e)});
+            .catch((e)  => { reject(e)});
           } else {
-            reject('Note: Search field should be at least 2 characters.')
+            reject('Note: Fields should be at least 2 characters.')
           }
         })
       },
       searchEmployees(params) {
-        this.getSearchEmployees(params)
-        .then((res) => {
-          // let queryParams = params;
+        let values = [];
 
-          // for(var field in queryParams)
-          //   if(!queryParams[field])
-          //     delete queryParams[field];
+        for (let value of Object.values(params)) {
+          if(value !== '')
+            values.push(value)
+        }
 
-          // this.$router.push({ query: queryParams });
-          this.$router.push({ query: params});
+        if(values.length) {
+          let queryParams = params;
+          for(var field in queryParams)
+            if(!queryParams[field])
+              delete queryParams[field];
 
-          this.employees.response = res;
-          this.employees.error = null;
-        })
-        .catch((e) => {
-          this.employees.response = null;
-          this.employees.error = e;
-        })
+          this.getSearchEmployees(queryParams)
+          .then((res) => {
+            this.$router.push({ query: queryParams});
+            this.employees.data = res;
+            this.employees.error = null;
+          })
+          .catch((e) => {
+            this.employees.data = null;
+            this.employees.error = e;
+          })
+        } else {
+          this.employees.error = 'Please provide search values.'
+        }
+      },
+      clearSearchEmployees() {
+        this.resetEmployeeSearchData();
+      },
+      resetEmployeeSearchData() {
+        this.$router.push({ query: null});
+
+        // Search Fields
+        this.searchFields.firstname = '';
+        this.searchFields.lastname  = '';
+
+        // Search Datas
+        this.employees.data     = null;
+        this.employees.error        = null;
       }
     }
   }
@@ -151,36 +253,19 @@
 <style lang="scss">
 form {
   &#employee-search {
-    margin: 0 0 20px 0;
-    padding: 0 0 20px 0;
-    border-bottom: 1px solid lighten($text-color, 50%);
+    // margin: 0 0 20px 0;
+    // padding: 0 0 20px 0;
+    // border-bottom: 1px solid $color-grey-dark;
   }
 }
 
 table {
-  thead {
-    tr {
-      th {
-        &:last-of-type {
-          text-align: right;
-          padding-right: 8px;
-        }
+  margin: 20px 0 0 0;
+  
+    &.fixed-header {
+      tbody {
+        height: calc(100vh - 355px);
       }
     }
   }
-
-  tbody {
-    tr {
-      th {
-        text-align: left;
-      }
-
-      td {
-        &:last-of-type {
-          text-align: right;
-        }
-      }
-    }
-  }
-}
 </style>

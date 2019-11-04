@@ -19,6 +19,7 @@ vendor
 backend/data/sessions/*
 frontend/certs
 ansible/roles
+.vscode
 
 # Service worker
 sw.*

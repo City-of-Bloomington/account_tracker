@@ -1,6 +1,8 @@
 import Vuex         from 'vuex'
 import axios        from 'axios'
 
+var Cookies = require('cookies')
+
 import {
   getField,
   updateField }     from 'vuex-map-fields'
@@ -31,7 +33,21 @@ export const actions = {
   /**
    * Note: we can only use this via SSR
    */
-  async nuxtServerInit({ commit, state }, { redirect, req }) {
+  async nuxtServerInit({ commit }, { req, redirect }) {
+    // let loginRoute = `${process.env.backendUrl}account?format=json`;
+    // try {
+    //   let res = await this.$axios.$get(loginRoute, { withCredentials: true })
+    //   console.dir(res)
+    // } catch(e) {
+    //   console.dir(e);
+    //   if (e.response.status == 403) {
+    //     console.dir('403');
+    //     // let redirectURL        = `${process.env.frontendUrl}${process.env.frontendBase}`,
+    //     //     encodedRedirectURL = encodeURI(redirectURL);
+
+    //     // redirect(`${process.env.backendUrl}login?return_url=${encodedRedirectURL}`);
+    //   }
+    // }
   }
 }
 
