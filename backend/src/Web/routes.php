@@ -16,6 +16,8 @@ $ROUTES->add('login.current', '/account')->setValues(['controller' => 'Web\Users
 
 $ROUTES->attach('account_requests', '/account_requests', function ($r) {
     $r->add('update', '/update{/id}') ->setValues(['controller' => 'Web\AccountRequests\Controllers\UpdateController']);
+    $r->add('apply',  '/{id}/apply')  ->setValues(['controller' => 'Web\AccountRequests\Controllers\Apply' ]);
+    $r->add('delete', '/{id}/delete') ->setValues(['controller' => 'Web\AccountRequests\Controllers\DeleteController']);
     $r->add('view',   '/{id}')        ->setValues(['controller' => 'Web\AccountRequests\Controllers\InfoController']);
     $r->add('index',  '')             ->setValues(['controller' => 'Web\AccountRequests\Controllers\ListController']);
 });

@@ -31,6 +31,10 @@ $DI->set( 'Domain\Employees\DataStorage\EmployeesRepository',
 $DI->lazyNew('Web\Employees\PdoEmployeesRepository'));
 
 //---------------------------------------------------------
+// Metadata Providers
+//---------------------------------------------------------
+
+//---------------------------------------------------------
 // Services
 //---------------------------------------------------------
 $DI->params[ 'Web\Authentication\AuthenticationService']['repository'] = $DI->lazyGet('Domain\Users\DataStorage\UsersRepository');
@@ -42,11 +46,15 @@ $DI->lazyNew('Web\Authentication\AuthenticationService'));
 // Use Cases
 //---------------------------------------------------------
 // Account Requests
-foreach (['Info', 'Search', 'Update'] as $a) {
+foreach (['Delete', 'Info', 'Search', 'Update'] as $a) {
     $DI->params[ "Domain\\AccountRequests\\UseCases\\$a\\Command"]["repository"] = $DI->lazyGet('Domain\AccountRequests\DataStorage\AccountRequestsRepository');
     $DI->set(    "Domain\\AccountRequests\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\AccountRequests\\UseCases\\$a\\Command"));
 }
+$DI->params[ 'Domain\AccountRequests\UseCases\Apply\Command']['accounts' ] = $DI->lazyGet('Domain\AccountRequests\DataStorage\AccountRequestsRepository');
+$DI->params[ 'Domain\AccountRequests\UseCases\Apply\Command']['resources'] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
+$DI->set(    'Domain\AccountRequests\UseCases\Apply\Command',
+$DI->lazyNew('Domain\AccountRequests\UseCases\Apply\Command'));
 
 // Employees
 foreach (['Info', 'Search'] as $a) {

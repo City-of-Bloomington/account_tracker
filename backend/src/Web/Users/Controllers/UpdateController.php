@@ -8,6 +8,7 @@ declare (strict_types=1);
 namespace Web\Users\Controllers;
 use Domain\Users\UseCases\Info\Request   as InfoRequest;
 use Domain\Users\UseCases\Update\Request as UpdateRequest;
+use Web\Users\Views\InfoView;
 use Web\Users\Views\UpdateView;
 use Web\Controller;
 use Web\View;
@@ -27,8 +28,15 @@ class UpdateController extends Controller
             if (!$request->authentication_method) { $request->authentication_method = self::DEFAULT_AUTH; }
             $response = $update($request);
             if (!count($response->errors)) {
-                header('Location: '.View::generateUrl('users.index'));
-                exit();
+                if (!empty($_REQUEST['format']) && $_REQUEST['format']!='html') {
+                    $info = $this->di->get('Domain\Users\UseCases\Info\Command');
+                    $user = $info($response->id);
+                    return new InfoView($user);
+                }
+                else {
+                    header('Location: '.View::generateUrl('users.index'));
+                    exit();
+                }
             }
         }
         elseif (!empty($_REQUEST['id'])) {

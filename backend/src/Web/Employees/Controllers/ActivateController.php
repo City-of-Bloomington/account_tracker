@@ -38,10 +38,10 @@ class ActivateController extends Controller
             $req      = new ActivateRequest($_POST);
             $response = $activate($req);
             if (!$response->errors) {
-                if (!empty($_REQUEST['format']) && $_REQUEST['fornat']!='html') {
+                if (!empty($_REQUEST['format']) && $_REQUEST['format']!='html') {
                     $info = $this->di->get('Domain\AccountRequests\UseCases\Info\Command');
                     $ar   = $info($response->id);
-                    return new \Web\AccountRequests\Views\InfoView($ar);
+                    return new \Web\AccountRequests\Views\InfoView($ar->account_request);
                 }
                 else {
                     header('Location: '.View::generateUrl('account_requests.view', ['id'=>$response->id]));

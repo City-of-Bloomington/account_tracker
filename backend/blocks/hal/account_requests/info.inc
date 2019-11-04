@@ -12,6 +12,9 @@ $links = [
 if (parent::isAllowed('account_requests', 'update')) {
     $links['edit'] = ['href' => parent::generateUri('account_requests.update', ['id'=>$this->account_request->id])];
 }
+if (parent::isAllowed('account_requests', 'delete')) {
+    $links['delete'] = ['href' => parent::generateUri('account_requests.delete', ['id'=>$this->account_request->id])];
+}
 
 $this->account_request->_links = $links;
 

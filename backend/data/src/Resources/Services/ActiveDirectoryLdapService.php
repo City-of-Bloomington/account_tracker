@@ -21,7 +21,6 @@ class ActiveDirectoryLdapService extends LdapService implements ResourceService
      */
     public function load(Employee $employee): ?array
     {
-
         $entries = parent::search(['sAMAccountName='.$employee->username]);
         return self::hydrate($entries[0]);
     }
@@ -31,6 +30,18 @@ class ActiveDirectoryLdapService extends LdapService implements ResourceService
      */
     public function create(array $account)
     {
+        $dn = $account['distinguishedname'];
+        unset($account['distinguishedname']);
+
+        $entry = [];
+        foreach ($account as $k=>$v) {
+            if ($v) { $entry[$k] = $v; }
+        }
+
+        $success = @ldap_add(parent::getConnection(), $dn, $entry);
+        if (!$success) {
+            throw new \Exception(__CLASS__.': '.ldap_error(parent::getConnection()));
+        }
     }
 
     /**

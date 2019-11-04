@@ -20,13 +20,28 @@ declare (strict_types=1);
     <header>
         <h1><?= $this->type; ?></h1>
         <?php
+            $actions = [];
             if (parent::isAllowed('account_requests', 'update')) {
-                $block = new \Web\Block('toolbox.inc', ['actions' => [
-                    'account_request_edit' => [
-                        'uri'   => parent::generateUri('account_requests.update', ['id'=>$this->id]),
-                        'class' => 'edit'
-                    ]
-                ]]);
+                $actions['account_request_edit'] = [
+                    'uri'   => parent::generateUri('account_requests.update', ['id'=>$this->id]),
+                    'class' => 'edit'
+                ];
+            }
+            if (parent::isAllowed('account_requests', 'delete')) {
+                $actions['account_requests_delete'] = [
+                    'uri'   => parent::generateUri('account_requests.delete', ['id'=>$this->id]),
+                    'class' => 'delete'
+                ];
+            }
+            if (parent::isAllowed('account_requests', 'apply')) {
+                $actions['account_requests_apply'] = [
+                    'uri'   => parent::generateUri('account_requests.apply', ['id'=>$this->id]),
+                    'class' => 'apply'
+                ];
+            }
+
+            if ($actions) {
+                $block = new \Web\Block('toolbox.inc', ['actions' => $actions]);
                 echo $block->render('html', $this->template);
             }
         ?>

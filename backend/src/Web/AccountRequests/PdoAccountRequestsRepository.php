@@ -8,6 +8,7 @@ declare (strict_types=1);
 namespace Web\AccountRequests;
 
 use Aura\SqlQuery\Common\SelectInterface;
+use Domain\AccountRequests\Metadata;
 use Domain\AccountRequests\Entities\AccountRequest;
 use Domain\AccountRequests\DataStorage\AccountRequestsRepository;
 use Domain\AccountRequests\UseCases\Search\Request as SearchRequest;
@@ -107,5 +108,21 @@ class PdoAccountRequestsRepository extends PdoRepository implements AccountReque
         ];
         if ($r->id) { $data['id'] = $r->id; }
         return parent::saveToTable($data, self::TABLE);
+    }
+
+    public function saveStatus(int $id, string $status)
+    {
+        $sql = $status=='completed'
+             ? 'update account_requests set status=?,completed=now() where id=?'
+             : 'update account_requests set status=? where id=?';
+        $query = $this->pdo->prepare($sql);
+        $query->execute([$status, $id]);
+    }
+
+    public function delete(int $id)
+    {
+        $sql = 'delete from account_requests where id=?';
+        $query = $this->pdo->prepare($sql);
+        $query->execute([$id]);
     }
 }

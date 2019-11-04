@@ -41,20 +41,6 @@ create table account_requests (
 	foreign key (requester_id) references people(id)
 );
 
--- create table resource_requests (
--- 	id            int unsigned not null primary key auto_increment,
--- 	request_id    int unsigned not null,
--- 	resource_code varchar(32)  not null,
--- 	type          varchar(16)  not null,
--- 	status        varchar(16)  not null,
--- 	created       timestamp    not null default CURRENT_TIMESTAMP,
--- 	modified      timestamp    not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
--- 	completed     timestamp        null,
--- 	resource_data json         not null,
--- 	foreign key (request_id   ) references account_requests(id),
--- 	foreign key (resource_code) references resources       (code)
--- );
-
 create table profiles (
 	id        int unsigned not null primary key auto_increment,
 	code      varchar(128) not null unique,

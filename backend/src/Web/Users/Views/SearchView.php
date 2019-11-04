@@ -35,7 +35,7 @@ class SearchView extends Template
             'roles'                  => $roles,
             'authentication_methods' => $authentication_methods,
         ];
-        foreach ((array)$request as $k=>$v) {
+        foreach ($request as $k=>$v) {
             if (!is_array($v)) { $vars[$k] = parent::escape($v); }
         }
         $block = $format == 'html' ? 'users/findForm.inc' : 'users/list.inc';

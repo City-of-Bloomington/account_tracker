@@ -12,6 +12,7 @@ declare (strict_types=1);
 
 namespace Domain\Employees\UseCases\Activate;
 
+use Domain\AccountRequests\Metadata;
 use Domain\AccountRequests\DataStorage\AccountRequestsRepository;
 use Domain\Employees\DataStorage\EmployeesRepository;
 use Domain\Profiles\DataStorage\ProfilesRepository;
@@ -63,7 +64,7 @@ class Command
                 'requester_id'    => $request->requester_id,
                 'employee_number' => $request->employee_number,
                 'type'            => 'activate',
-                'status'          => 'pending',
+                'status'          => Metadata::STATUS_PENDING,
                 'employee'        => (array)$employee,
                 'resources'       => self::generateResourceValues($employee, $profile, $request->questions, $resources)
             ]);
@@ -87,10 +88,14 @@ class Command
                                                    array    $questions,
                                                    array    $resources): array
     {
+        $profile_resources = array_keys($profile->resources);
+
         $values = [];
         foreach ($resources as $r) {
-            $class  = $r->class;
-            $values[$r->code] = $class::generateValues($employee, $profile, $questions, $values);
+            if (in_array($r->code, $profile_resources)) {
+                $class  = $r->class;
+                $values[$r->code] = $class::generateValues($employee, $profile, $questions, $values);
+            }
         }
         return $values;
     }

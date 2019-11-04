@@ -18,4 +18,6 @@ interface AccountRequestsRepository
 
     // Write functions
     public function save(AccountRequest $req): int;
+    public function saveStatus(int $id, string $status);
+    public function delete(int $id);
 }

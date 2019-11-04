@@ -40,7 +40,7 @@ abstract class PdoRepository
             $query->execute($c->getBindValues());
 
             $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-            $total  = (int)$result[0]['count'];
+            $total  = $result ? (int)$result[0]['count'] : 0;
 
             $select->limit ($itemsPerPage);
             $select->offset($itemsPerPage * ($currentPage-1));

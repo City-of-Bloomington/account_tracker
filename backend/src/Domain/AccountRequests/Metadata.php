@@ -9,6 +9,10 @@ namespace Domain\AccountRequests;
 
 class Metadata
 {
-    public static $types    = ['activate'];
-    public static $statuses = ['pending', 'approved', 'completed'];
+    const TYPE_ACTIVATE    = 'activate';
+    const STATUS_PENDING   = 'pending';
+    const STATUS_COMPLETED = 'completed';
+
+    public static $types    = [self::TYPE_ACTIVATE];
+    public static $statuses = [self::STATUS_PENDING, self::STATUS_COMPLETED];
 }
