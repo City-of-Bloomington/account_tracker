@@ -13,6 +13,7 @@
  * @param DateTime $this->completed
  * @param array    $this->employee           // JSON array
  * @param array    $this->resources          // JSON array
+ * @param array    $this->actions            // Array of valid action links
  */
 declare (strict_types=1);
 ?>
@@ -20,29 +21,15 @@ declare (strict_types=1);
     <header>
         <h1><?= $this->type; ?></h1>
         <?php
-            $actions = [];
-            if (parent::isAllowed('account_requests', 'update')) {
-                $actions['account_request_edit'] = [
-                    'uri'   => parent::generateUri('account_requests.update', ['id'=>$this->id]),
-                    'class' => 'edit'
-                ];
-            }
-            if (parent::isAllowed('account_requests', 'delete')) {
-                $actions['account_requests_delete'] = [
-                    'uri'   => parent::generateUri('account_requests.delete', ['id'=>$this->id]),
-                    'class' => 'delete'
-                ];
-            }
-            if (parent::isAllowed('account_requests', 'apply')) {
-                $actions['account_requests_apply'] = [
-                    'uri'   => parent::generateUri('account_requests.apply', ['id'=>$this->id]),
-                    'class' => 'apply'
-                ];
-            }
-
-            if ($actions) {
-                $block = new \Web\Block('toolbox.inc', ['actions' => $actions]);
-                echo $block->render('html', $this->template);
+            if (!empty($this->vars['actions'])) {
+                foreach ($this->vars['actions'] as $k=>$v) {
+                    if ($k == 'self') { unset($this->vars['actions'][$k]); }
+                    else {
+                        $this->vars['actions'][$k]['uri'  ] = $v['href'];
+                        $this->vars['actions'][$k]['class'] = $k;
+                    }
+                }
+                $this->_include('toolbox.inc');
             }
         ?>
     </header>

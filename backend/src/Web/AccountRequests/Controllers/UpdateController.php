@@ -30,7 +30,7 @@ class UpdateController extends Controller
             $response       = $update($updateRequest);
             if (!$response->errors) {
                 if (empty($_REQUEST['format']) || $_REQUEST['format']=='html') {
-                    header('Location: '.View::generateUrl('account_requests.view', ['id'=>$id]));
+                    header('Location: '.View::generateUrl('account_requests.view', ['id'=>$response->id]));
                     exit();
                 }
             }

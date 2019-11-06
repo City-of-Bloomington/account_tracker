@@ -30,8 +30,8 @@ class UpdateController extends Controller
             if (!count($response->errors)) {
                 if (!empty($_REQUEST['format']) && $_REQUEST['format']!='html') {
                     $info = $this->di->get('Domain\Users\UseCases\Info\Command');
-                    $user = $info($response->id);
-                    return new InfoView($user);
+                    $ir   = $info($response->id);
+                    return new InfoView($ir->user);
                 }
                 else {
                     header('Location: '.View::generateUrl('users.index'));

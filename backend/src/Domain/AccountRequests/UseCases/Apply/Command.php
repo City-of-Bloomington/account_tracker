@@ -9,6 +9,7 @@ namespace Domain\AccountRequests\UseCases\Apply;
 
 use Domain\AccountRequests\Metadata;
 use Domain\AccountRequests\DataStorage\AccountRequestsRepository;
+use Domain\AccountRequests\Entities\AccountRequest;
 use Domain\Employees\Entities\Employee;
 use Domain\Resources\DataStorage\ResourcesRepository;
 use Domain\ResourceRequests\DataStorage\ResourceRequestsRepository;
@@ -34,9 +35,9 @@ class Command
         }
         catch (\Exception $e) { return new Response(null, null, [$e->getMessage()]); }
 
-        $errors = $this->validate($request);
+        $errors = $this->validate($account);
         if ($errors) {
-            return new Response($employee, $values, $errors);
+            return new Response($employee, null, $errors);
         }
 
         $values = [];
@@ -54,15 +55,17 @@ class Command
             }
         }
 
-        $this->accounts->saveStatus($account->id, Metadata::STATUS_COMPLETED);
+        if (!$errors) {
+            $this->accounts->saveStatus($account->id, Metadata::STATUS_COMPLETED);
+        }
 
         return new Response($employee, $values, $errors);
     }
 
-    private function validate(Request $r): array
+    private function validate(AccountRequest $r): array
     {
         $errors = [];
-        if ($request->status == Metadata::STATUS_COMPLETED) {
+        if ($r->status == Metadata::STATUS_COMPLETED) {
             $errors[] = 'account_requests/invalidStatus';
         }
         return $errors;

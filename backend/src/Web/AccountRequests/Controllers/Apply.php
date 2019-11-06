@@ -27,7 +27,10 @@ class Apply extends Controller
             $req   = new ApplyRequest(['id' => $id, 'username' => $user->username]);
             $res   = $apply($req);
 
-            print_r($res);
+            if ($res->errors) {
+                $_SESSION['errorMessages'] = $res->errors;
+            }
+            header('Location: '.View::generateUrl('employees.view', ['id'=>$res->employee->number]));
             exit();
         }
         return new \Web\Views\NotFoundView();

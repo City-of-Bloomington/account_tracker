@@ -11,7 +11,7 @@ use Domain\Resources\ResourceService;
 use Domain\Employees\Entities\Employee;
 use Domain\Profiles\Entities\Profile;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7;
 use Web\Authentication\HMACService;
 
 class AccountTrackerService extends HMACService implements ResourceService
@@ -26,7 +26,7 @@ class AccountTrackerService extends HMACService implements ResourceService
         $url = BASE_URL.'/users?format=json&username='.$employee->username;
 
         $client   = new Client();
-        $request  = new Request('GET', $url, parent::HMACHeaders());
+        $request  = new Psr7\Request('GET', $url, parent::HMACHeaders());
         $signed   = parent::signRequest($request);
         $response = $client->send($signed);
 
@@ -44,6 +44,16 @@ class AccountTrackerService extends HMACService implements ResourceService
      */
     public function create(array $account)
     {
+        $account['format'] = 'json';
+
+        $client   = new Client();
+        $request  = parent::signedPostRequest(BASE_URL.'/users/update', $account);
+        $response = $client->send($request, ['allow_redirects'=>false]);
+
+        $user     = json_decode((string)$response->getBody(), true);
+        if (empty($user['id'])) {
+            throw new \Exception('failed to create user '. __CLASS__);
+        }
     }
 
     /**
@@ -75,7 +85,9 @@ class AccountTrackerService extends HMACService implements ResourceService
             'username'  => $values['active_directory']['samaccountname'],
             'firstname' => $employee->firstname,
             'lastname'  => $employee->lastname,
-            'email'     => $values['active_directory']['mail']
+            'email'     => $values['active_directory']['mail'],
+            'role'      => $profile->resources['account_tracker']['role'],
+            'authentication_method' => 'Ldap'
         ];
         return $values;
     }

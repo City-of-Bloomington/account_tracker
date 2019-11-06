@@ -6,14 +6,17 @@
 declare (strict_types=1);
 
 namespace Domain\AccountRequests\UseCases\Apply;
+use Domain\Employees\Entities\Employee;
 
 class Response
 {
+    public $employee;
     public $resources;
     public $errors;
 
-    public function __construct(array $resources, array $errors)
+    public function __construct(?Employee $employee=null, ?array $resources=null, ?array $errors=null)
     {
+        $this->employee  = $employee;
         $this->resources = $resources;
         $this->errors    = $errors;
     }

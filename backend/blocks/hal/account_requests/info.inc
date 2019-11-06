@@ -2,20 +2,11 @@
 /**
  * @copyright 2019 City of Bloomington, Indiana
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
- * @param AccountRequest $account_request
+ * @param AccountRequest $this->account_request
+ * @param array          $this->actions         // Array of valid action links
  */
 declare (strict_types=1);
 
-$links = [
-    'self' => ['href'=>parent::generateUri('account_requests.view', ['id'=>$this->account_request->id])]
-];
-if (parent::isAllowed('account_requests', 'update')) {
-    $links['edit'] = ['href' => parent::generateUri('account_requests.update', ['id'=>$this->account_request->id])];
-}
-if (parent::isAllowed('account_requests', 'delete')) {
-    $links['delete'] = ['href' => parent::generateUri('account_requests.delete', ['id'=>$this->account_request->id])];
-}
-
-$this->account_request->_links = $links;
+$this->account_request->_links = $this->actions;
 
 echo json_encode($this->account_request, JSON_PRETTY_PRINT);

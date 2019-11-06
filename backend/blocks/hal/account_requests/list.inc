@@ -9,6 +9,8 @@
  * @param User  $this->user
  */
 declare (strict_types=1);
+use Web\AccountRequests\Views\InfoView;
+
 use Web\Paginator;
 use Web\Url;
 
@@ -24,22 +26,10 @@ $out = [
     'currentPage'      => $this->currentPage
 ];
 
-$userCanView   = parent::isAllowed('account_requests', 'view');
-$userCanEdit   = parent::isAllowed('account_requests', 'update');
-$userCanDelete = parent::isAllowed('account_requests', 'delete');
 foreach ($this->account_requests as $a) {
-    $links = [];
-    if ($userCanView) {
-        $links['self'  ] = ['href' => parent::generateUri('account_requests.view',   ['id'=>$a->id])];
-    }
-    if ($userCanEdit) {
-        $links['edit'  ] = ['href' => parent::generateUri('account_requests.update', ['id'=>$a->id])];
-    }
-    if ($userCanDelete) {
-        $links['delete'] = ['href' => parent::generateUri('account_requests.delete', ['id'=>$a->id])];
-    }
-    if ($links) {
-        $a->_links = $links;
+    $actions = InfoView::generateActionLinks($a);
+    if ($actions) {
+        $a->_links = $actions;
     }
 
     $out['_embedded']['account_requests'][] = $a;
