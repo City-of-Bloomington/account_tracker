@@ -20,18 +20,6 @@ declare (strict_types=1);
 <section>
     <header>
         <h1><?= $this->type; ?></h1>
-        <?php
-            if (!empty($this->vars['actions'])) {
-                foreach ($this->vars['actions'] as $k=>$v) {
-                    if ($k == 'self') { unset($this->vars['actions'][$k]); }
-                    else {
-                        $this->vars['actions'][$k]['uri'  ] = $v['href'];
-                        $this->vars['actions'][$k]['class'] = $k;
-                    }
-                }
-                $this->_include('toolbox.inc');
-            }
-        ?>
     </header>
     <table>
     <?php
@@ -48,8 +36,25 @@ declare (strict_types=1);
     </table>
 
     <h2><?= $this->_('employee'); ?></h2>
-    <code><?= json_encode($this->employee, JSON_PRETTY_PRINT); ?></code>
+    <table>
+    <?php
+        foreach ($this->employee as $k=>$v) {
+            $v = parent::escape($v);
+            echo "<tr><th>{$this->_($k)}</th><td>$v</td></tr>";
+        }
+    ?>
+    </table>
 
-    <h2><?= $this->_('resources'); ?></h2>
-    <code><?= json_encode($this->resources, JSON_PRETTY_PRINT); ?></code>
+    <h2><?= $this->_(['resource', 'resources', count($this->resources)]); ?></h2>
+    <?php
+        foreach ($this->resources as $code=>$values) {
+            echo "<table><caption>$code</caption>";
+            foreach ($values as $k=>$v) {
+                $v = parent::escape($v);
+                echo "<tr><th>{$this->_($k)}</th><td>$v</td></tr>";
+            }
+
+            echo "</table>";
+        }
+    ?>
 </scetion>

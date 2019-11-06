@@ -4,23 +4,25 @@
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
  */
 declare (strict_types=1);
-$links  = [];
-$routes = [
-    'resources'     => 'resource',
-    'profiles'      => 'profile',
-    'people'        => 'person',
-    'users'         => 'user'
-];
-foreach ($routes as $plural=>$singular) {
-    if (parent::isAllowed($plural, 'index')) {
-        $links[] = [
-            'url'   => parent::generateUri("$plural.index"),
-            'label' => $this->_([$singular, $plural, 2])
+?>
+<nav>
+    <header>
+        <h1><?= $this->_('admin'); ?></h1>
+    </header>
+    <?php
+        $links  = [];
+        $routes = [
+            'resources'     => 'resource',
+            'profiles'      => 'profile',
+            'people'        => 'person',
+            'users'         => 'user'
         ];
-    }
-}
-
-if ($links) {
-    $helper = $this->getHelper('dropdown');
-    echo $helper->dropdown($links, $this->_('admin'), 'Administrator_menu');
-}
+        foreach ($routes as $plural=>$singular) {
+            if (parent::isAllowed($plural, 'index')) {
+                $url   = parent::generateUri("$plural.index");
+                $label = $this->_([$singular, $plural, 2]);
+                echo "<a href=\"$url\">$label</a>";
+            }
+        }
+    ?>
+</nav>

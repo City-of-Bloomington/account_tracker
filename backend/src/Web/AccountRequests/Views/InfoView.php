@@ -24,17 +24,26 @@ class InfoView extends Template
         ];
 
         if ($this->outputFormat == 'html') {
+            if (isset($vars['actions']['self'])) {
+                unset($vars['actions']['self']);
+            }
             foreach ((array)$request as $k=>$v) {
                 $vars[$k] = is_string($v) ? parent::escape($v) : $v;
             }
+
+            $this->blocks = [
+                new Block('account_requests/info.inc', $vars),
+                'panel-one' => [
+                    new Block('halbox.inc', ['actions' => $vars['actions']])
+                ]
+            ];
         }
         else {
             $vars['account_request'] = $request;
+            $this->blocks = [
+                new Block('account_requests/info.inc', $vars)
+            ];
         }
-
-        $this->blocks = [
-            new Block('account_requests/info.inc', $vars)
-        ];
     }
 
     public static function generateActionLinks($request): array

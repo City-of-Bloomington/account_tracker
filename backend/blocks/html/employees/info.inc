@@ -20,7 +20,7 @@ declare (strict_types=1);
                 <caption>$code</caption>
             ";
                 foreach ($r['values'] as $k=>$v) {
-                    $k = parent::escape($k);
+                    $k = $this->_($k);
                     $v = is_array($v)
                             ? parent::escape(implode(',', $v))
                             : parent::escape($v);

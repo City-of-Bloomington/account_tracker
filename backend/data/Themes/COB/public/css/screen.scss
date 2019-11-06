@@ -3,4 +3,10 @@
 
 @import 'scss/html-elements';
 @import 'scss/layout';
-@import 'scss/header'
+@import 'scss/header';
+
+#panel-one {
+    nav { border: 1px solid black; margin-bottom: $size-gutter; }
+    h1 { font-size: $font-size-normal; }
+    a  { display: block; }
+}
