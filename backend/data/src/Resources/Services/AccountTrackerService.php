@@ -32,11 +32,12 @@ class AccountTrackerService extends HMACService implements ResourceService
             $response = $client->send($signed);
 
             $list = json_decode((string)$response->getBody(), true);
-            if (is_array($list)) {
-                return isset($list[0]) ? $list[0] : [];
+            if (!$list) {
+                throw new \Exception('Server did not return json');
             }
-            else {
-                throw new \Exception('no response from '. __CLASS__);
+
+            if (!empty($list['users'][0])) {
+                return $list['users'][0];
             }
         }
         return [];
@@ -63,8 +64,18 @@ class AccountTrackerService extends HMACService implements ResourceService
     /**
      * Modifies an existing user account
      */
-    public function modify(Employee $employee, array $account)
+    public function modify(array $current, array $modified)
     {
+        $modified['format'] = 'json';
+        $modified['id'    ] = $current['id'];
+
+        $client   = new Client();
+        $request  = parent::signedPostRequest(BASE_URL.'/users/update', $modified);
+        $response = $client->send($request, ['allow_redirects'=>false]);
+        $body     = $response->getBody()->__toString();
+
+        $json     = json_decode($body, true);
+        return $json ?? ['Server did not return json'];
     }
 
     /**

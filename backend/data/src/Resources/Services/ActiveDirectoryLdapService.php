@@ -48,7 +48,7 @@ class ActiveDirectoryLdapService extends LdapService implements ResourceService
     /**
      * Modifies an existing user account
      */
-    public function modify(Employee $employee, array $account)
+    public function modify(array $current, array $modified)
     {
     }
 

@@ -48,12 +48,16 @@ class Command
                                 $errors);
         }
 
-        $service  = $resource->serviceFactory($applyRequest->username);
-        $response = $service->create($accountRequest->resources[$resource->code]);
-        $values   = $service->load($employee);
+        $service         = $resource->serviceFactory($applyRequest->username);
+        $requestedValues = $accountRequest->resources[$resource->code];
+        $currentValues   = $service->load($employee);
+        $response        = $currentValues ? $service->modify($currentValues, $requestedValues)
+                                          : $service->create($requestedValues);
+        $newValues       = $service->load($employee);
+
         return new Response($employee,
                             $resource->code,
-                            $values ?? [],
+                            $newValues ?? [],
                             $response['errors'] ?? null);
     }
 

@@ -16,6 +16,6 @@ interface ResourceService
      * @return array   An array of error messages
      */
     public function create(array $account): array;
-    public function modify(Employee $employee, array $account);
+    public function modify(array $current,  array $modified);
     public function delete(Employee $employee);
 }
