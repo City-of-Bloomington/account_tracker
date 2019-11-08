@@ -126,9 +126,8 @@ export default {
 <style lang="scss" scoped>
   nav {
     &.pagination {
-      border-top: 1px solid lighten($text-color, 50%);
       margin: 0;
-      padding: 20px 0;
+      padding: 0;
 
       a {
         cursor: pointer;

@@ -63,21 +63,10 @@
 
 <style lang="scss">
 .nuxt-wrapper {
-  padding: 20px;
+  padding: 0 20px;
 
   main {
-    &.page-wrapper {
-      // background-color: green;
-    }
-
-    .page-description {
-      margin: 0 0 20px 0;
-
-      p {
-        font-size: 20px;
-        color: $text-color;
-      }
-    }
+    &.page-wrapper {}
   }
 }
 </style>

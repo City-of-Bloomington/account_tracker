@@ -7,24 +7,19 @@
         <fn1-button-group
           v-if="accountRequestData.response._links"
           slot="buttons">
-            <fn1-button
-              class="activate">
-              Activate
-            </fn1-button>
-
           <template v-for="l, i in accountRequestData.response._links">
             <fn1-button
               class="change"
               v-if="i === 'edit'"
               @click.native="updateAccountRequest()">
-              Save / Update
+              Save Account Request
             </fn1-button>
 
             <fn1-button
               class="delete"
               v-if="i === 'delete'"
               @click.native="openModal('deleteAccountRequestModal')">
-              Delete
+              Delete Account Request
             </fn1-button>
           </template>
         </fn1-button-group>
@@ -48,39 +43,106 @@
         </template>
       </fn1-alert>
 
-      <form @submit.prevent>
-        <template v-if="update.accountRequest.employee">
-          <h3>Employee</h3>
-          <fn1-number
-            v-model="update.accountRequest.employee.number"
-            label="Employee Number"
-            placeholder="Employee Number"
-            name="number"
-            id="number" />
+      <!-- <template
+        v-if="accountRequestData.response"
+        v-for="r, i in accountRequestData.response.resources">
+        {{r}}<br><br><br>---<br><br><br>
+      </template> -->
 
-          <fn1-input
-            v-model="update.accountRequest.employee.firstname"
-            label="First Name"
-            placeholder="First Name"
-            name="firstname"
-            id="firstname" />
+      <fn1-tabs class="vertical-left" v-if="employeeData">
+        <fn1-tab name="Employee" selected="true">
+          <form @submit.prevent>
+            <template v-if="update.accountRequest.employee">
+              <h3>Employee</h3>
+              <fn1-number
+                v-model="update.accountRequest.employee.number"
+                label="Employee Number"
+                placeholder="Employee Number"
+                name="number"
+                id="number" />
 
-          <fn1-input
-            v-model="update.accountRequest.employee.lastname"
-            label="Last Name"
-            placeholder="Last Name"
-            name="lastname"
-            id="lastname" />
+              <fn1-input
+                v-model="update.accountRequest.employee.firstname"
+                label="First Name"
+                placeholder="First Name"
+                name="firstname"
+                id="firstname" />
 
-          <fn1-input
-            disabled
-            v-model="update.accountRequest.employee.department"
-            label="Department"
-            placeholder="Department"
-            name="department"
-            id="department" />
-        </template>
-      </form>
+              <fn1-input
+                v-model="update.accountRequest.employee.lastname"
+                label="Last Name"
+                placeholder="Last Name"
+                name="lastname"
+                id="lastname" />
+
+              <fn1-input
+                disabled
+                v-model="update.accountRequest.employee.department"
+                label="Department"
+                placeholder="Department"
+                name="department"
+                id="department" />
+            </template>
+          </form>
+        </fn1-tab>
+
+        <fn1-tab
+          v-if="accountRequestData.response"
+          v-for="r, i in accountRequestData.response.resources"
+          :key="i"
+          :name="i">
+          <div>
+            <h2>{{ i }}</h2>
+            
+            <div class="preview-wrapper">
+              <p><strong>Requested Values:</strong> Data set via the Account Request for this Resource.</p>
+              <p><strong>Current Values:</strong> Data set in current production for this Resource.</p>
+            </div>
+
+            <table>
+              <caption class="sr-only">
+                {{ r.name }} Table
+              </caption>
+
+              <thead>
+                <tr>
+                  <th scope="col">Fields</th>
+                  <th scope="col">Requested Values</th>
+                  <th scope="col">Current Values</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-for="res_v, res_i in r">
+                  <th scope="row">
+                    <strong>{{ res_i }}</strong>
+                  </th>
+
+                  <td>
+                    <template v-if="res_v">
+                      {{ res_v }}
+                    </template>
+                  </td>
+
+                  <td>
+                    <template v-if="employeeResources">
+                      <template v-for="er, er_i in employeeResources">
+                        <template v-if="er.definition.code == i">
+                          <template v-for="v, emp_i in er.values">
+                            <template v-if="emp_i == res_i">
+                              <span :class="{'diff': res_v != v }">{{ v }}</span>
+                            </template>
+                          </template>
+                        </template>
+                      </template>
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </fn1-tab>
+      </fn1-tabs>
     </main>
 
     <exampleModal
@@ -159,30 +221,38 @@
       return /^\d+$/.test(params.id)
     },
     created() {
-      let backendAccountRequest = `${process.env.backendUrl}account_requests/${this.$route.params.id}?format=hal`;
-
-      this.$axios.get(backendAccountRequest)
+      this.getAccountRequestById(this.$route.params.id)
       .then((res) => {
-        this.accountRequestData.response = res.data;
+        this.accountRequestData.response = res;
         //below bc res is mutable
-        this.update.accountRequest       = JSON.parse(JSON.stringify(res.data))
+        this.update.accountRequest       = JSON.parse(JSON.stringify(res));
+
+        this.getEmployeeData(res.employee_number)
+        .then((res) => {
+          console.dir('employee res');
+          this.employeeData = res;
+        })
+        .catch((e)  => {
+          console.dir('employee err')
+        })
       })
       .catch((e)  => {
-        this.accountRequestData.error = e;
+        this.accountRequestData.error    = e;
       });
     },
     data(){
       return {
+        employeeData:       null,
         accountRequestData: {
-          response: null,
-          error:    null,
+          response:         null,
+          error:            null,
         },
         update:     {
-          errors:         null,
-          accountRequest: {}
+          errors:           null,
+          accountRequest:   {}
         },
         deleted:    {
-          message: null,
+          message:          null,
         }
       }
     },
@@ -202,6 +272,36 @@
           return 'No employee {} set'
         }
       },
+      filteredServices() {
+        // if(this.employeeData._embedded.resources.length) {
+        //   return this.employeeData._embedded.resources
+        //   .filter((r) => {
+        //     let rName   = r.definition.name.toLowerCase();
+        //     return rName
+        //   })
+        //   .sort((a, b) => {
+        //     let nameA = a.definition.name.toUpperCase(),
+        //     nameB     = b.definition.name.toUpperCase();
+        //     return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+        //   });
+        // }
+        if(this.accountRequestData) {
+          return this.accountRequestData.response.resources
+          // .filter((r) => {
+          //   let rName   = r.definition.name.toLowerCase();
+          //   return rName
+          // })
+          // .sort((a, b) => {
+          //   let nameA = a.definition.name.toUpperCase(),
+          //   nameB     = b.definition.name.toUpperCase();
+          //   return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+          // });
+        }
+      },
+      employeeResources() {
+        if(this.employeeData)
+          return this.employeeData._embedded.resources
+      }
     },
     methods: {
       deleteAccountRequest() {
@@ -263,6 +363,24 @@
           console.dir(e)
         })
       },
+      getEmployeeData(id) {
+        return new Promise((resolve, reject) => {
+          let backendEmployee = `${process.env.backendUrl}employees/${id}?format=hal`;
+
+          this.$axios.get(backendEmployee)
+          .then((res) => { resolve(res.data) })
+          .catch((e)  => { reject(e) });
+        })
+      },
+      getAccountRequestById(id) {
+        return new Promise((resolve, reject) => {
+          let backendAccountRequest = `${process.env.backendUrl}account_requests/${id}?format=hal`;
+
+          this.$axios.get(backendAccountRequest)
+          .then((res) => { resolve(res.data) })
+          .catch((e)  => { reject(e) });
+        })
+      },
       openModal(modalRef) {
         if(modalRef === 'deleteAccountRequestModal'){
           this.$refs.deleteAccountRequestModal.showModal = true;
@@ -273,6 +391,9 @@
           this.$refs.deleteAccountRequestModal.showModal = false;
         }
       },
+      selectedResource(resource, index) {
+        return index == 0;
+      }
     }
   }
 </script>
@@ -288,10 +409,65 @@
 
   .page-description {
     display: flex;
+    padding: 0 0 20px 0;
+    margin: 20px 0;
+    border-bottom: 1px solid lighten($text-color, 50%);
 
     p {
       &:last-of-type {
         margin-left: auto;
+      }
+    }
+  }
+
+  .preview-wrapper {
+    border-top: 1px solid lighten($text-color, 50%);
+    margin: 15px 0 0 0;
+    padding: 15px 0 0 0;
+
+    p {
+      margin: 0 0 15px 0;
+    }
+  }
+
+  .diff {
+    background-color: #ffe6a6;
+  }
+
+  table {
+    // background-color: purple;
+
+    thead {
+      tr {
+        th {
+          &:nth-child(1) {
+          }
+
+          &:nth-child(2) {
+            text-align: right;
+          }
+
+          &:nth-child(3) {
+            text-align: left;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        th, td {
+          &:nth-child(1) {
+          }
+
+          &:nth-child(2) {
+            text-align: right;
+          }
+
+          &:nth-child(3) {
+            text-align: left;
+          }
+        }
       }
     }
   }

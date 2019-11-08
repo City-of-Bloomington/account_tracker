@@ -101,7 +101,6 @@ module.exports = {
   },
 
   buildModules: [
-    // Simple usage
     '@nuxtjs/moment'
   ],
 

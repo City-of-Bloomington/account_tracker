@@ -34,7 +34,7 @@ export default {
     display: flex;
     align-items: center;
     padding: 0 0 20px 0;
-    margin: 0 0 20px 0;
+    margin: 20px 0;
     border-bottom: 1px solid lighten($text-color, 50%);
 
     h2 {

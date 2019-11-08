@@ -11,8 +11,45 @@
         <fn1-tab
           :name="`Pending (${accountRequestsPendingLength})`"
           :selected="true">
-          <template v-if="accountRequests.pending">
 
+          <header class="table-header">
+            <form
+              id="pending-search"
+              class="inline">
+              <fn1-input
+                label="First Name"
+                placeholder="First Name"
+                name="firstname"
+                id="firstname" />
+
+              <fn1-input
+                label="Last Name"
+                placeholder="Last Name"
+                name="lastname"
+                id="lastname" />
+              
+              <fn1-button-group>
+                <fn1-button
+                  class="search icon">
+                  search
+                </fn1-button>
+
+                <fn1-button
+                  class="cancel icon">
+                  clear
+                </fn1-button>
+              </fn1-button-group>
+            </form>
+
+            <examplePagination
+              v-if="accountRequests.data"
+              :total="accountRequests.data.total"
+              :per-page="accountRequests.data.itemsPerPage"
+              :current-page="currentPage"
+              @pagechanged="onPageChange" />
+          </header>
+
+          <template v-if="accountRequests.pending">
             <table class="fixed-header">
               <caption class="sr-only">
                 Pending Account Requests Table
@@ -26,6 +63,7 @@
                   <th scope="col">Name</th>
                   <th scope="col">Requester</th>
                   <th scope="col">Type</th>
+                  <th scope="col">Status</th>
                   <th scope="col">Department</th>
                   <th scope="col">Actions</th>
                 </tr>
@@ -37,7 +75,8 @@
                     <th scope="row">
                       <template v-if="ar.created.date">
                         {{ $moment(ar.created.date).format('MM/DD/YYYY') }}<br>
-                        <small>{{ $moment(ar.created.date).fromNow() }}</small>
+                        <!-- <small>{{ $moment(ar.created.date).fromNow() }}</small><br> -->
+                        <small>{{ $moment(ar.created.date).format(" h:mm:ss a") }}</small>
                       </template>
                       <template v-else>
                         - - -
@@ -60,6 +99,15 @@
                     <td>
                       <template v-if="ar.type">
                         {{ ar.type }}
+                      </template>
+                      <template v-else>
+                        - - -
+                      </template>
+                    </td>
+
+                    <td>
+                      <template v-if="ar.status">
+                        {{ ar.status }}
                       </template>
                       <template v-else>
                         - - -
@@ -90,13 +138,6 @@
                 </template>
               </tbody>
             </table>
-
-            <examplePagination
-              v-if="accountRequests.data"
-              :total="accountRequests.data.total"
-              :per-page="accountRequests.data.itemsPerPage"
-              :current-page="currentPage"
-              @pagechanged="onPageChange" />
           </template>
 
           <template v-else>
@@ -104,95 +145,137 @@
           </template>
         </fn1-tab>
 
-        <fn1-tab :name="`Complete (${accountRequestsPendingLength})`">
+        <fn1-tab :name="`Complete (${accountRequestsCompleteLength})`">
           <template v-if="accountRequests.complete">
-            <p><strong>Complete Account Requests:</strong> {{ accountRequests.complete.length }}</p>
+            <!-- <p><strong>Complete Account Requests:</strong> {{ accountRequests.complete.length }}</p> -->
             
-            <!-- <table>
-              <caption class="sr-only">
-                Complete Account Requests Table
-              </caption>
+            <header class="table-header">
+              <form
+                id="pending-search"
+                class="inline">
+                <fn1-input
+                  label="First Name"
+                  placeholder="First Name"
+                  name="firstname"
+                  id="firstname" />
 
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Requester</th>
-                  <th scope="col">Department</th>
-                  <th scope="col">Created Date</th>
-                  <th scope="col">Type</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
+                <fn1-input
+                  label="Last Name"
+                  placeholder="Last Name"
+                  name="lastname"
+                  id="lastname" />
+                
+                <fn1-button-group>
+                  <fn1-button
+                    class="search icon">
+                    search
+                  </fn1-button>
 
-              <tbody>
-                <template
-                  v-for="ar, i in accountRequests.complete">
+                  <fn1-button
+                    class="cancel icon">
+                    clear
+                  </fn1-button>
+                </fn1-button-group>
+              </form>
+
+              <!-- <examplePagination
+                v-if="accountRequests.data"
+                :total="accountRequests.data.total"
+                :per-page="accountRequests.data.itemsPerPage"
+                :current-page="currentPage"
+                @pagechanged="onPageChange" /> -->
+            </header>
+
+            <template v-if="accountRequests.complete">
+              <table class="fixed-header">
+                <caption class="sr-only">
+                  Completed Account Requests Table
+                </caption>
+
+                <col width="150">
+
+                <thead>
                   <tr>
-                    <th scope="row">
-                      <strong>{{ ar.employee.firstname }} {{ ar.employee.lastname }}</strong>
-                    </th>
-
-                    <td>
-                      <template v-if="ar.requester_username">
-                        {{ ar.requester_username }}
-                      </template>
-                      <template v-else>
-                        - - -
-                      </template>
-                    </td>
-
-                    <td>
-                      <template v-if="ar.employee.department">
-                        {{ ar.employee.department }}
-                      </template>
-                      <template v-else>
-                        - - -
-                      </template>
-                    </td>
-                    
-                    <td>
-                      <template v-if="ar.created.date">
-                        {{ ar.created.date }}
-                      </template>
-                      <template v-else>
-                        - - -
-                      </template>
-                    </td>
-
-                    <td>
-                      <template v-if="ar.type">
-                        {{ ar.type }}
-                      </template>
-                      <template v-else>
-                        - - -
-                      </template>
-                    </td>
-
-                    <td>
-                      <template v-if="ar.status">
-                        {{ ar.status }}
-                      </template>
-                      <template v-else>
-                        - - -
-                      </template>
-                    </td>
-
-                    <td>
-                      <template v-for="l, i in ar._links">
-                        <template v-if="i == 'self'">
-                          <nuxt-link
-                            class="button"
-                            :to="`/account_requests/${ar.id}`">
-                            View
-                          </nuxt-link>
-                        </template>
-                      </template>
-                    </td>
+                    <th scope="col">Created Date</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Requester</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Actions</th>
                   </tr>
-                </template>
-              </tbody>
-            </table> -->
+                </thead>
+
+                <tbody>
+                  <template v-for="ar, i in accountRequests.complete">
+                    <tr>
+                      <th scope="row">
+                        <template v-if="ar.created.date">
+                          {{ $moment(ar.created.date).format('MM/DD/YYYY') }}<br>
+                          <!-- <small>{{ $moment(ar.created.date).fromNow() }}</small><br> -->
+                          <small>{{ $moment(ar.created.date).format(" h:mm:ss a") }}</small>
+                        </template>
+                        <template v-else>
+                          - - -
+                        </template>
+                      </th>
+
+                      <td>
+                        <strong>{{ ar.employee.firstname }} {{ ar.employee.lastname }}</strong>
+                      </td>
+
+                      <td>
+                        <template v-if="ar.requester_username">
+                          {{ ar.requester_username }}
+                        </template>
+                        <template v-else>
+                          - - -
+                        </template>
+                      </td>
+
+                      <td>
+                        <template v-if="ar.type">
+                          {{ ar.type }}
+                        </template>
+                        <template v-else>
+                          - - -
+                        </template>
+                      </td>
+
+                      <td>
+                        <template v-if="ar.status">
+                          {{ ar.status }}
+                        </template>
+                        <template v-else>
+                          - - -
+                        </template>
+                      </td>
+
+                      <td>
+                        <template v-if="ar.employee.department">
+                          {{ ar.employee.department }}
+                        </template>
+                        <template v-else>
+                          - - -
+                        </template>
+                      </td>
+
+                      <td>
+                        <template v-for="l, i in ar._links">
+                          <template v-if="i == 'self'">
+                            <nuxt-link
+                              class="button"
+                              :to="`/account_requests/${ar.id}`">
+                              View
+                            </nuxt-link>
+                          </template>
+                        </template>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </template>
           </template>
 
           <template v-else>
@@ -257,6 +340,13 @@ export default {
         return pending.length
       }
     },
+    accountRequestsCompleteLength() {
+      if(this.accountRequests.latest) {
+        let complete     = this.accountRequests.latest._embedded.account_requests.filter(({ status }) => status == 'completed');
+
+        return complete.length
+      }
+    },
   },
   methods: {
     getAccountRequests(page) {
@@ -286,7 +376,7 @@ export default {
     accountRequestsComplete() {
       if(this.accountRequests.data){
         this.accountRequests.complete = this.accountRequests.data._embedded.account_requests
-        .filter(({ status }) => status == 'complete');
+        .filter(({ status }) => status == 'completed');
       }
     },
     onPageChange(page) {
@@ -312,10 +402,23 @@ export default {
     font-size: 14px;
   }
 
+  header {
+    &.table-header {
+      display: flex;
+      align-items: flex-end;
+    }
+  }
+
+  nav {
+    &.pagination {
+      margin-left: auto;
+    }
+  }
+
   table {
     &.fixed-header {
       tbody {
-        height: calc(100vh - 455px);
+        height: calc(100vh - 450px);
       }
     }
   }
