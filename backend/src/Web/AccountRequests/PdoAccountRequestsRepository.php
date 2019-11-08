@@ -78,9 +78,9 @@ class PdoAccountRequestsRepository extends PdoRepository implements AccountReque
     public function find(SearchRequest $req): array
     {
         $select = $this->baseSelect();
-        foreach ($this->columns() as $f) {
+        foreach (self::$fieldmap as $f=>$map) {
             if (!empty($req->$f)) {
-                $column = self::$fieldmap[$f]['prefix'].'.'.self::$fieldmap[$f]['dbName'];
+                $column = $map['prefix'].'.'.$map['dbName'];
                 $select->where("$column=?", $req->$f);
             }
         }

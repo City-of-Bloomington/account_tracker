@@ -14,3 +14,7 @@
 #errorMessages {
     background-color: $color-error;
 }
+
+.modified {
+    th, td { background-color: $color-alert; }
+}

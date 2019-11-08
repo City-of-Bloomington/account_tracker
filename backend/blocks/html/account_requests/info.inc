@@ -83,8 +83,10 @@ use Web\Block;
                                 ? parent::escape($this->current_resources[$code][$k])
                                 :                $this->current_resources[$code][$k])
                            : '';
+                $class     = $requested == $current ? '' : ' class="modified"';
                 echo "
-                    <tr><th>{$this->_($k)}</th>
+                    <tr$class>
+                        <th>{$this->_($k)}</th>
                         <td>$requested</td>
                         <td>$current</td>
                     </tr>
