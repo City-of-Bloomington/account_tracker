@@ -19,7 +19,8 @@ class UpdateView extends Template
                                 array     $roles,
                                 array     $authentication_methods)
     {
-        parent::__construct('default', 'html');
+        $format = !empty($_REQUEST['format']) ? $_REQUEST['format'] : 'html';
+        parent::__construct('default', $format);
 
         if ($response && $response->errors) {
             $_SESSION['errorMessages'] = $response->errors;
@@ -29,10 +30,10 @@ class UpdateView extends Template
 
         $vars = [
             'title'                  => $this->vars['title'],
+            'request'                => $request,
             'roles'                  => $roles,
             'authentication_methods' => $authentication_methods
         ];
-        foreach ((array)$request as $k=>$v) { $vars[$k] = parent::escape($v); }
 
         $this->blocks = [
             new Block('users/updateForm.inc', $vars)

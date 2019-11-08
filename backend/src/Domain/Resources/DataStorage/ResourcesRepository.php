@@ -11,7 +11,8 @@ use Domain\Resources\Entities\ResourceEntity;
 interface ResourcesRepository
 {
     // Read functions
-    public function load(int $id): ResourceEntity;
+    public function loadById  (int    $id  ): ResourceEntity;
+    public function loadByCode(string $code): ResourceEntity;
     public function find(array $fields, ?array $order=null, ?int $itemsPerPage=null, ?int $currentPage=null): array;
 
     // Write functions

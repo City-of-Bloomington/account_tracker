@@ -8,6 +8,7 @@ declare (strict_types=1);
 namespace Web\Users\Controllers;
 use Domain\Users\UseCases\Info\Request   as InfoRequest;
 use Domain\Users\UseCases\Update\Request as UpdateRequest;
+use Web\Users\Views\InfoView;
 use Web\Users\Views\UpdateView;
 use Web\Controller;
 use Web\View;
@@ -26,9 +27,17 @@ class UpdateController extends Controller
             if (!$request->role                 ) { $request->role                  = self::DEFAULT_ROLE; }
             if (!$request->authentication_method) { $request->authentication_method = self::DEFAULT_AUTH; }
             $response = $update($request);
+
             if (!count($response->errors)) {
-                header('Location: '.View::generateUrl('users.index'));
-                exit();
+                if (!empty($_REQUEST['format']) && $_REQUEST['format']!='html') {
+                    $info = $this->di->get('Domain\Users\UseCases\Info\Command');
+                    $ir   = $info($response->id);
+                    return new InfoView($ir->user);
+                }
+                else {
+                    header('Location: '.View::generateUrl('users.index'));
+                    exit();
+                }
             }
         }
         elseif (!empty($_REQUEST['id'])) {
@@ -50,8 +59,8 @@ class UpdateController extends Controller
         global $ZEND_ACL;
         $auth = $this->di->get('Web\Authentication\AuthenticationService');
         return new UpdateView($request,
-                                    isset($response) ? $response : null,
-                                    $ZEND_ACL->getRoles(),
-                                    $auth->getAuthenticationMethods());
+                              isset($response) ? $response : null,
+                              $ZEND_ACL->getRoles(),
+                              $auth->getAuthenticationMethods());
     }
 }

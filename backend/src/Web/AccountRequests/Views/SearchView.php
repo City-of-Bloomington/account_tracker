@@ -9,6 +9,8 @@ namespace Web\AccountRequests\Views;
 
 use Domain\AccountRequests\UseCases\Search\Request;
 use Domain\AccountRequests\UseCases\Search\Response;
+use Domain\AccountRequests\Metadata;
+
 use Web\Block;
 use Web\Template;
 
@@ -29,9 +31,13 @@ class SearchView extends Template
         $vars = [
             'account_requests' => $response->account_requests,
             'total'            => $response->total,
-            'itemsPerPage'     => $itemsPerPage,
-            'currentPage'      => $currentPage,
+            'statuses'         => Metadata::$statuses,
+            'types'            => Metadata::$types
         ];
+        foreach ($request as $k=>$v) { $vars[$k] = parent::escape($v); }
+        $vars['itemsPerPage'] = $itemsPerPage;
+        $vars['currentPage' ] = $currentPage;
+
         $block = $this->outputFormat == 'html'
                ? 'account_requests/findForm.inc'
                : 'account_requests/list.inc';

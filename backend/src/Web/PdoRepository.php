@@ -40,7 +40,7 @@ abstract class PdoRepository
             $query->execute($c->getBindValues());
 
             $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-            $total  = (int)$result[0]['count'];
+            $total  = $result ? (int)$result[0]['count'] : 0;
 
             $select->limit ($itemsPerPage);
             $select->offset($itemsPerPage * ($currentPage-1));
@@ -92,9 +92,15 @@ abstract class PdoRepository
             $insert = $this->queryFactory->newInsert();
             $insert->into($table)->cols($data);
             $query = $this->pdo->prepare($insert->getStatement());
-            $query->execute($insert->getBindValues());
-            $id = $insert->getLastInsertIdName($pk);
-            return (int)$this->pdo->lastInsertId($id);
+            $success = $query->execute($insert->getBindValues());
+            if ($success) {
+                $id = $insert->getLastInsertIdName($pk);
+                return (int)$this->pdo->lastInsertId($id);
+            }
+            else {
+                $e = $query->errorInfo();
+                throw new \Exception($e[2]);
+            }
         }
 	}
 

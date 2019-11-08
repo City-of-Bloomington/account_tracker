@@ -19,7 +19,6 @@ class Database
                 return self::connectDefault($config);
         }
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $platform = ucfirst($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
         return $pdo;
     }
 

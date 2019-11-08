@@ -30,6 +30,7 @@ use Web\Block;
                 <th><?= $this->_('name' ); ?></th>
                 <th><?= $this->_('type' ); ?></th>
                 <th><?= $this->_('class'); ?></th>
+                <th><?= $this->_('order'); ?></th>
             </tr>
         </theader>
     <?php
@@ -39,6 +40,7 @@ use Web\Block;
             $name  = parent::escape($r->name );
             $type  = parent::escape($r->type );
             $class = parent::escape($r->class);
+            $order = parent::escape($r->order);
 
             $uri  = parent::generateUri('resources.view', ['id'=>$r->id]);
             echo "
@@ -47,6 +49,7 @@ use Web\Block;
                 <td><a href=\"$uri\">$name</a></td>
                 <td><a href=\"$uri\">$type</a></td>
                 <td><a href=\"$uri\">$class</a></td>
+                <td><a href=\"$uri\">$order</a></td>
             </tr>
             ";
         }

@@ -23,7 +23,7 @@ declare (strict_types=1);
         $h = $this->template->getHelper('buttonLink');
 
         foreach ($this->actions as $label => $action) {
-            $link = $h->buttonLink($action['uri'], $this->_($label), $action['class']);
+            $link = "<a href=\"$action[uri]\">{$this->_($label)}</a>";
             $help = !empty($action['help']) ? $this->_($action['help'], 'messages') : '';
             echo "
             <tr><th>$link</th>

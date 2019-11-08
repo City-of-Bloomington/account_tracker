@@ -3,6 +3,8 @@
  * @copyright 2018-2019 City of Bloomington, Indiana
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
  *
+ * @param array  $this->users  Search Results
+ *
  * Query parameters that were used for the search
  * @param string $this->username
  * @param string $this->firstname
@@ -10,6 +12,11 @@
  * @param string $this->email
  * @param string $this->role
  * @param string $this->authentication_method
+ *
+ * Pagination
+ * @param int    $this->total
+ * @param int    $this->itemsPerPage
+ * @param int    $this->currentPage
  *
  * Metadata
  * @param array $this->roles

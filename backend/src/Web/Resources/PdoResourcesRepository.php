@@ -14,11 +14,16 @@ use Domain\Resources\Entities\ResourceEntity;
 class PdoResourcesRepository extends PdoRepository implements ResourcesRepository
 {
     const TABLE = 'resources';
+    public static $DEFAULT_SORT = [self::TABLE.'.order'];
 
     public function columns(): array
     {
         static $columns;
-        if (!$columns) { $columns = array_keys(get_class_vars('Domain\Resources\Entities\ResourceEntity')); }
+        if (!$columns) {
+            foreach (array_keys(get_class_vars('Domain\Resources\Entities\ResourceEntity')) as $f) {
+                $columns[] = self::TABLE.'.'.$f;
+            }
+        }
         return $columns;
     }
 
@@ -32,16 +37,14 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
 
     public static function hydrate(array $row): ResourceEntity
     {
-        $row['fields'] = json_decode($row['fields'], true);
-
         return new ResourceEntity($row);
     }
 
-    public function load(int $id): ResourceEntity
+    private function loadByKey(string $key, $value): ResourceEntity
     {
         $select = $this->queryFactory->newSelect();
         $select->cols($this->columns())->from(self::TABLE);
-        $select->where('id=?', $id);
+        $select->where("$key=?", $value);
 
         $result = $this->performSelect($select);
         if (count($result['rows'])) {
@@ -49,6 +52,8 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
         }
         throw new \Exception('resources/unknown');
     }
+    public function loadById  (int    $id  ): ResourceEntity { return $this->loadByKey('id',   $id  ); }
+    public function loadByCode(string $code): ResourceEntity { return $this->loadByKey('code', $code); }
 
     /**
      * Look up resources using strict matching of fields
@@ -68,7 +73,7 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
         }
         return parent::performHydratedSelect($select,
                                              __CLASS__.'::hydrate',
-                                             null,
+                                             self::$DEFAULT_SORT,
                                              $itemsPerPage,
                                              $currentPage);
     }
@@ -78,8 +83,6 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
      */
     public function save(ResourceEntity $res): int
     {
-        $data = (array)$res;
-        $data['fields'] = json_encode($res->fields);
-        return parent::saveToTable($data, self::TABLE);
+        return parent::saveToTable((array)$res, self::TABLE);
     }
 }

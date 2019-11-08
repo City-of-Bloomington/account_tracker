@@ -7,9 +7,9 @@
  * @param string $this->name
  * @param string $this->type
  * @param string $this->class
+ * @param int    $this->order
  * @param string $this->api_key
  * @param string $this->api_secret
- * @param string $this->fields  JSON string
  * @param string $this->return_url
  */
 declare (strict_types=1);
@@ -46,6 +46,15 @@ declare (strict_types=1);
                 ]);
 
                 echo $h->field([
+                    'name'     => 'order',
+                    'id'       => 'order',
+                    'label'    => $this->_('order'),
+                    'value'    => $this->order,
+                    'type'     => 'number',
+                    'required' => true
+                ]);
+
+                echo $h->field([
                     'name'     => 'type',
                     'id'       => 'type',
                     'label'    => $this->_('type'),
@@ -65,15 +74,6 @@ declare (strict_types=1);
                     'id'       => 'api_secret',
                     'label'    => $this->_('api_secret'),
                     'value'    => $this->api_secret
-                ]);
-
-                echo $h->field([
-                    'name'     => 'fields',
-                    'id'       => 'fields',
-                    'label'    => $this->_('fields'),
-                    'value'    => $this->fields,
-                    'type'     => 'textarea',
-                    'required' => true
                 ]);
 
                 $h = $this->template->getHelper('saveAndCancelButtons');

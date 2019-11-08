@@ -18,7 +18,7 @@ class ListController extends Controller
     {
 		$page     =  !empty($_GET['page']) ? (int)$_GET['page'] : 1;
         $search   = $this->di->get('Domain\AccountRequests\UseCases\Search\Command');
-        $request  = new SearchRequest($_GET, null, parent::ITEMS_PER_PAGE, $page);
+        $request  = new SearchRequest($_GET, parent::ITEMS_PER_PAGE, $page);
         $response = $search($request);
 
         return new SearchView($request, $response, parent::ITEMS_PER_PAGE, $page);

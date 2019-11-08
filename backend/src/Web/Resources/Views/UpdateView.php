@@ -25,9 +25,7 @@ class UpdateView extends Template
             'return_url' => $return_url
         ];
         foreach ((array)$req as $k=>$v) {
-            $vars[$k] = $k == 'fields'
-                      ? json_encode($v, JSON_PRETTY_PRINT)
-                      : parent::escape($v);
+            $vars[$k] = parent::escape($v);
         }
 
         $this->blocks = [

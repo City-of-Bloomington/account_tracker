@@ -9,7 +9,7 @@ namespace Web\Authentication;
 
 use Aws\Credentials\Credentials;
 use Aws\Signature\SignatureV4;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7;
 
 abstract class HMACService
 {
@@ -24,6 +24,15 @@ abstract class HMACService
         $this->username    = $username;
     }
 
+    public function signedPostRequest(string $url, array $form_data): Psr7\Request
+    {
+        $headers  = array_merge($this->HMACHeaders(), ['Content-Type' => 'application/x-www-form-urlencoded']);
+        $body     = Psr7\stream_for(http_build_query($form_data, '', '&'));
+
+        $request  = new Psr7\Request('POST', $url, $headers, $body);
+        return $this->signRequest($request);
+    }
+
     protected function HMACHeaders(): array
     {
         return [
@@ -32,7 +41,7 @@ abstract class HMACService
         ];
     }
 
-    protected function signRequest(Request $request): Request
+    protected function signRequest(Psr7\Request $request): Psr7\Request
     {
         $credentials = new Credentials($this->accessKeyId, $this->secret);
         $signer      = new SignatureV4(Auth::HMAC_SERVICE, Auth::HMAC_REGION);

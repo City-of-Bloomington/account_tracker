@@ -30,6 +30,9 @@ msgstr "Edit"
 msgid "delete"
 msgstr "Delete"
 
+msgid "search"
+msgstr "Search"
+
 msgid "submit"
 msgstr "Submit"
 
@@ -51,6 +54,9 @@ msgstr "Logout"
 
 msgid "help"
 msgstr "Help"
+
+msgid "code"
+msgstr "Code"
 
 msgid "name"
 msgstr "Name"
@@ -75,6 +81,9 @@ msgstr "Authentication"
 
 msgid "role"
 msgstr "Role"
+
+msgid "department"
+msgstr "Department"
 
 msgid "email"
 msgid_plural "emails"
@@ -114,6 +123,16 @@ msgstr "Account Info"
 
 msgid "my_account"
 msgstr "My Account"
+
+msgid "employee"
+msgid_plural "employees"
+msgstr[0] "Employee"
+msgstr[1] "Employees"
+
+msgid "profile"
+msgid_plural "profiles"
+msgstr[0] "Profile"
+msgstr[1] "Profiles"
 
 msgid "resource"
 msgid_plural "resources"

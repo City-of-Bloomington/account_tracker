@@ -20,7 +20,7 @@ class InfoView extends Template
 
         if ($this->outputFormat == 'html') {
             foreach ((array)$res->resourceEntity as $f=>$v) {
-                $vars[$f] = $f=='fields' ? $v : parent::escape($v);
+                $vars[$f] = parent::escape($v);
             }
         }
         else {

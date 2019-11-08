@@ -15,6 +15,9 @@
                 echo $this->includeBlocks();
             ?>
         </div>
+        <?php
+            $this->_include('partials/panel-one.inc');
+        ?>
 	</main>
 	<?php $this->_include('partials/footer.inc'); ?>
 </body>
