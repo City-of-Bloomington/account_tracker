@@ -21,39 +21,43 @@ class AccountTrackerService extends HMACService implements ResourceService
      *
      * @param Employee $employee  The employee being looked up
      */
-    public function load(Employee $employee): ?array
+    public function load(Employee $employee): array
     {
-        $url = BASE_URL.'/users?format=json&username='.$employee->username;
+        if ($employee->username) {
+            $url = BASE_URL.'/users?format=json&username='.$employee->username;
 
-        $client   = new Client();
-        $request  = new Psr7\Request('GET', $url, parent::HMACHeaders());
-        $signed   = parent::signRequest($request);
-        $response = $client->send($signed);
+            $client   = new Client();
+            $request  = new Psr7\Request('GET', $url, parent::HMACHeaders());
+            $signed   = parent::signRequest($request);
+            $response = $client->send($signed);
 
-        $list = json_decode((string)$response->getBody(), true);
-        if ($list[0]) {
-            return $list[0];
+            $list = json_decode((string)$response->getBody(), true);
+            if (is_array($list)) {
+                return isset($list[0]) ? $list[0] : [];
+            }
+            else {
+                throw new \Exception('no response from '. __CLASS__);
+            }
         }
-        else {
-            throw new \Exception('no response from '. __CLASS__);
-        }
+        return [];
     }
 
     /**
      * Creates a new user account
+     *
+     * @return array  An array of error messages
      */
-    public function create(array $account)
+    public function create(array $account): array
     {
         $account['format'] = 'json';
 
         $client   = new Client();
         $request  = parent::signedPostRequest(BASE_URL.'/users/update', $account);
         $response = $client->send($request, ['allow_redirects'=>false]);
+        $body     = $response->getBody()->__toString();
 
-        $user     = json_decode((string)$response->getBody(), true);
-        if (empty($user['id'])) {
-            throw new \Exception('failed to create user '. __CLASS__);
-        }
+        $json     = json_decode($body, true);
+        return $json ?? ['Server did not return json'];
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 /**
+ * Apply an account request to an external system
+ *
  * @copyright 2019 City of Bloomington, Indiana
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
  */
@@ -8,6 +10,7 @@ declare (strict_types=1);
 namespace Web\AccountRequests\Controllers;
 
 use Domain\AccountRequests\UseCases\Apply\Request as ApplyRequest;
+use Web\ACcountRequests\Views\ApplyView;
 
 use Web\Authentication\Auth;
 use Web\Controller;
@@ -17,22 +20,23 @@ class Apply extends Controller
 {
     public function __invoke(array $params): View
     {
-        $id = !empty($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
+        $auth    = $this->di->get('Web\Authentication\AuthenticationService');
+        $user    = Auth::getAuthenticatedUser($auth);
 
-        if ($id) {
-            $auth  = $this->di->get('Web\Authentication\AuthenticationService');
-            $user  = Auth::getAuthenticatedUser($auth);
+        $apply   = $this->di->get('Domain\AccountRequests\UseCases\Apply\Command');
+        $request = new ApplyRequest(['request_id'    => $params['request_id'   ],
+                                     'resource_code' => $params['resource_code'],
+                                     'username'      => $user->username]);
+        $response = $apply($request);
 
-            $apply = $this->di->get('Domain\AccountRequests\UseCases\Apply\Command');
-            $req   = new ApplyRequest(['id' => $id, 'username' => $user->username]);
-            $res   = $apply($req);
-
-            if ($res->errors) {
-                $_SESSION['errorMessages'] = $res->errors;
-            }
-            header('Location: '.View::generateUrl('employees.view', ['id'=>$res->employee->number]));
-            exit();
+        if (!empty($_REQUEST['format']) && $_REQUEST['format']!='html') {
+            return new ApplyView($response);
         }
-        return new \Web\Views\NotFoundView();
+
+        if ($response->errors) {
+            $_SESSION['errorMessages'] = $response->errors;
+        }
+        header('Location: '.View::generateUrl('account_requests.view', ['id'=>$params['request_id']]));
+        exit();
     }
 }

@@ -33,3 +33,15 @@ msgstr "Create a new profile"
 
 msgid "profiles.edit"
 msgstr "Edit this profile"
+
+msgid "employees.activate"
+msgstr "Activate accounts for this employee"
+
+msgid "account_requests.edit"
+msgstr "Edit this account request"
+
+msgid "account_requests.delete"
+msgstr "Delete this account request"
+
+msgid "account_requests.apply"
+msgstr "Apply the user account for this resource"

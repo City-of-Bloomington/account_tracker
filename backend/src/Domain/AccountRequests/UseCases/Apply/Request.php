@@ -9,12 +9,14 @@ namespace Domain\AccountRequests\UseCases\Apply;
 
 class Request
 {
-    public $id;       // The account request ID to apply
-    public $username; // The user creating the accounts
+    public $request_id;    // The account request ID to apply
+    public $resource_code; // The resource to grant access to
+    public $username;      // The user creating the accounts
 
     public function __construct(?array $data=null)
     {
-        if (!empty($data['id'      ])) { $this->id  = (int)$data['id'      ]; }
-        if (!empty($data['username'])) { $this->username = $data['username']; }
+        if (!empty($data['request_id'   ])) { $this->request_id = (int)$data['request_id'   ]; }
+        if (!empty($data['resource_code'])) { $this->resource_code =   $data['resource_code']; }
+        if (!empty($data['username'     ])) { $this->username      =   $data['username'     ]; }
     }
 }

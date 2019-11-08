@@ -10,9 +10,12 @@ use Domain\Employees\Entities\Employee;
 
 interface ResourceService
 {
-    public function load(Employee $employee): ?array;
+    public function load(Employee $employee): array;
 
-    public function create(array $account);
+    /**
+     * @return array   An array of error messages
+     */
+    public function create(array $account): array;
     public function modify(Employee $employee, array $account);
     public function delete(Employee $employee);
 }

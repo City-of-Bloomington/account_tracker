@@ -20,7 +20,7 @@ class Command
     public function __invoke(int $id): Response
     {
         try {
-            return new Response($this->repo->load($id));
+            return new Response($this->repo->loadById($id));
         }
         catch (\Exception $e) {
             return new Response(null, [$e->getMessage()]);

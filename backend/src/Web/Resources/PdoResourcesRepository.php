@@ -40,11 +40,11 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
         return new ResourceEntity($row);
     }
 
-    public function load(int $id): ResourceEntity
+    private function loadByKey(string $key, $value): ResourceEntity
     {
         $select = $this->queryFactory->newSelect();
         $select->cols($this->columns())->from(self::TABLE);
-        $select->where('id=?', $id);
+        $select->where("$key=?", $value);
 
         $result = $this->performSelect($select);
         if (count($result['rows'])) {
@@ -52,6 +52,8 @@ class PdoResourcesRepository extends PdoRepository implements ResourcesRepositor
         }
         throw new \Exception('resources/unknown');
     }
+    public function loadById  (int    $id  ): ResourceEntity { return $this->loadByKey('id',   $id  ); }
+    public function loadByCode(string $code): ResourceEntity { return $this->loadByKey('code', $code); }
 
     /**
      * Look up resources using strict matching of fields

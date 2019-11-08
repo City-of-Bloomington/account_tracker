@@ -8,42 +8,40 @@ declare (strict_types=1);
 namespace Web\AccountRequests\Views;
 use Domain\AccountRequests\Entities\AccountRequest;
 use Domain\AccountRequests\Metadata;
+use Domain\Employees\UseCases\Info\Response as InfoResponse;
 
 use Web\Block;
 use Web\Template;
 
 class InfoView extends Template
 {
-    public function __construct(AccountRequest $request)
+    public function __construct(AccountRequest $request, InfoResponse $employee)
     {
         $format = !empty($_REQUEST['format']) ? $_REQUEST['format'] : 'html';
         parent::__construct('default', $format);
 
+        $current_resources = [];
+        if (!empty($employee->resources)) {
+            foreach ($employee->resources as $r) {
+                $current_resources[$r['definition']->code] = $r['values'];
+            }
+        }
+
         $vars = [
-            'actions' => self::generateActionLinks($request)
+            'actions'           => self::generateActionLinks($request),
+            'account_request'   => $request,
+            'current_resources' => $current_resources
         ];
 
         if ($this->outputFormat == 'html') {
             if (isset($vars['actions']['self'])) {
                 unset($vars['actions']['self']);
             }
-            foreach ((array)$request as $k=>$v) {
-                $vars[$k] = is_string($v) ? parent::escape($v) : $v;
-            }
+        }
 
-            $this->blocks = [
-                new Block('account_requests/info.inc', $vars),
-                'panel-one' => [
-                    new Block('halbox.inc', ['actions' => $vars['actions']])
-                ]
-            ];
-        }
-        else {
-            $vars['account_request'] = $request;
-            $this->blocks = [
-                new Block('account_requests/info.inc', $vars)
-            ];
-        }
+        $this->blocks = [
+            new Block('account_requests/info.inc', $vars)
+        ];
     }
 
     public static function generateActionLinks($request): array
@@ -64,11 +62,6 @@ class InfoView extends Template
                 'href' => parent::generateUri('account_requests.delete', ['id'=>$request->id])
             ];
         }
-        if (self::isApplyable($request)) {
-            $actions['apply'] = [
-                'href' => parent::generateUri('account_requests.apply', ['id'=>$request->id])
-            ];
-        }
         return $actions;
     }
 
@@ -86,11 +79,5 @@ class InfoView extends Template
     private static function isDeletable(AccountRequest $request): bool
     {
         return parent::isAllowed('account_requests', 'delete');
-    }
-
-    private static function isApplyable(AccountRequest $request): bool
-    {
-        return parent::isAllowed('account_requests', 'apply')
-            && $request->status != Metadata::STATUS_COMPLETED;
     }
 }

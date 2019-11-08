@@ -27,6 +27,7 @@ class UpdateController extends Controller
             if (!$request->role                 ) { $request->role                  = self::DEFAULT_ROLE; }
             if (!$request->authentication_method) { $request->authentication_method = self::DEFAULT_AUTH; }
             $response = $update($request);
+
             if (!count($response->errors)) {
                 if (!empty($_REQUEST['format']) && $_REQUEST['format']!='html') {
                     $info = $this->di->get('Domain\Users\UseCases\Info\Command');
@@ -58,8 +59,8 @@ class UpdateController extends Controller
         global $ZEND_ACL;
         $auth = $this->di->get('Web\Authentication\AuthenticationService');
         return new UpdateView($request,
-                                    isset($response) ? $response : null,
-                                    $ZEND_ACL->getRoles(),
-                                    $auth->getAuthenticationMethods());
+                              isset($response) ? $response : null,
+                              $ZEND_ACL->getRoles(),
+                              $auth->getAuthenticationMethods());
     }
 }

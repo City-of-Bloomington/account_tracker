@@ -26,46 +26,45 @@ class Command
         $this->resources = $resources;
     }
 
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $applyRequest): Response
     {
         try {
-            $account   = $this->accounts->load($request->id);
-            $employee  = new Employee($account->employee);
-            $resources = $this->resources->find([])['rows'];
+            $accountRequest = $this->accounts->load($applyRequest->request_id);
+            $employee       = new Employee($accountRequest->employee);
+            $resource       = $this->resources->loadByCode($applyRequest->resource_code);
         }
-        catch (\Exception $e) { return new Response(null, null, [$e->getMessage()]); }
+        catch (\Exception $e) {
+            return new Response($employee ?? null,
+                                $applyRequest->resource_code,
+                                null,
+                                [$e->getMessage()]);
+        }
 
-        $errors = $this->validate($account);
+        $errors = $this->validate($applyRequest, $accountRequest);
         if ($errors) {
-            return new Response($employee, null, $errors);
+            return new Response($employee,
+                                $applyRequest->resource_code,
+                                null,
+                                $errors);
         }
 
-        $values = [];
-        $errors = [];
-        foreach ($resources as $r) {
-            if (isset($account->resources[$r->code])) {
-                try {
-                    $service = $r->serviceFactory($request->username);
-                    $service->create($account->resources[$r->code]);
-                    $values[$r->code] = $service->load($employee);
-                }
-                catch (\Exception $e) {
-                    $errors[] = $e->getMessage();
-                }
-            }
-        }
-
-        if (!$errors) {
-            $this->accounts->saveStatus($account->id, Metadata::STATUS_COMPLETED);
-        }
-
-        return new Response($employee, $values, $errors);
+        $service  = $resource->serviceFactory($applyRequest->username);
+        $response = $service->create($accountRequest->resources[$resource->code]);
+        $values   = $service->load($employee);
+        return new Response($employee,
+                            $resource->code,
+                            $values ?? [],
+                            $response['errors'] ?? null);
     }
 
-    private function validate(AccountRequest $r): array
+    private function validate(Request $applyRequest, AccountRequest $accountRequest): array
     {
         $errors = [];
-        if ($r->status == Metadata::STATUS_COMPLETED) {
+        if (!array_key_exists($applyRequest->resource_code, $accountRequest->resources)) {
+            $errors[] = 'account_requests/invalidResource';
+        }
+
+        if ($accountRequest->status == Metadata::STATUS_COMPLETED) {
             $errors[] = 'account_requests/invalidStatus';
         }
         return $errors;

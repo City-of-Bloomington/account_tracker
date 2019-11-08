@@ -5,5 +5,10 @@
  * @param array $this->users
  */
 declare (strict_types=1);
-
-echo json_encode($this->users, JSON_PRETTY_PRINT);
+$out = [
+    'users' => $this->users
+];
+if (isset($_SESSION['errorMessages'])) {
+    $out['errors'] = $_SESSION['errorMessages'];
+}
+echo json_encode($out, JSON_PRETTY_PRINT);

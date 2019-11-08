@@ -10,3 +10,7 @@
     h1 { font-size: $font-size-normal; }
     a  { display: block; }
 }
+
+#errorMessages {
+    background-color: $color-error;
+}
