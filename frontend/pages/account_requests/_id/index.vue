@@ -9,7 +9,7 @@
           slot="buttons">
           <template v-for="l, i in accountRequestData.response._links">
             <fn1-button
-              class="change"
+              class="activate"
               v-if="i === 'edit'"
               @click.native="updateAccountRequest()">
               Save Account Request
@@ -53,7 +53,6 @@
         <fn1-tab name="Employee" selected="true">
           <form @submit.prevent>
             <template v-if="update.accountRequest.employee">
-              <h3>Employee</h3>
               <fn1-number
                 v-model="update.accountRequest.employee.number"
                 label="Employee Number"
@@ -90,25 +89,38 @@
           v-if="accountRequestData.response"
           v-for="r, i in accountRequestData.response.resources"
           :key="i"
-          :name="i">
+          :name="resourceName(i)">
           <div>
-            <h2>{{ i }}</h2>
+
+            <div class="resource-header">
+              <div>
+                Name: {{ resourceName(i) }}
+                <!-- <p><strong>Requested Values:</strong> <strong>Account Request</strong> values for this <strong>Resource</strong>.</p> -->
+                <!-- <p><strong>Current Values:</strong> Production values for this <strong>Resource</strong>.</p> -->
+
+                <div class="legend">
+                  <div class="difference">
+                    = value difference
+                  </div>
+                </div>
+              </div>
             
-            <div class="preview-wrapper">
-              <p><strong>Requested Values:</strong> Data set via the Account Request for this Resource.</p>
-              <p><strong>Current Values:</strong> Data set in current production for this Resource.</p>
+              <fn1-button
+                class="change">
+                Apply Requested Values
+              </fn1-button>
             </div>
 
             <table>
               <caption class="sr-only">
-                {{ r.name }} Table
+                {{ i }} Resource Table
               </caption>
 
               <thead>
                 <tr>
                   <th scope="col">Fields</th>
-                  <th scope="col">Requested Values</th>
-                  <th scope="col">Current Values</th>
+                  <th scope="col">Account Request Values</th>
+                  <th scope="col">Production Values</th>
                 </tr>
               </thead>
 
@@ -119,9 +131,21 @@
                   </th>
 
                   <td>
-                    <template v-if="res_v">
-                      {{ res_v }}
-                    </template>
+                    <fn1-input
+                      v-if="res_v"
+                      v-model="update.accountRequest.resources[i][res_i]"
+                      :label="res_i"
+                      :placeholder="res_v"
+                      :name="res_i"
+                      :id="res_i" />
+
+                    <fn1-input
+                      v-else
+                      v-model="update.accountRequest.resources[i][res_i]"
+                      :label="res_i"
+                      :placeholder="res_i"
+                      :name="res_i"
+                      :id="res_i" />
                   </td>
 
                   <td>
@@ -239,6 +263,16 @@
       .catch((e)  => {
         this.accountRequestData.error    = e;
       });
+
+      this.getResources()
+      .then((res) => {
+         console.dir('resources res');
+        this.resources.response = res;
+      })
+      .catch((e)  => {
+         console.dir('resources err');
+        this.resources.error    = e;
+      });
     },
     data(){
       return {
@@ -253,7 +287,11 @@
         },
         deleted:    {
           message:          null,
-        }
+        },
+        resources:  {
+          response:         null,
+          error:            null,
+        },
       }
     },
     computed: {
@@ -301,9 +339,22 @@
       employeeResources() {
         if(this.employeeData)
           return this.employeeData._embedded.resources
-      }
+      },
     },
     methods: {
+      resourceName(resourceCode) {
+        if(this.employeeResources.length) {
+          let name = this.employeeResources.filter((r) => {
+            if(r.definition.code == resourceCode) {
+              return r
+            }
+          });
+
+          let result = name.map(({ definition }) => definition.name)
+
+          return result[0]
+        }
+      },
       deleteAccountRequest() {
         let backendAccountRequestDelete = `${process.env.backendUrl}account_requests/${this.$route.params.id}/delete?format=hal`;
 
@@ -356,7 +407,6 @@
           .catch((e)  => {
             this.accountRequestData.error = e;
           });
-            
         })
         .catch((e)  => {
           console.dir('update failed');
@@ -377,6 +427,15 @@
           let backendAccountRequest = `${process.env.backendUrl}account_requests/${id}?format=hal`;
 
           this.$axios.get(backendAccountRequest)
+          .then((res) => { resolve(res.data) })
+          .catch((e)  => { reject(e) });
+        })
+      },
+      getResources() {
+        return new Promise((resolve, reject) => {
+          let backendResources = `${process.env.backendUrl}resources?format=hal`;
+
+          this.$axios.get(backendResources)
           .then((res) => { resolve(res.data) })
           .catch((e)  => { reject(e) });
         })
@@ -420,35 +479,84 @@
     }
   }
 
-  .preview-wrapper {
-    border-top: 1px solid lighten($text-color, 50%);
-    margin: 15px 0 0 0;
-    padding: 15px 0 0 0;
+  .resource-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border-bottom: 1px solid lighten($text-color, 50%);
+    margin: 0 0 15px 0;
+    padding: 0 0 15px 0;
+
+    div {
+      &:nth-child(1) {
+      }
+    }
+
+    h2 {
+      color: $text-color;
+      margin: 0 0 10px 0;
+    }
+
+    h2, p {
+      width: fit-content;
+    }
 
     p {
       margin: 0 0 15px 0;
+    }
+
+    button {
+      margin-left: auto;
+      margin-right: 0;
     }
   }
 
   .diff {
     background-color: #ffe6a6;
+    padding: 5px 8px;
+    border-radius: $radius-default;
+    line-height: 28px;
   }
 
   table {
     // background-color: purple;
 
+    ::v-deep .field-group {
+      label {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+
+      input {
+        text-align: right;
+      }
+    }
+
+    
+
     thead {
       tr {
         th {
           &:nth-child(1) {
+            // background-color: blue;
+            width: 150px;
           }
 
           &:nth-child(2) {
+            // background-color: red;
+            width: 400px;
             text-align: right;
           }
 
           &:nth-child(3) {
             text-align: left;
+            border-left: 1px solid lighten($text-color, 50%);
           }
         }
       }
@@ -458,14 +566,19 @@
       tr {
         th, td {
           &:nth-child(1) {
+            // background-color: blue;
+            width: 150px;
           }
 
           &:nth-child(2) {
+            // background-color: red;
+            width: 400px;
             text-align: right;
           }
 
           &:nth-child(3) {
             text-align: left;
+            border-left: 1px solid lighten($text-color, 50%);
           }
         }
       }

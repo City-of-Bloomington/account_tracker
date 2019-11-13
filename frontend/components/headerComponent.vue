@@ -35,10 +35,9 @@
         :text="fullName"
         navAlign="right"
         :navItems="[
-
           {
             name: 'My Profile',
-            href: '/profile'
+            href: `/frontend/profile`
           },
           {
             name: 'Logout',
@@ -67,7 +66,7 @@ export default {
       'auth.authUser'
     ]),
     fullName() {
-      return `${this.authUser.firstname} ${this.authUser.lastname}`
+      return `${this.authUser.user.firstname} ${this.authUser.user.lastname}`
     }
   }
 }
@@ -89,8 +88,6 @@ export default {
         }
       }
     }
-
-
   }
 
   @media (max-width: 575px) {

@@ -40,13 +40,6 @@
                 </fn1-button>
               </fn1-button-group>
             </form>
-
-            <examplePagination
-              v-if="accountRequests.data"
-              :total="accountRequests.data.total"
-              :per-page="accountRequests.data.itemsPerPage"
-              :current-page="currentPage"
-              @pagechanged="onPageChange" />
           </header>
 
           <template v-if="accountRequests.pending">
@@ -138,6 +131,13 @@
                 </template>
               </tbody>
             </table>
+
+            <examplePagination
+              v-if="accountRequests.data"
+              :total="accountRequests.data.total"
+              :per-page="accountRequests.data.itemsPerPage"
+              :current-page="currentPage"
+              @pagechanged="onPageChange" />
           </template>
 
           <template v-else>
@@ -411,14 +411,16 @@ export default {
 
   nav {
     &.pagination {
-      margin-left: auto;
+      margin: 20px 0 0 0;
     }
   }
 
   table {
+    background-color: red;
+
     &.fixed-header {
       tbody {
-        height: calc(100vh - 450px);
+        height: calc(100vh - 500px);
       }
     }
   }
