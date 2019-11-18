@@ -1,105 +1,116 @@
 <template>
   <div>
-    <h1 class="page-title">
-      Employee: Activate
-      <template v-if="employee.employee">
-        - {{ employee.employee.firstname }} {{ employee.employee.lastname }}
-      </template>
-    </h1>
+    <pageTitleHeader :page-title="dynamicPageTitle()">
 
-    <form>
-      <!-- Profiles -->
-      <div class="field-group">
-        <label
-          for="profile">
-          Profile
-        </label>
-        <select
-          name="profile"
-          id="profile"
-          type="select"
-          v-model="exampleUser.profile"
-          required>
-          <option
-            v-for="p, i in profiles.profiles"
-            :key="p.id"
-            :value="p">
-            {{ p.name }}
-          </option>
-        </select>
+      <fn1-button
+        v-if="!responseData"
+        slot="buttons"
+        class="activate button"
+        @click.native="activateAccountRequest()">
+        Activate an Account Request
+      </fn1-button>
+    </pageTitleHeader>
+
+    <main class="page-wrapper">
+      <div class="page-description">
+        <template v-if="!responseData">
+          <p>Activate an <strong>Account Request</strong> for <strong>{{ employeeName }}</strong> by:</p>
+          <ol>
+            <li>Selecting a Profile</li>
+            <li>Answering any required<strong>*</strong> questions</li>
+          </ol>
+        </template>
+
+        <template v-if="responseData">
+          <p>The <strong>Account Request</strong> for <strong>{{ employeeName }}</strong> has been <strong>activated</strong>.</p>
+        </template>
       </div>
 
-      <!-- Fields for Profile - resource_defaults -->
-      <template v-if="exampleUser.profile.resource_defaults">
-        <div
-          v-for="f, i in profileDefaultQuestions"
-          :key="i"
-          class="field-group">
-
-          <template v-if="f.type === 'text'">
-            <label :for="i">
-              {{ f.label }}
-              <template v-if="f.required">*</template>
-            </label>
-
-            <input
-              v-model="exampleUser.questions[i]"
-              :type="f.type"
-              :id="i"
-              :name="i"
-              :required="f.required" />
-          </template>
-
-          <template v-if="f.type === 'tel'">
-            <label :for="i">
-              {{ f.label }}
-              <template v-if="f.required">*</template>
-            </label>
-
-            <input
-              v-model="exampleUser.questions[i]"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-              :type="f.type"
-              :id="i"
-              :name="i"
-              :required="f.required" />
-          </template>
+      <form v-if="!responseData">
+        <!-- Profiles -->
+        <div class="field-group">
+          <label
+            for="profile">
+            Profile
+          </label>
+          <select
+            name="profile"
+            id="profile"
+            type="select"
+            v-model="activateUser.profile"
+            required>
+            <option
+              v-for="p, i in profiles.profiles"
+              :key="p.id"
+              :value="p">
+              {{ p.name }}
+            </option>
+          </select>
         </div>
+
+        <!-- Fields for Profile - resource_defaults -->
+        <template v-if="activateUser.profile.questions">
+          <div
+            v-for="f, i in activateUser.profile.questions"
+            :key="i"
+            class="field-group">
+
+            <template v-if="f.type === 'text'">
+              <label :for="i">
+                {{ f.label }}
+                <template v-if="f.required">*</template>
+              </label>
+
+              <input
+                v-model="activateUser.questions[`questions[${i}]`]"
+                :type="f.type"
+                :id="i"
+                :name="i"
+                :required="f.required" />
+            </template>
+
+            <template v-if="f.type === 'tel' || f.type === 'phone'">
+              <label :for="i">
+                {{ f.label }}
+                <template v-if="f.required">*</template>
+              </label>
+
+              <input
+                v-model="activateUser.questions[`questions[${i}]`]"
+                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                :type="f.type"
+                :id="i"
+                :name="i"
+                :required="f.required" />
+            </template>
+          </div>
+        </template>
+      </form>
+
+      <template v-if="responseData">
+        <template
+          v-for="l, i in responseData._links"
+          v-if="i == 'self'">
+          <nuxt-link
+            class="activate button"
+            :to="`/account_requests/${responseData.id}`">
+            View the Account Request
+          </nuxt-link>
+        </template>
       </template>
-
-      <button
-        v-if="enableFormSubmitBtn"
-        type="submit"
-        @click.prevent="activateAccountRequest()">
-        Activate {{ employee.employee.firstname }}'s Account Request
-      </button>
-    </form>
-
-    <ul v-if="examplePostUser">
-      <li v-for="f, i in examplePostUser">
-        <strong>{{ i }} :: </strong>{{f}}
-      </li>
-    </ul>
+    </main>
   </div>
 </template>
 
 <script>
   import {
     mapFields }       from 'vuex-map-fields'
+  
+  import pageTitleHeader  from '~/components/pageTitleHeader'
 
   export default {
+    components: { pageTitleHeader },
     created() {
-      // this.getDepts()
-      // .then((res) => {
-      //   this.departments = res;
-      // })
-      // .catch((e)  => {
-      //   console.log(e);
-      // });
-
-      // this.getResources();
-
-
       if(!this.employee.employee){
         console.dir('no employee - get it');
         let backendEmployee = `${process.env.backendUrl}employees/${this.$route.params.id}?format=json`;
@@ -116,157 +127,81 @@
       }
 
       this.getProfiles();
-      this.userNumber
+      this.userNumber;
     },
     data () {
       return  {
-        // activeDirectoryCode: 'active_directory',
-        // activeDirectoryResource: null,
-        // departments: null,
-        // groups:      null,
-        // jobs:        null,
-        resourcesData:  {
-          response: null,
-          error:    null
-        },
-        exampleUser: {
+        activateUser: {
           profile:   {},
           questions: {},
           userId:    '',
         },
-        examplePostUser: {},
+        responseData: null,
       }
     },
-    watch: {
-      // "exampleUser.profile": {
-      //   handler(val, oldVal) {
-      //     if(val) {
-      //       // this.getTimeTrackJobs(val);
-      //       this.$router.push(
-      //         {
-      //           query: { 'profile': this.exampleUser.profile.id }
-      //         }
-      //       );
-      //     }
-
-      //     // if(val != oldVal) {
-      //     //   if(this.exampleUser.job) {
-      //     //     delete this.exampleUser.job;
-      //     //   }
-      //     // }
-      //   },
-      //   deep: true,
-      // }
-      // "exampleUser.department.id": {
-      //   handler(val, oldVal) {
-      //     if(val) {
-      //       this.getTimeTrackGroups(val);
-      //     }
-
-      //     if(val != oldVal) {
-      //       if(this.exampleUser.group) {
-      //         delete this.exampleUser.group;
-      //       }
-
-      //       if(this.exampleUser.job) {
-      //         delete this.exampleUser.job;
-      //       }
-      //     }
-      //   },
-      //   deep: true,
-      // },
-      // "exampleUser.group.id": {
-      //   handler(val, oldVal) {
-      //     if(val) {
-      //       this.getTimeTrackJobs(val);
-      //     }
-
-      //     if(val != oldVal) {
-      //       if(this.exampleUser.job) {
-      //         delete this.exampleUser.job;
-      //       }
-      //     }
-      //   },
-      //   deep: true,
-      // }
-    },
+    watch: {},
     computed: {
       ...mapFields([
         'employee.employee',
         'resources.resources',
         'profiles.profiles'
       ]),
+      employeeName(){
+        if(this.employee.employee) {
+          if(this.employee.employee.firstname || this.employee.employee.lastname){
+            return `${this.employee.employee.firstname} ${this.employee.employee.lastname}`
+          } else if(this.employee.employee.firstname) {
+            return `${this.employee.employee.firstname}`
+          } else if(this.employee.employee.lastname) {
+            return `${this.employee.employee.lastname}`
+          } else {
+            return 'No name set ...'
+          }
+        } else {
+          return 'No employee {} set'
+        }
+      },
       userNumber() {
         if(this.employee.employee)
-          return this.exampleUser.userId = this.employee.employee.number;
+          return this.activateUser.userId = this.employee.employee.number;
       },
       enableFormSubmitBtn() {
-        if(this.exampleUser.profile.id)
+        if(this.activateUser.profile.id)
           return true;
       },
       profileDefaultQuestions() {
-        if(this.exampleUser.profile)
-          return this.exampleUser.profile.resource_defaults.questions
+        if(this.activateUser.profile)
+          return this.activateUser.profile.questions
       }
-      // activeDirectoryResourceDepartments() {
-      //   // NOTE OLD - NOT NEEDED
-      //   if(this.resources) {
-      //     this.activeDirectoryResource = this.resources.filter((r) => {
-      //       return r.code === this.activeDirectoryCode;
-      //     });
-
-      //     return this.activeDirectoryResource[0].fields.department
-      //   }
-      // },
     },
     methods: {
-      // getTimeTrackGroups(id) {
-      //   this.getGroups(id)
-      //   .then((res) => {
-      //     this.groups = res;
-      //   })
-      //   .catch((e)  => {
-      //     console.log(e);
-      //   });
-      // },
-      // getTimeTrackJobs(id) {
-      //   this.getJobs(id)
-      //   .then((res) => {
-      //     this.jobs = res;
-      //   })
-      //   .catch((e)  => {
-      //     console.log(e);
-      //   });
-      // },
       activateAccountRequest() {
 
         let fD = new FormData();
-        // fD.append(...this.exampleUser.questions);
-        fD.append(`employee.number`, this.userNumber);
-        fD.append(`profile.id`, this.exampleUser.profile.id);
+        fD.append(`employee_number`, this.userNumber);
+        fD.append(`profile_id`,     this.activateUser.profile.id);
+        fD.append('format',         'hal')
 
-        this.examplePostUser = {
-          ...this.exampleUser.questions,
-          "employee.number": this.userNumber,
-          "profile.id":      this.exampleUser.profile.id,
-        };
+        Object.keys(this.activateUser.questions).forEach((item) => {
+          fD.append(item, this.activateUser.questions[item])
+          // console.log(`${item}: ${this.activateUser.questions[item]}`);
+        });
 
-        console.dir(this.examplePostUser)
+        for(var pair of fD.entries()) {
+          console.dir(`${pair[0]}: ${pair[1]}`);
+        }
+
+        let createAccountRequestRoute = `${process.env.backendUrl}employees/${this.userNumber}/activate`;
+
+        this.$axios.post(createAccountRequestRoute, fD)
+        .then((res) => {
+          console.dir(res);
+          this.responseData = res.data;
+        })
+        .catch((e)  => {
+          this.responseData = e;
+        })
       },
-      // getResources() {
-      //   // OLD - NOTE NEEDED
-      //   let backendResources = `${process.env.backendUrl}resources?format=json`;
-
-      //   this.$axios.get(backendResources, { withCredentials: true })
-      //   .then((res) => {
-      //     console.dir(res.data);
-      //     this.$store.dispatch('resources/setResources', res.data);
-      //   })
-      //   .catch((e)  => {
-      //     this.resourcesData.error = e;
-      //     this.$store.dispatch('resources/resetResourcesState');
-      //   })
-      // }
       getProfiles() {
         let backendProfiles = `${process.env.backendUrl}profiles?format=json`;
 
@@ -276,20 +211,26 @@
           this.$store.dispatch('profiles/setProfiles', res.data);
         })
         .catch((e)  => {
-          this.resourcesData.error = e;
           this.$store.dispatch('profiles/setProfiles');
         })
+      },
+      dynamicPageTitle() {
+        if(this.responseData) {
+          return `Employee - ${this.employeeName}: Account Request Activated`
+        } else {
+          return `Employee - ${this.employeeName}: Activate Account Request`
+        }
       }
     }
   }
 </script>
 
 <style lang="scss">
+ol {
+  margin: 20px 0 0 20px;
+}
 
 ul {
   margin: 40px 0 0 0;
-  li {
-    margin: 0 0 10px 0;
-  }
 }
 </style>

@@ -20,20 +20,12 @@
       :navItems="[
         {
           name: 'Employees',
-          href: `${frontendAppUrl}employees/`
+          href: '/employees'
         },
         {
           name: 'Account Requests',
-          href: `${frontendAppUrl}account_requests/`
-        },
-        {
-          name: 'Resource Requests',
-          href: `${frontendAppUrl}resource_requests/`
-        },
-        {
-          name: 'Resources',
-          href: `${frontendAppUrl}resources/`
-        },
+          href: '/account_requests'
+        }
       ]"
 
       :subNavItems="null"
@@ -46,7 +38,7 @@
 
           {
             name: 'My Profile',
-            href: `${frontendAppUrl}profile/`
+            href: '/profile'
           },
           {
             name: 'Logout',

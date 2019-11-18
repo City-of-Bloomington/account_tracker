@@ -1,14 +1,8 @@
 <template>
-  <div>
-    <div v-if="!isAuthenticated">
-      <h1>Please Login</h1>
-    </div>
-
-    <div v-if="isAuthenticated">
-      <headerComponent />
-      <div class="nuxt-wrapper">
-        <nuxt />
-      </div>
+  <div v-if="isAuthenticated">
+    <headerComponent />
+    <div class="nuxt-wrapper">
+      <nuxt />
     </div>
   </div>
 </template>
@@ -26,10 +20,8 @@
       if(!this.isAuthenticated) {
         this.getUserProfile()
         .then((res) => {
-          console.dir(res);
           this.$store.dispatch('auth/authUser', res);
           this.$store.dispatch('auth/authUserAuthenticated', true);
-          this.isAuthenticated = true;
         })
         .catch((error) => {
           this.$store.dispatch('auth/authUser', null);
@@ -60,7 +52,7 @@
         let loginRoute = `${process.env.backendUrl}account?format=json`;
 
         return new Promise((resolve, reject) => {
-          this.$axios.get(loginRoute)
+          this.$axios.get(loginRoute, { withCredentials: true })
           .then((res) => { resolve(res.data) })
           .catch((e)  => { reject(e) });
         })
@@ -71,16 +63,10 @@
 
 <style lang="scss">
 .nuxt-wrapper {
-  padding: 20px;
-}
+  padding: 0 20px;
 
-h1 {
-  &.page-title {
-    color: $text-color;
-    font-weight: $weight-semi-bold;
-    border-bottom: 1px solid lighten($text-color, 50%);
-    margin: 0 0 40px 0;
-    padding: 0 0 20px 0;
+  main {
+    &.page-wrapper {}
   }
 }
 </style>

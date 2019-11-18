@@ -16,21 +16,21 @@
         v-html="application.name"
         :title="application.name"
       ></a>
-
+  
       <nav
         v-if="navItems"
         id="navigation"
+        ref="navigation"
         role="navigation"
         aria-labelledby="navigation">
         <ul >
           <li v-for="(item, index) in navItems" :key="index">
-            <a
-              :href="item.href"
-              :class="item.class"
+            <nuxt-link
+              :to="item.href"
               :disabled="item.disabled"
               :title="item.name"
-              v-html="item.name"
-            ></a>
+              v-html="item.name">
+            </nuxt-link>
           </li>
         </ul>
       </nav>
@@ -124,6 +124,19 @@ export default {
       default: false,
     },
   },
+  methods: {
+    isRouteActive(name) {
+      console.dir(this.$route.name)
+      console.dir(name)
+
+      
+      if (this.$route.name === name) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
 }
 </script>
 
@@ -158,12 +171,14 @@ header {
   }
 
   a {
+    font-weight: $weight-semi-bold;
     display: flex;
     align-items: center;
     text-decoration: none;
     margin: 0 10px;
     padding: 0;
 
+    
     &:first-of-type {
       margin: 0;
 
@@ -204,18 +219,16 @@ header {
     &:nth-child(2) {
       position: relative;
       margin: 0 0 0 20px;
-      color: tint($color-slate, 20%);
-      letter-spacing: $spacing-s;
+      color: $text-color;
       font-size: $size-m;
-      font-weight: $weight-normal;
       line-height: $size-m + 5px;
 
       &:before {
         position: absolute;
         content: "";
         height: $size-l;
-        left: -10px;
-        border-left: 1px solid tint($color-slate, 20%);
+        left: -15px;
+        border-left: 2px solid $color-grey-dark;
       }
     }
   }
@@ -228,6 +241,10 @@ header {
 
     &.navigation-dropdown {
       margin: 0 0 0 20px;
+
+      ::v-deep summary {
+        background: $color-blue;
+      }
     }
 
     &:not(.navigation-dropdown) {
@@ -247,10 +264,16 @@ header {
           }
 
           a {
-            color: tint($color-slate, 20%);
+            color:  lighten($text-color, 20%);
+            padding: 2px 0 5px 0;
+            border-bottom: 2px solid transparent;
 
-            &:hover {
-              text-decoration: underline;
+            &:hover,
+            &:focus,
+            &.nuxt-link-exact-active,
+            &.nuxt-link-active {
+              color: $color-blue;
+              border-bottom: 2px solid $color-grey-dark;
             }
           }
         }
