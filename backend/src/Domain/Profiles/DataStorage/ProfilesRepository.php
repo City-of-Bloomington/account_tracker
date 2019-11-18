@@ -9,11 +9,12 @@ namespace Domain\Profiles\DataStorage;
 
 use Domain\Profiles\Entities\Profile;
 use Domain\Profiles\UseCases\Search\Request as SearchRequest;
+use Domain\Profiles\UseCases\Update\Request as UpdateRequest;
 
 interface ProfilesRepository
 {
     public function load(int $id): Profile;
     public function find(): array;
 
-    public function save(Profile $profile): int;
+    public function save(UpdateRequest $request): int;
 }

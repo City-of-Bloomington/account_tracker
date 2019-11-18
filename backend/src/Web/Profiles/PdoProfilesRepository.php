@@ -10,6 +10,7 @@ namespace Web\Profiles;
 use Domain\Profiles\DataStorage\ProfilesRepository;
 use Domain\Profiles\Entities\Profile;
 use Domain\Profiles\UseCases\Search\Request as SearchRequest;
+use Domain\Profiles\UseCases\Update\Request as UpdateRequest;
 use Web\PdoRepository;
 
 use Aura\SqlQuery\Common\SelectInterface;
@@ -64,11 +65,9 @@ class PdoProfilesRepository extends PdoRepository implements ProfilesRepository
                                              self::$DEFAULT_SORT);
     }
 
-    public function save(Profile $profile): int
+    public function save(UpdateRequest $request): int
     {
-        $data = (array)$profile;
-        $data['questions'] = json_encode($profile->questions);
-        $data['resources'] = json_encode($profile->resources);
+        $data = (array)$request;
         return parent::saveToTable($data, self::TABLE);
     }
 }

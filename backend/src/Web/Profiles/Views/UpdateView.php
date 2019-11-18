@@ -19,6 +19,7 @@ class UpdateView extends Template
         parent::__construct('default', 'html');
 
         $this->vars['title'] = $req->id ? $this->_('profiles.edit', 'messages') : $this->_('profiles.add', 'messages');
+        if (!empty($res->errors)) { $_SESSION['errorMessages'] = $res->errors; }
 
         $vars = [
             'title'      => $this->vars['title'],

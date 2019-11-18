@@ -24,7 +24,7 @@ class Command
         if ($errors) { return new Response(null, $errors); }
 
         try {
-            $id  = $this->repo->save(new Profile((array)$request));
+            $id  = $this->repo->save($request);
             $res = new Response($id);
         }
         catch (\Exception $e) {
@@ -36,8 +36,17 @@ class Command
     private function validate($request): array
     {
         $errors = [];
-        if (!$request->code) { $errors[] = 'missingCode'; }
-        if (!$request->name) { $errors[] = 'missingName'; }
+        if (!$request->code     ) { $errors[] = 'missingCode'; }
+        if (!$request->name     ) { $errors[] = 'missingName'; }
+        if (!$request->resources) { $errors[] = 'missingResources'; }
+
+        if ($request->questions && !json_decode($request->questions)) {
+            $errors[] = 'invalidJSON/questions';
+        }
+
+        if (!json_decode($request->resources)) {
+            $errors[] = 'invalidJSON/resources';
+        }
         return $errors;
     }
 }
