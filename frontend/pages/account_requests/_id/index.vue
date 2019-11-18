@@ -51,7 +51,35 @@
 
       <fn1-tabs class="vertical-left" v-if="employeeData">
         <fn1-tab name="Employee" selected="true">
-          <form @submit.prevent>
+
+          <div class="request-meta">
+            <span v-if="accountRequestData.response.id">
+              <strong>ID:</strong> {{ accountRequestData.response.id }}
+            </span>
+
+            <span v-if="accountRequestData.response.requester_username">
+              <strong>Requested by:</strong> {{ accountRequestData.response.requester_username }}
+            </span>
+
+            <span v-if="accountRequestData.response.employee_number">
+              <strong>Employee Number:</strong> {{ accountRequestData.response.employee_number }}
+            </span>
+
+            <span v-if="accountRequestData.response.type">
+              <strong>Type:</strong> {{ accountRequestData.response.type }}
+            </span>
+
+            <span v-if="accountRequestData.response.status">
+              <strong>Status:</strong> {{ accountRequestData.response.status }}
+            </span>
+
+            <span v-if="accountRequestData.response.created">
+              <strong>Created:</strong> {{ $moment(accountRequestData.response.created.date).format('MM/DD/YYYY') }} - 
+              <small>{{ $moment(accountRequestData.response.created.date).format(" h:mm:ss a") }}</small>
+            </span>
+          </div>
+
+          <form @submit.prevent @keydown.enter="updateAccountRequest()">
             <template v-if="update.accountRequest.employee">
               <fn1-number
                 v-model="update.accountRequest.employee.number"
@@ -94,7 +122,6 @@
 
             <div class="resource-header">
               <div>
-                Name: {{ resourceName(i) }}
                 <!-- <p><strong>Requested Values:</strong> <strong>Account Request</strong> values for this <strong>Resource</strong>.</p> -->
                 <!-- <p><strong>Current Values:</strong> Production values for this <strong>Resource</strong>.</p> -->
 
@@ -111,7 +138,7 @@
               </fn1-button>
             </div>
 
-            <table>
+            <table class="fixed-header">
               <caption class="sr-only">
                 {{ i }} Resource Table
               </caption>
@@ -131,21 +158,23 @@
                   </th>
 
                   <td>
-                    <fn1-input
-                      v-if="res_v"
-                      v-model="update.accountRequest.resources[i][res_i]"
-                      :label="res_i"
-                      :placeholder="res_v"
-                      :name="res_i"
-                      :id="res_i" />
+                    <form @submit.prevent @keydown.enter="updateAccountRequest()">
+                      <fn1-input
+                        v-if="res_v"
+                        v-model="update.accountRequest.resources[i][res_i]"
+                        :label="res_i"
+                        :placeholder="res_v"
+                        :name="res_i"
+                        :id="res_i" />
 
-                    <fn1-input
-                      v-else
-                      v-model="update.accountRequest.resources[i][res_i]"
-                      :label="res_i"
-                      :placeholder="res_i"
-                      :name="res_i"
-                      :id="res_i" />
+                      <fn1-input
+                        v-else
+                        v-model="update.accountRequest.resources[i][res_i]"
+                        :label="res_i"
+                        :placeholder="res_i"
+                        :name="res_i"
+                        :id="res_i" />
+                    </form>
                   </td>
 
                   <td>
@@ -266,11 +295,11 @@
 
       this.getResources()
       .then((res) => {
-         console.dir('resources res');
+        console.dir('resources res');
         this.resources.response = res;
       })
       .catch((e)  => {
-         console.dir('resources err');
+        console.dir('resources err');
         this.resources.error    = e;
       });
     },
@@ -467,11 +496,7 @@
   }
 
   .page-description {
-    display: flex;
-    padding: 0 0 20px 0;
-    margin: 20px 0;
-    border-bottom: 1px solid lighten($text-color, 50%);
-
+    
     p {
       &:last-of-type {
         margin-left: auto;
@@ -518,8 +543,67 @@
     line-height: 28px;
   }
 
+  ::v-deep .tabs {
+    ul {
+      li {
+        &:nth-child(1) {
+          border-bottom: 1px solid lighten($text-color, 50%) !important;
+          padding: 0 0 15px 0 !important;
+
+          &:hover,
+          &:focus {
+            border-bottom: 1px solid lighten($text-color, 50%) !important;
+            padding: 0 0 15px 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  ::v-deep .tab-content {
+    .tab-pane {
+      &:nth-child(1) {
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
+  }
+
+  .request-meta {
+    display: flex;
+    width: 100%;
+    // background-color: $color-cloud;
+    border-bottom: 1px solid lighten($text-color, 50%);
+    margin: 0 0 20px 0;
+    padding: 0 0 20px 0;
+
+    span {
+      margin: 0 20px 0 0;
+      color: $text-color;
+
+      &:last-of-type {
+        margin: 0;
+      }
+
+      strong {
+        display: inline-block;
+      }
+    }
+  }
+  
   table {
-    // background-color: purple;
+    border: 1px solid #ddd;
+
+    &.fixed-header {
+      tbody {
+        max-height: calc(100vh - 400px);
+        height: auto;
+      }
+    }
+
+    form {
+      width: auto;
+    }
 
     ::v-deep .field-group {
       label {
@@ -536,20 +620,17 @@
       input {
         text-align: right;
       }
-    }
-
-    
+    }  
 
     thead {
+      
       tr {
         th {
           &:nth-child(1) {
-            // background-color: blue;
             width: 150px;
           }
 
           &:nth-child(2) {
-            // background-color: red;
             width: 400px;
             text-align: right;
           }
@@ -566,12 +647,10 @@
       tr {
         th, td {
           &:nth-child(1) {
-            // background-color: blue;
             width: 150px;
           }
 
           &:nth-child(2) {
-            // background-color: red;
             width: 400px;
             text-align: right;
           }

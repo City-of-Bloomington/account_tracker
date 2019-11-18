@@ -241,6 +241,34 @@ header {
 
     &.navigation-dropdown {
       margin: 0 0 0 20px;
+      
+      ::v-deep ul {
+        width: 100%;
+        -webkit-box-shadow: 0 16px 20px -13px rgba(42, 44, 48, .5);
+        box-shadow: 0 16px 20px -13px rgba(42, 44, 48, .5);
+        
+        li {
+          margin: 0;
+          border-bottom: 1px solid lighten($text-color, 50%);
+
+          &:last-of-type {
+            margin: 0;
+            border-bottom: none;
+          }
+
+          &:hover,
+          &:focus {
+            a {
+              color: $text-color;
+            }
+          }
+
+          a {
+            color:  lighten($text-color, 20%);
+            font-weight: $weight-semi-bold;
+          }
+        }
+      }
 
       ::v-deep summary {
         background: $color-blue;

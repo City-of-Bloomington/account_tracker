@@ -226,6 +226,11 @@
 </script>
 
 <style lang="scss">
+
+.page-description p {
+  width: 100%;
+}
+
 ol {
   margin: 20px 0 0 20px;
 }

@@ -1,5 +1,7 @@
 <template>
   <div>
+    <exampleBreadCrumbs />
+    
     <pageTitleHeader
       :page-title="`Employee - ${employeeName}`">
 
@@ -13,7 +15,7 @@
 
     <main class="page-wrapper">
       <div class="page-description">
-        <p>Viewing <strong>{{ employeeName }}'s</strong> Resource accounts.</p>
+        <p>Viewing <strong>{{ employeeName }}'s</strong> accounts.</p>
       </div>
 
       <form
@@ -35,15 +37,40 @@
         </fn1-button>
       </form>
       
+      
       <fn1-tabs class="vertical-left" v-if="employee._embedded">
+        <fn1-tab name="Employee" selected="true" class="employee">
+          <div class="employee-data">
+            <div v-if="employee.firstname || employee.lastname">
+              <strong>Name:</strong>
+              <template v-if="employee.firstname">
+                {{ employee.firstname }}
+              </template>
+
+              <template v-if="employee.lastname">
+                {{ employee.lastname }}
+              </template>
+            </div>
+
+            <div v-if="employee.username">
+              <strong>Username:</strong> {{ employee.username }}
+            </div>
+
+            <div v-if="employee.number">
+              <strong>Employee Number:</strong> {{ employee.number }}
+            </div>
+
+            <div v-if="employee.department">
+              <strong>Department:</strong> {{ employee.department }}
+            </div>
+          </div>
+        </fn1-tab>
+
         <fn1-tab
           v-for="r, i in filteredServices"
           :key="r.definition.code"
-          :name="r.definition.name" 
-          :selected="selectedResource(r, i)">
+          :name="r.definition.name">
           <div>
-            <h2>{{ r.definition.name }}</h2>
-
             <table>
               <caption class="sr-only">
                 {{ r.definition.name }} Table
@@ -87,9 +114,11 @@
   import axios        from 'axios'
 
   import pageTitleHeader  from '~/components/pageTitleHeader'
+  import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
+
 
   export default {
-    components: { pageTitleHeader },
+    components: { pageTitleHeader, exampleBreadCrumbs },
     validate ({ params }) {
       return /^\d+$/.test(params.id)
     },
@@ -183,6 +212,35 @@ form {
     margin: 0 0 20px 0;
     padding: 0 0 20px 0;
     border-bottom: 1px solid $color-grey-dark;
+  }
+}
+
+::v-deep .tabs {
+  ul {
+    li {
+      &:nth-child(1) {
+        border-bottom: 1px solid lighten($text-color, 50%) !important;
+        padding: 0 0 15px 0 !important;
+
+        &:hover,
+        &:focus {
+          border-bottom: 1px solid lighten($text-color, 50%) !important;
+          padding: 0 0 15px 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.tab-pane {
+  &.employee {
+    // background-color: pink;
+
+    .employee-data {
+      div {
+        margin: 0 0 10px 0;
+      }
+    }
   }
 }
 

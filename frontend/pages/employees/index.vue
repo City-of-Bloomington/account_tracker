@@ -114,6 +114,11 @@
           </tbody>
         </table>
       </template>
+
+      <template v-else>
+        <h3>Search for an Employee</h3>
+        <h4><strong>Note:</strong> <strong>Employees</strong> must exist in <strong>New World</strong> before appearing here.</h4>
+      </template>
     </main>
   </div>
 </template>
@@ -251,6 +256,16 @@
 </script>
 
 <style lang="scss">
+h3 {
+  font-weight: $weight-semi-bold;
+}
+
+h3, h4 {
+  color: $text-color;
+  margin: 0 0 20px 0;
+}
+
+
 form {
   &#employee-search {
     // margin: 0 0 20px 0;

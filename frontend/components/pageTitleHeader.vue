@@ -45,6 +45,18 @@ export default {
 
     .buttons-slot {
       margin-left: auto;
+
+      // ::v-deep button, .button, a {
+      //   -webkit-box-shadow: 0 16px 20px -13px rgba(42,44,48,.5);
+      //   box-shadow: 0 16px 20px -13px rgba(42,44,48,.5);
+
+      //   &:hover,
+      //   &:focus,
+      //   &.active {
+      //     -webkit-box-shadow: 0 16px 20px -13px rgba(42,44,48,.75);
+      //     box-shadow: 0 16px 20px -13px rgba(42,44,48,.75);
+      //   }
+      // }
     }
   }
 </style>
