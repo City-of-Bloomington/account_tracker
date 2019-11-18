@@ -5,7 +5,7 @@
  * @param array $this->employees
  */
 declare (strict_types=1);
-$fields = ['firstname', 'lastname', 'department'];
+$fields = ['number', 'firstname', 'lastname', 'username', 'department'];
 ?>
 <table>
     <thead>

@@ -81,7 +81,7 @@ use Web\Block;
                 $current   = !empty(             $this->current_resources[$code][$k])
                            ? (is_string(         $this->current_resources[$code][$k])
                                 ? parent::escape($this->current_resources[$code][$k])
-                                :                $this->current_resources[$code][$k])
+                                : json_encode($this->current_resources[$code][$k], JSON_PRETTY_PRINT))
                            : '';
                 $class     = $requested == $current ? '' : ' class="modified"';
                 echo "

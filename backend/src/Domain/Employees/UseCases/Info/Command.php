@@ -12,6 +12,8 @@
 declare (strict_types=1);
 namespace Domain\Employees\UseCases\Info;
 
+use Domain\AccountRequests\DataStorage\AccountRequestsRepository;
+use Domain\AccountRequests\UseCases\Search\Request as SearchRequest;
 use Domain\Employees\DataStorage\EmployeesRepository;
 use Domain\Resources\DataStorage\ResourcesRepository;
 use Domain\Users\Entities\User;
@@ -19,11 +21,15 @@ use Domain\Users\Entities\User;
 class Command
 {
     private $employeeRepo;
+    private $accountsRepo;
     private $resourceRepo;
 
-    public function __construct(EmployeesRepository $repository, ResourcesRepository $resources)
+    public function __construct(EmployeesRepository       $repository,
+                                ResourcesRepository       $resources,
+                                AccountRequestsRepository $accounts)
     {
         $this->employeeRepo = $repository;
+        $this->accountsRepo = $accounts;
         $this->resourceRepo = $resources;
     }
 
@@ -35,9 +41,10 @@ class Command
     {
         try {
             $employee = $this->employeeRepo->load($employee_number);
+            $accounts = $this->accountRequestsForEmployee($employee_number);
         }
         catch (\Exception $e) {
-            return new Response(null, null, [$e->getMessage()]);
+            return new Response(null, null, null, [$e->getMessage()]);
         }
 
         // Collect all the resources assigned to the employee
@@ -52,6 +59,12 @@ class Command
             ];
         }
 
-        return new Response($employee, $resources);
+        return new Response($employee, $resources, $accounts);
+    }
+
+    private function accountRequestsForEmployee(int $number): array
+    {
+        $result = $this->accountsRepo->find(new SearchRequest(['employee_number'=>$number]));
+        return $result['rows'];
     }
 }

@@ -11,6 +11,7 @@
  */
 declare (strict_types=1);
 use Web\Block;
+use Web\Paginator;
 ?>
 <section>
     <h1><?= $this->_(['employee', 'employees', 10]); ?></h1>

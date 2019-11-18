@@ -10,6 +10,7 @@ use Web\Block;
 
 $employee  = $this->infoResponse->employee;
 $resources = $this->infoResponse->resources;
+$requests  = $this->infoResponse->account_requests;
 ?>
 <section>
     <header>
@@ -36,6 +37,15 @@ $resources = $this->infoResponse->resources;
         }
         echo "</table>";
 
+
+        echo "<h3>{$this->_(['account_request', 'account_requests', 10])}</h3>";
+        if ($requests) {
+            $block = new Block('account_requests/list.inc', ['account_requests' => $requests]);
+            echo $block->render('html', $this->template);
+        }
+
+
+        echo "<h3>{$this->_(['resource', 'resources', count($resources)])}</h3>";
         foreach ($resources as $r) {
             $code = $r['definition']->code;
             echo "
