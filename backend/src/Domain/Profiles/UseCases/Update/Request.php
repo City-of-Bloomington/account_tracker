@@ -17,18 +17,10 @@ class Request
 
     public function __construct(?array $data=null)
     {
-        if (!empty($data['id'  ])) { $this->id   = (int)$data['id'  ]; }
-        if (!empty($data['code'])) { $this->code =      $data['code']; }
-        if (!empty($data['name'])) { $this->name =      $data['name']; }
-        if (!empty($data['questions'])) {
-            $this->questions = is_array($data['questions'])
-                             ? $data['questions']
-                             : json_decode($data['questions'], true);
-        }
-        if (!empty($data['resources'])) {
-            $this->resources = is_array($data['resources'])
-                             ? $data['resources']
-                             : json_decode($data['resources'], true);
-        }
+        if (!empty($data['id'       ])) { $this->id   = (int)$data['id'  ]; }
+        if (!empty($data['code'     ])) { $this->code =      $data['code']; }
+        if (!empty($data['name'     ])) { $this->name =      $data['name']; }
+        if (!empty($data['questions'])) { $this->questions = $data['questions']; }
+        if (!empty($data['resources'])) { $this->resources = $data['resources']; }
     }
 }

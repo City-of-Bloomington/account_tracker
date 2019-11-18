@@ -6,5 +6,6 @@
 declare (strict_types=1);
 
 return [
-    'test' => 'askdjaklfjioe2fqiowefjoiejf'
+     'account_tracker' => 'YmFlNTk4Y2UtZjdmNy00MjJkLWI0ZDktNDNjZjE5MTAyNzFm',
+     'test'            => 'askjalkjalskdja'
 ];

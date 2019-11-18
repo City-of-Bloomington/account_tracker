@@ -21,7 +21,7 @@ class ActiveDirectoryLdapService extends LdapService implements ResourceService
      */
     public function load(Employee $employee): array
     {
-        $entries = parent::search(['sAMAccountName='.$employee->username]);
+        $entries = parent::search(['employeeNumber='.$employee->number]);
         if ($entries) {
             return self::hydrate($entries[0]);
         }
@@ -30,19 +30,44 @@ class ActiveDirectoryLdapService extends LdapService implements ResourceService
 
     /**
      * Creates a new user account
+     *
+     * @return array   Contains new LDAP entry and/or errors
      */
     public function create(array $account): array
     {
+        $connection = parent::getConnection();
+
         $dn = $account['distinguishedname'];
         unset($account['distinguishedname']);
 
+        if (!empty($account['memberof'])) {
+            $groups = $account['memberof'];
+            unset($account['memberof']);
+        }
+
+        // Filter out empty fields
         $entry = [];
         foreach ($account as $k=>$v) {
             if ($v) { $entry[$k] = $v; }
         }
 
-        $success = @ldap_add(parent::getConnection(), $dn, $entry);
-        return $success ? [] : ['errors'=>[__CLASS__.': '.ldap_error(parent::getConnection())]];
+        $success = @ldap_add($connection, $dn, $entry);
+        if (!$success) {
+            return ['errors'=>[__CLASS__.': '.ldap_error($connection)]];
+        }
+
+        $errors = [];
+        if (!empty($groups)) {
+            foreach ($groups as $g) {
+                $success = ldap_mod_add($connection, $g, ['member' => $dn]);
+                if (!$success) {
+                     $errors[] = [__CLASS__.': '.ldap_error($connection)];
+                }
+            }
+        }
+
+        $entry = $this->load(new Employee(['username'=>$account['samaccountname']]));
+        return [ 'entry' => $entry, 'errors' => $errors ];
     }
 
     /**

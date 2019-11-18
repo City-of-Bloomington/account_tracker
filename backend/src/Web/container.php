@@ -26,9 +26,13 @@ foreach ($repos as $t) {
     $DI->lazyNew("Web\\$t\\Pdo{$t}Repository"));
 }
 
-$DI->params[ 'Web\Employees\PdoEmployeesRepository']['pdo'] = $DI->lazyGet('db.hr');
+$DI->params[ 'Web\Employees\PdoEmployeesRepository' ]['pdo'] = $DI->lazyGet('db.hr');
+#$DI->params[ 'Web\Employees\TestEmployeesRepository']['pdo'] = $DI->lazyGet('db.default');
+
 $DI->set( 'Domain\Employees\DataStorage\EmployeesRepository',
 $DI->lazyNew('Web\Employees\PdoEmployeesRepository'));
+// $DI->set( 'Domain\Employees\DataStorage\EmployeesRepository',
+// $DI->lazyNew('Web\Employees\TestEmployeesRepository'));
 
 //---------------------------------------------------------
 // Metadata Providers
@@ -62,6 +66,7 @@ foreach (['Info', 'Search'] as $a) {
     $DI->set(    "Domain\\Employees\\UseCases\\$a\\Command",
     $DI->lazyNew("Domain\\Employees\\UseCases\\$a\\Command"));
 }
+$DI->params['Domain\Employees\UseCases\Info\Command']['accounts' ] = $DI->lazyGet('Domain\AccountRequests\DataStorage\AccountRequestsRepository');
 $DI->params['Domain\Employees\UseCases\Info\Command']['resources'] = $DI->lazyGet('Domain\Resources\DataStorage\ResourcesRepository');
 
 $DI->params[ 'Domain\Employees\UseCases\Activate\Command']['employees'] = $DI->lazyGet('Domain\Employees\DataStorage\EmployeesRepository');

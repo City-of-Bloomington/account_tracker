@@ -16,8 +16,7 @@
  */
 declare (strict_types=1);
 ?>
-<details>
-    <summary><?= $this->_('actions'); ?></summary>
+<nav>
     <table>
     <?php
         $h = $this->template->getHelper('buttonLink');
@@ -33,4 +32,4 @@ declare (strict_types=1);
         }
     ?>
     </table>
-</details>
+</nav>

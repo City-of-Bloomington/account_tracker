@@ -9,7 +9,7 @@ namespace Site;
 
 // Uncomment this line to have more debug information go
 // into the apache error log.
-// ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
+#ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
 
 class LdapService
 {
