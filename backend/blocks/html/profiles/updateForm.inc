@@ -3,7 +3,6 @@
  * @copyright 2019 City of Bloomington, Indiana
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
  * @param int    $this->id
- * @param string $this->code
  * @param string $this->name
  * @param string $this->questions  JSON string
  * @param string $this->resources  JSON string
@@ -17,13 +16,6 @@ declare (strict_types=1);
             <input name="id" type="hidden" value="<?= $this->id; ?>" />
             <?php
                 $h = $this->template->getHelper('field');
-                echo $h->field([
-                    'name'     => 'code',
-                    'id'       => 'code',
-                    'label'    => $this->_('code'),
-                    'value'    => $this->code,
-                    'required' => true
-                ]);
 
                 echo $h->field([
                     'name'     => 'name',

@@ -19,7 +19,7 @@ use Aura\SqlQuery\QueryFactory;
 class PdoProfilesRepository extends PdoRepository implements ProfilesRepository
 {
     const TABLE = 'profiles';
-    public static $DEFAULT_SORT = ['code'];
+    public static $DEFAULT_SORT = ['name'];
 
     public function columns()
     {

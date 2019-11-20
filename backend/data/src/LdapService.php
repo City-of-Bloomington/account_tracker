@@ -37,7 +37,7 @@ class LdapService
         'samaccountname',
         'sn',
         'st',
-        'street',
+        'streetaddress',
         'telephonenumber',
         'title',
         'uid',

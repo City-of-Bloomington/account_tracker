@@ -3,7 +3,6 @@
  * @copyright 2019 City of Bloomington, Indiana
  * @license http://www.gnu.org/licenses/agpl.txt GNU/AGPL, see LICENSE
  * @param int    $this->id
- * @param string $this->code
  * @param string $this->name
  * @param array  $this->questions
  * @param array  $this->resources
@@ -27,10 +26,6 @@ use Web\Block;
             }
         ?>
     </header>
-    <table>
-        <tr><th><?= $this->_('id'  ); ?></th><td><?= $this->id;   ?></td></tr>
-        <tr><th><?= $this->_('code'); ?></th><td><?= $this->code; ?></td></tr>
-    </table>
 
     <h2><?= $this->_('questions'); ?></h2>
     <code><?= json_encode($this->questions, JSON_PRETTY_PRINT); ?></code>
