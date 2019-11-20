@@ -19,7 +19,7 @@ class UpdateController extends Controller
         $resource_id = !empty($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
         $_SESSION['return_url'] = self::defaultReturnUrl($resource_id);
 
-        if (isset($_POST['code'])) {
+        if (isset($_POST['name'])) {
             $update = $this->di->get('Domain\Profiles\UseCases\Update\Command');
             $req    = new UpdateRequest($_POST);
             $res    = $update($req);

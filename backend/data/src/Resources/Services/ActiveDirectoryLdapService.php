@@ -120,7 +120,7 @@ class ActiveDirectoryLdapService extends LdapService implements ResourceService
             "pager"                      => $questions['public_phone'],
             "l"                          => 'Bloomington',
             "st"                         => 'Indiana',
-            "street"                     => $profile->resources['active_directory']['street'],
+            "streetaddress"              => $profile->resources['active_directory']['streetaddress'],
             "postalcode"                 => $profile->resources['active_directory']['postalcode'],
             "physicaldeliveryofficename" => $profile->resources['active_directory']['physicaldeliveryofficename'],
             "businesscategory"           => $profile->resources['active_directory']['businesscategory'],

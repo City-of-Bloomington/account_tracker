@@ -10,7 +10,6 @@ namespace Domain\Profiles\Entities;
 class Profile
 {
     public $id;
-    public $code;
     public $name;
     public $questions;
     public $resources;
@@ -18,7 +17,6 @@ class Profile
     public function __construct(array $data)
     {
         if (!empty($data['id'  ])) { $this->id   = (int)$data['id'  ]; }
-        if (!empty($data['code'])) { $this->code =      $data['code']; }
         if (!empty($data['name'])) { $this->name =      $data['name']; }
         if (!empty($data['questions'])) {
             $this->questions = is_array($data['questions'])

@@ -23,26 +23,14 @@ use Web\Block;
             }
         ?>
     </header>
-    <table>
-        <thead>
-            <tr><th><?= $this->_('name'); ?></th>
-                <th><?= $this->_('code'); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
+    <ul><?php
             foreach ($this->profiles as $p) {
-                $code = parent::escape($p->code);
                 $name = parent::escape($p->name);
 
                 $uri  = parent::generateUri('profiles.view', ['id'=>$p->id]);
 
-                echo "
-                <tr><td><a href=\"$uri\">$name</a></td>
-                    <td><a href=\"$uri\">$code</a></td>
-                </tr>";
+                echo "<li><a href=\"$uri\">$name</a></li>";
             }
         ?>
-        </tbody>
-    </table>
+    </ul>
 </section>

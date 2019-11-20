@@ -36,7 +36,6 @@ class Command
     private function validate($request): array
     {
         $errors = [];
-        if (!$request->code     ) { $errors[] = 'missingCode'; }
         if (!$request->name     ) { $errors[] = 'missingName'; }
         if (!$request->resources) { $errors[] = 'missingResources'; }
 

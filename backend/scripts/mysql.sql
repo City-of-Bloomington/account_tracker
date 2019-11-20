@@ -43,17 +43,7 @@ create table account_requests (
 
 create table profiles (
 	id        int unsigned not null primary key auto_increment,
-	code      varchar(128) not null unique,
-	name      varchar(32)  not null,
+	name      varchar(32)  not null unique,
 	questions json,
 	resources json         not null
-);
-
-
-create table test_employees (
-    number     int unsigned not null primary key,
-    firstname  varchar(32)  not null,
-    lastname   varchar(32)  not null,
-    department varchar(128) not null,
-    username   varchar(32)
 );
