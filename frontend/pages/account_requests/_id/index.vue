@@ -1,5 +1,7 @@
 <template>
    <div>
+    <exampleBreadCrumbs />
+    
     <pageTitleHeader
       :page-title="`Account Request: ${employeeName}`">
       
@@ -267,9 +269,10 @@
 
   import pageTitleHeader  from '~/components/pageTitleHeader'
   import exampleModal     from '~/components/design-system/exampleModal'
+  import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
 
   export default {
-    components: { pageTitleHeader, exampleModal },
+    components: { pageTitleHeader, exampleModal, exampleBreadCrumbs },
     validate ({ params }) {
       return /^\d+$/.test(params.id)
     },
@@ -417,7 +420,7 @@
         for(var pair of fD.entries()) {
           console.dir(`${pair[0]}: ${pair[1]}`);
         }
-
+        
         this.$axios.post(backendAccountRequestUpdate, fD)
         .then((res) => {
           console.dir(res)
@@ -596,7 +599,7 @@
 
     &.fixed-header {
       tbody {
-        max-height: calc(100vh - 400px);
+        max-height: calc(100vh - 500px);
         height: auto;
       }
     }

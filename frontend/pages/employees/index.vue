@@ -1,5 +1,7 @@
 <template>
   <div>
+    <exampleBreadCrumbs />
+
     <pageTitleHeader page-title="Employees">
     
       <form
@@ -128,10 +130,11 @@
     mapFields }       from 'vuex-map-fields'
   import axios        from 'axios'
 
-  import pageTitleHeader  from '~/components/pageTitleHeader'
+  import pageTitleHeader    from '~/components/pageTitleHeader'
+  import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
 
   export default {
-    components: { pageTitleHeader },
+    components: { pageTitleHeader, exampleBreadCrumbs },
     beforeRouteEnter(to, from, next) {
       
       let firstNameParam = to.query.firstname,

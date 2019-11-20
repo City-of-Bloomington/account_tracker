@@ -38,21 +38,20 @@ export default {
   },
   computed: {
 		breadCrumbs() {
-      let path   = '',
-          crumbs = [{ name: this.homeCrumb, path: '/' }],
-               r = (this.$route.path                        ).split('/'),
-               m = (this.$route.matched[0].meta.crumbs || '').split('/');
+      let path    = '',
+          crumbs  = [{ name: this.homeCrumb, path: '/' }],
+          route   = (this.$route.path                        ).split('/'),
+          matched = (this.$route.matched[0].meta.crumbs || '').split('/');
       
-      if(!this.$route)
-        return [];
+      if(!this.$route) return [];
 
-			for(var i = 1; i < r.length; i++) {
-        let name = (m[i] || r[i]);
+			for(var i = 1; i < route.length; i++) {
+        let name = (matched[i] || route[i]);
         
-        if(r[i] == '')
-          continue;
+        // if '', skip
+        if(route[i] == '') continue;
 
-				this.homeCrumb += ' : '+ name;
+				// this.homeCrumb += ' : '+ name;
 				          path += '/'  + name;
 		
 				crumbs.push({ name: name, path: path });

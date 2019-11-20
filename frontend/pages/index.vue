@@ -1,19 +1,269 @@
 <template>
   <div>
-    <h1>ACCOUNT TRACKER</h1>
-    <h2>homepage</h2>
+    <div class="dashboard">
+      <div class="card">
+        <header>
+          <h1>Account Reqs.: Pending vs. Complete</h1>
+        </header>
+
+        <!-- only works in Chrome, clean tho -_-,,, -->
+        <div v-if="accountRequestTotals"
+             class="pie"
+             :style="`background-image: conic-gradient(rgb(255, 201, 92) ${pendingPercent}%, rgb(124, 197, 126) ${completedPercent}%);`"></div>
+      </div>
+      
+      <div class="card" v-if="accountRequests.pending.response">
+        <header>
+          <h1>Account Requests: Latest Pending</h1>
+        </header>
+
+        <ul>
+          <li v-for="ar, i in accountRequests.pending.response._embedded.account_requests"
+              v-if="i <= 4">
+            <div>
+              <span v-if="ar.employee.firstname || ar.employee.lastname">
+                <strong>
+                  <template v-if="ar.employee.firstname">
+                    {{ ar.employee.firstname }}
+                  </template>
+                  <template v-if="ar.employee.lastname">
+                    {{ ar.employee.lastname }}
+                  </template>
+                </strong>
+              </span><br>
+
+              <span v-if="ar.employee.department">
+                <small>{{ ar.employee.department }}</small>
+              </span>
+            </div>
+
+            <div>
+              <template v-for="l, i in ar._links">
+                <template v-if="i == 'self'">
+                  <nuxt-link
+                    class="button"
+                    :to="l.href">
+                    View
+                  </nuxt-link>
+                </template>
+              </template>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card" v-if="accountRequests.completed.response">
+        <header>
+          <h1>Account Requests: Latest Completed</h1>
+        </header>
+
+        <ul>
+          <li v-for="ar, i in accountRequests.completed.response._embedded.account_requests"
+              v-if="i <= 4">
+            <div>
+              <span v-if="ar.employee.firstname || ar.employee.lastname">
+                <strong>
+                  <template v-if="ar.employee.firstname">
+                    {{ ar.employee.firstname }}
+                  </template>
+                  <template v-if="ar.employee.lastname">
+                    {{ ar.employee.lastname }}
+                  </template>
+                </strong>
+              </span><br>
+
+              <span v-if="ar.employee.department">
+                <small>{{ ar.employee.department }}</small>
+              </span>
+            </div>
+
+            <div>
+              <template v-for="l, i in ar._links">
+                <template v-if="i == 'self'">
+                  <nuxt-link
+                    class="button"
+                    :to="l.href">
+                    View
+                  </nuxt-link>
+                </template>
+              </template>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import {
-  mapFields }       from 'vuex-map-fields'
+import { mapFields }       from 'vuex-map-fields'
 
 export default {
   data() {
-    return {}
+    return {
+      accountRequests: {
+        pending:    {
+          response: null,
+          error:    null,
+        },
+        completed:  {
+          response: null,
+          error:    null,
+        },
+      }
+    }
   },
-  computed: {},
-  methods:  {}
+  created() {
+    this.getPendingAccountRequests()
+    .then((res) => {
+      this.accountRequests.pending.response = res;
+    })
+    .catch((e)  => {
+      this.accountRequests.pending.errror = e;
+    });
+
+    this.getCompletedAccountRequests()
+    .then((res) => {
+      this.accountRequests.completed.response = res;
+    })
+    .catch((e)  => {
+      this.accountRequests.completed.errror = e;
+    });
+  },
+  computed: {
+    accountRequestTotals() {
+      if(this.accountRequests.pending.response &&
+         this.accountRequests.completed.response) {
+        
+        let total = this.accountRequests.pending.response.total + this.accountRequests.completed.response.total;
+        
+        return total
+      }
+    },
+    pendingPercent() {
+      if(this.accountRequestTotals) {
+        return Math.round((this.accountRequests.pending.response.total / this.accountRequestTotals) * 100)
+      }
+    },
+    completedPercent() {
+      if(this.accountRequestTotals) {
+        return Math.round((this.accountRequests.completed.response.total / this.accountRequestTotals) * 100)
+      }
+    }
+  },
+  methods:  {
+    getPendingAccountRequests() {
+      let pendingAccountRequestsRoute = `${process.env.backendUrl}account_requests?status=pending&format=hal`;
+
+      return new Promise((resolve, reject) => {
+        this.$axios.get(pendingAccountRequestsRoute)
+        .then((res) => { resolve(res.data) })
+        .catch((e)  => { reject(e) });
+      })
+    },
+    getCompletedAccountRequests() {
+      let completedAccountRequestsRoute = `${process.env.backendUrl}account_requests?status=completed&format=hal`;
+
+      return new Promise((resolve, reject) => {
+        this.$axios.get(completedAccountRequestsRoute)
+        .then((res) => { resolve(res.data) })
+        .catch((e)  => { reject(e) });
+      })
+    }
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+  .dashboard {
+    display: flex;
+    background-color: $color-grey-lighter;
+    padding: 20px;
+    height: calc(100vh - 90px); // 90 = header height
+    width: calc(100% + 40px);
+    transform: translateX(-20px);
+  }
+
+  .card {
+    background-color: white;
+    border: 1px solid $color-grey;
+    border-radius: $radius-default;
+    margin: 0 0 0 20px;
+    padding: 8px 20px 10px 20px;
+    width: 350px;
+    height: fit-content;
+    -webkit-box-shadow: 0 16px 20px -13px rgba(42, 44, 48 , .25);
+    box-shadow: 0 16px 20px -13px rgba(42, 44, 48 , .25);
+
+    &:first-of-type {
+      margin: 0;
+    }
+
+    &:hover {
+      -webkit-box-shadow: 0 16px 20px -13px rgba(42, 44, 48 , .35);
+      box-shadow: 0 16px 20px -13px rgba(42, 44, 48 , .35);
+    }
+
+    header {
+      h1 {
+        font-size: 18px;
+        // letter-spacing: .25px;
+        font-weight: $weight-semi-bold;
+        color: $text-color;
+      }
+    }
+
+    p {
+      color: $text-color;
+
+      small {
+        font-size: 13px;
+        font-style: italic;
+      }
+    }
+
+    ul {
+      li {
+        // background-color: red;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid lighten($text-color, 50%);
+        margin: 0;
+        padding: 10px 0;
+        
+
+        &:nth-child(2n) {
+          background: rgba(233,243,253,.3);
+        }
+
+        &:last-of-type {
+          border-bottom: none;
+        }
+
+        div {
+          &:nth-child(2) {
+            margin-left: auto;
+          }
+        }
+
+        span {
+          small {
+            font-size: 13px;
+            font-style: italic;
+          }
+        }
+
+        a, .button {
+          margin: 0;
+          height: auto;
+        }
+      }
+    }
+
+    .pie {
+      height: 175px;
+      width: 175px;
+      border-radius: 50%;
+    }
+  }
+</style>

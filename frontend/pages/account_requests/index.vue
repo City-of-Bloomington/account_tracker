@@ -1,5 +1,6 @@
 <template>
   <div>
+    <exampleBreadCrumbs />
     <pageTitleHeader page-title="Account Requests" />
 
     <main class="page-wrapper">
@@ -210,6 +211,8 @@
 import { mapFields }      from 'vuex-map-fields'
 import pageTitleHeader    from '~/components/pageTitleHeader'
 import examplePagination  from '~/components/design-system/examplePagination'
+import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
+
   
 export default {
   head () {
@@ -217,7 +220,7 @@ export default {
       title: `${process.env.appName}: Acct. Requests`,
     }
   },
-  components: { pageTitleHeader, examplePagination },
+  components: { pageTitleHeader, examplePagination, exampleBreadCrumbs },
   created() {
     this.getAccountRequests()
     .then((res) => {
@@ -363,7 +366,7 @@ export default {
 
     &.fixed-header {
       tbody {
-        max-height: calc(100vh - 450px);
+        max-height: calc(100vh - 470px);
         height: auto;
       }
     }
