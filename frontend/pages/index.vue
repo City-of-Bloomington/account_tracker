@@ -3,13 +3,15 @@
     <div class="dashboard">
       <div class="card">
         <header>
-          <h1>Account Reqs.: Pending vs. Complete</h1>
+          <h1>Overall Account Requests by %</h1>
         </header>
 
-        <!-- only works in Chrome, clean tho -_-,,, -->
-        <div v-if="accountRequestTotals"
-             class="pie"
-             :style="`background-image: conic-gradient(rgb(255, 201, 92) ${pendingPercent}%, rgb(124, 197, 126) ${completedPercent}%);`"></div>
+        <div class="chart-container">
+          <doughnut-chart
+            v-if="chartdata.datasets[0].data.length"
+            :chartdata="chartData"
+            :options="chartOptions" />
+        </div>
       </div>
       
       <div class="card" v-if="accountRequests.pending.response">
@@ -42,7 +44,7 @@
                 <template v-if="i == 'self'">
                   <nuxt-link
                     class="button"
-                    :to="l.href">
+                    :to="`/account_requests/${ar.id}`">
                     View
                   </nuxt-link>
                 </template>
@@ -82,7 +84,7 @@
                 <template v-if="i == 'self'">
                   <nuxt-link
                     class="button"
-                    :to="l.href">
+                    :to="`/account_requests/${ar.id}`">
                     View
                   </nuxt-link>
                 </template>
@@ -97,8 +99,13 @@
 
 <script>
 import { mapFields }       from 'vuex-map-fields'
+import doughnutChart       from '~/components/charts/doughnut'
+
+// chart.canvas.parentNode.style.height = '128px';
+// chart.canvas.parentNode.style.width = '128px';
 
 export default {
+  components: { doughnutChart },
   data() {
     return {
       accountRequests: {
@@ -110,7 +117,29 @@ export default {
           response: null,
           error:    null,
         },
-      }
+      },
+      chartdata: {
+        labels: ["Pending", "Complete"],
+        datasets: [
+          {
+            label: "Account Request by Status",
+            backgroundColor: ["rgb(255, 218, 143)", "rgb(124, 197, 126)"],
+            data: [],
+          }
+        ]
+      },
+      chartoptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          labels: {
+            fontFamily: "'IBM Plex Sans', Helvetica, Arial, sans-serif",
+            fontColor: '#4f4f4f',
+            fontSize: 16,
+          },
+          position: 'right',
+        },
+      },
     }
   },
   created() {
@@ -130,7 +159,21 @@ export default {
       this.accountRequests.completed.errror = e;
     });
   },
+  watch: {
+    pendingPercent(val) {
+      this.setDoughnutPercents(val);
+    },
+    completedPercent(val) {
+      this.setDoughnutPercents(val);
+    }
+  },
   computed: {
+    chartData() {
+      return this.chartdata
+    },
+    chartOptions() {
+      return this.chartoptions
+    },
     accountRequestTotals() {
       if(this.accountRequests.pending.response &&
          this.accountRequests.completed.response) {
@@ -142,7 +185,8 @@ export default {
     },
     pendingPercent() {
       if(this.accountRequestTotals) {
-        return Math.round((this.accountRequests.pending.response.total / this.accountRequestTotals) * 100)
+        let percent = Math.round((this.accountRequests.pending.response.total / this.accountRequestTotals) * 100)
+        return percent;
       }
     },
     completedPercent() {
@@ -152,6 +196,9 @@ export default {
     }
   },
   methods:  {
+    setDoughnutPercents(value){
+      this.chartdata.datasets[0].data.push(value);
+    },
     getPendingAccountRequests() {
       let pendingAccountRequestsRoute = `${process.env.backendUrl}account_requests?status=pending&format=hal`;
 
@@ -182,6 +229,19 @@ export default {
     height: calc(100vh - 90px); // 90 = header height
     width: calc(100% + 40px);
     transform: translateX(-20px);
+  }
+
+  .chart-container {
+    position: relative;
+    height: 150px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    ::v-deep canvas {
+      height: 150px !important;
+      width: 300px !important;
+    }
   }
 
   .card {
@@ -258,12 +318,6 @@ export default {
           height: auto;
         }
       }
-    }
-
-    .pie {
-      height: 175px;
-      width: 175px;
-      border-radius: 50%;
     }
   }
 </style>
