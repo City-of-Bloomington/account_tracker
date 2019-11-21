@@ -34,7 +34,7 @@ class ResourcesTest extends TestCase
 
         foreach ($profiles as $p) {
             foreach ($p->resources as $code=>$r) {
-                $this->assertTrue(in_array($code, $codes), "{$p->code} declares invalid resource: $code");
+                $this->assertTrue(in_array($code, $codes), "{$p->name} declares invalid resource: $code");
             }
         }
     }
