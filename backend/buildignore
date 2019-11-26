@@ -6,4 +6,5 @@ dist
 site_config.inc
 backup.cnf
 data/sessions/*
+public/COB
 .sass-cache

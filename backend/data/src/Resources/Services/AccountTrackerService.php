@@ -12,7 +12,7 @@ use Domain\Employees\Entities\Employee;
 use Domain\Profiles\Entities\Profile;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
-use Web\Authentication\HMACService;
+use Site\HMACService;
 
 class AccountTrackerService extends HMACService implements ResourceService
 {
@@ -27,11 +27,12 @@ class AccountTrackerService extends HMACService implements ResourceService
             $url = BASE_URL.'/users?format=json&username='.$employee->username;
 
             $client   = new Client();
-            $request  = new Psr7\Request('GET', $url, parent::HMACHeaders());
+            $request  = new Psr7\Request('GET', $url);
             $signed   = parent::signRequest($request);
             $response = $client->send($signed);
+            $body     = $response->getBody()->__toString();
 
-            $list = json_decode((string)$response->getBody(), true);
+            $list = json_decode($body, true);
             if (!$list) {
                 throw new \Exception('Server did not return json');
             }
@@ -53,7 +54,11 @@ class AccountTrackerService extends HMACService implements ResourceService
         $account['format'] = 'json';
 
         $client   = new Client();
-        $request  = parent::signedPostRequest(BASE_URL.'/users/update', $account);
+        $request  = new Psr7\Request('POST',
+                                     BASE_URL.'/users/update',
+                                     ['Content-Type' => 'application/x-www-form-urlencoded'],
+                                     Psr7\stream_for(http_build_query($account, '', '&')));
+        $signed   = parent::signRequest($request);
         $response = $client->send($request, ['allow_redirects'=>false]);
         $body     = $response->getBody()->__toString();
 
@@ -70,8 +75,12 @@ class AccountTrackerService extends HMACService implements ResourceService
         $modified['id'    ] = $current['id'];
 
         $client   = new Client();
-        $request  = parent::signedPostRequest(BASE_URL.'/users/update', $modified);
-        $response = $client->send($request, ['allow_redirects'=>false]);
+        $request  = new Psr7\Request('POST',
+                                     BASE_URL.'/users/update',
+                                     ['Content-Type' => 'application/x-www-form-urlencoded'],
+                                     Psr7\stream_for(http_build_query($modified, '', '&')));
+        $signed   = parent::signRequest($request);
+        $response = $client->send($signed, ['allow_redirects'=>false]);
         $body     = $response->getBody()->__toString();
 
         $json     = json_decode($body, true);

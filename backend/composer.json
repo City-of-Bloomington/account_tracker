@@ -1,15 +1,19 @@
 {
+    "repositories": [{
+        "type": "vcs",
+        "url": "https://github.com/City-of-Bloomington/http-signatures-php"
+    }],
     "require": {
         "php": ">=7.2",
-        "aura/di":                            "@stable",
-        "aura/router":                        "~2",
-        "aura/sqlquery":                      "@stable",
-        "aws/aws-sdk-php":                    "@stable",
-        "guzzlehttp/guzzle":                  "@stable",
-        "jasig/phpcas":                       "@stable",
-        "graylog2/gelf-php":                  "@stable",
-        "zendframework/zend-log":             "@stable",
-        "zendframework/zend-permissions-acl": "@stable"
+        "aura/di":                             "@stable",
+        "aura/router":                         "~2",
+        "aura/sqlquery":                       "@stable",
+        "city-of-bloomington/http-signatures": "dev-master",
+        "guzzlehttp/guzzle":                   "@stable",
+        "jasig/phpcas":                        "@stable",
+        "graylog2/gelf-php":                   "@stable",
+        "zendframework/zend-log":              "@stable",
+        "zendframework/zend-permissions-acl":  "@stable"
     },
     "require-dev": {
         "phpunit/phpunit": "@stable"
