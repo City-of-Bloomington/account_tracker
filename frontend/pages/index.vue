@@ -1,5 +1,6 @@
 <template>
   <div>
+    <exampleBreadCrumbs />
     <div class="dashboard">
       <div class="card">
         <header>
@@ -24,6 +25,7 @@
               v-if="i <= 4">
             <div>
               <span v-if="ar.employee.firstname || ar.employee.lastname">
+                {{ getUserPhoto(ar.employee.username) }}
                 <strong>
                   <template v-if="ar.employee.firstname">
                     {{ ar.employee.firstname }}
@@ -100,12 +102,10 @@
 <script>
 import { mapFields }       from 'vuex-map-fields'
 import doughnutChart       from '~/components/charts/doughnut'
-
-// chart.canvas.parentNode.style.height = '128px';
-// chart.canvas.parentNode.style.width = '128px';
+import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
 
 export default {
-  components: { doughnutChart },
+  components: { doughnutChart, exampleBreadCrumbs },
   data() {
     return {
       accountRequests: {
@@ -129,15 +129,18 @@ export default {
         ]
       },
       chartoptions: {
+        tooltips: {
+          enabled: false,
+        },
         responsive: true,
         maintainAspectRatio: false,
         legend: {
           labels: {
             fontFamily: "'IBM Plex Sans', Helvetica, Arial, sans-serif",
-            fontColor: '#4f4f4f',
-            fontSize: 16,
+            fontColor:  "#4f4f4f",
+            fontSize:   16,
           },
-          position: 'right',
+          position: "right",
         },
       },
     }
@@ -158,6 +161,8 @@ export default {
     .catch((e)  => {
       this.accountRequests.completed.errror = e;
     });
+
+    
   },
   watch: {
     pendingPercent(val) {
@@ -216,7 +221,18 @@ export default {
         .then((res) => { resolve(res.data) })
         .catch((e)  => { reject(e) });
       })
-    }
+    },
+    getUserPhoto(username) {
+      return this.$axios.get(`https://bloomington.in.gov/directory/people/view?username=${username}&format=json`,
+      { withCredentials: false })
+      .then((res) => {
+        return resolve(res.data.photo)
+        console.dir(res.data.photo);
+      })
+      .catch((e) => {
+        console.dir(e);
+      });
+    },
   }
 }
 </script>
@@ -226,7 +242,7 @@ export default {
     display: flex;
     background-color: $color-grey-lighter;
     padding: 20px;
-    height: calc(100vh - 90px); // 90 = header height
+    height: calc(100vh - 122px); // (90 + 32) = 122 = header + crumbs height
     width: calc(100% + 40px);
     transform: translateX(-20px);
   }
@@ -240,7 +256,7 @@ export default {
 
     ::v-deep canvas {
       height: 150px !important;
-      width: 300px !important;
+      width: 100% !important;
     }
   }
 
@@ -250,7 +266,7 @@ export default {
     border-radius: $radius-default;
     margin: 0 0 0 20px;
     padding: 8px 20px 10px 20px;
-    width: 350px;
+    width: 33.3%;
     height: fit-content;
     -webkit-box-shadow: 0 16px 20px -13px rgba(42, 44, 48 , .25);
     box-shadow: 0 16px 20px -13px rgba(42, 44, 48 , .25);
@@ -314,8 +330,13 @@ export default {
         }
 
         a, .button {
+          background-color: $color-silver;
           margin: 0;
           height: auto;
+
+          &:hover {
+            background-color: darken($color-silver, 15%);
+          }
         }
       }
     }
