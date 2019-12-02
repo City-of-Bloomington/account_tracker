@@ -56,10 +56,7 @@ import {
 export default {
   components: {exampleHeader},
   data() {
-    return {
-
-
-    }
+    return {}
   },
   computed: {
     ...mapFields([

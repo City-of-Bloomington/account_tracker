@@ -22,19 +22,26 @@ module.exports = {
   },
 
   env: {
-    siteHome:       process.env.SITE_HOME,
-    repo:           pkg.repository.url,
-    nuxtPort:       process.env.NUXT_PORT           || 3000,
-    appName:        process.env.APP_NAME,
-    cityName:       process.env.CITY_NAME,
-    logoHeading:    process.env.LOGO_HEADING,
-    logoSubHeading: process.env.LOGO_SUB_HEADING,
-    cityWebsiteUrl: process.env.CITY_WEBSITE_URL,
-    frontendBase:   process.env.FE_BASE             || '/frontend/',
+    siteHome:         process.env.SITE_HOME,
+    repo:             pkg.repository.url,
+    nuxtPort:         process.env.NUXT_PORT             || 3000,
+    appName:          process.env.APP_NAME,
+    cityName:         process.env.CITY_NAME,
+    logoHeading:      process.env.LOGO_HEADING,
+    logoSubHeading:   process.env.LOGO_SUB_HEADING,
+    cityWebsiteUrl:   process.env.CITY_WEBSITE_URL,
 
-    frontendUrl:    process.env.FRONTEND_URL        || 'https://dhcp-cityhall-101-164.bloomington.in.gov:3000',
-    backendUrl:     process.env.BACKEND_URL         || 'https://rogue.bloomington.in.gov/account_tracker/',
-    backendEmployees: process.env.BACKEND_EMPLOYEES || `employees?format=hal&`
+    frontendBase:     process.env.FE_BASE               || '/frontend/',
+    frontendUrl:      process.env.FRONTEND_URL          || 'https://dhcp-cityhall-101-164.bloomington.in.gov:3000',
+
+    api:              process.env.BACKEND_URL           || 'https://rogue.bloomington.in.gov/account_tracker/',
+    apiUsersAccount:  process.env.BACKEND_USERS_ACCOUNT || 'account?format=json',
+    apiAR:            process.env.BACKEND_AR            || 'account_requests?format=hal',
+    apiPendingAR:     process.env.BACKEND_PENDING_AR    || 'account_requests?status=pending&format=hal',
+    apiCompletedAR:   process.env.BACKEND_COMPLETED_AR  || 'account_requests?status=completed&format=hal',
+    apiResources:     process.env.BACKEND_RESOURCES     || 'resources?format=hal',
+    apiProfiles:      process.env.BACKEND_PROFILES      || 'profiles?format=json',
+    apiEmployees:     process.env.BACKEND_EMPLOYEES     || 'employees?format=hal'
   },
 
   loading: { color: '#fff' },
@@ -50,7 +57,6 @@ module.exports = {
   modules: [
     ['@nuxtjs/style-resources'],
     ['@nuxtjs/axios'],
-    // ['@nuxtjs/redirect-module'],
     // @nuxtjs/pwa breaks
     // ['@nuxtjs/pwa', {
     //   icon: true,
@@ -60,12 +66,10 @@ module.exports = {
 
   css: [
     '@/assets/scss/style.scss',
-    // '@/assets/css/cobDS-tokens.scss',
   ],
 
   styleResources: {
     scss: [
-      // './assets/css/style.scss',
       './assets/scss/cobDS-tokens.scss',
     ]
   },
@@ -77,25 +81,13 @@ module.exports = {
    */
   axios: {
     proxy: true,
-    // credentials: true,
   },
+
   proxy: {
     // '/api/': {
     //   target: 'https://rogue.bloomington.in.gov/account_tracker/',
     //   pathRewrite: {
     //     '^/api/': ''
-    //   }
-    // },
-    // '/accounts/login': {
-    //   target: `http://127.0.0.1:8000/accounts/login/`,
-    //   pathRewrite: {
-    //     '^/accounts/login': ''
-    //   }
-    // },
-    // '/accounts/logout': {
-    //   target: 'http://127.0.0.1:8000/accounts/logout/',
-    //   pathRewrite: {
-    //     '^/accounts/logout': ''
     //   }
     // },
   },

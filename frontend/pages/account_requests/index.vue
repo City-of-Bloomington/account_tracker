@@ -224,7 +224,7 @@ export default {
   created() {
     this.getAccountRequests()
     .then((res) => {
-      this.accountRequests.data = res;
+      this.accountRequests.data   = res;
       this.accountRequests.latest = res;
       this.accountRequestsPending();
       this.accountRequestsComplete();
@@ -275,9 +275,9 @@ export default {
     getAccountRequests(page) {
 
       if(page) {
-        var accountRequestsRoute = `${process.env.backendUrl}account_requests?format=hal&page=${page}`;
+        var accountRequestsRoute = `${process.env.api}${process.env.apiAR}&page=${page}`;
       } else {
-        var accountRequestsRoute = `${process.env.backendUrl}account_requests?format=hal`;
+        var accountRequestsRoute = `${process.env.api}${process.env.apiAR}`;
       }
 
       console.dir('getAccountRequests');

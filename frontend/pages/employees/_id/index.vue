@@ -310,7 +310,7 @@
       return /^\d+$/.test(params.id)
     },
     created() {
-      let backendEmployee = `${process.env.backendUrl}employees/${this.$route.params.id}?format=hal`;
+      let backendEmployee = `${process.env.api}employees/${this.$route.params.id}?format=hal`;
       this.$axios.get(backendEmployee)
       .then((res) => {
         this.$store.dispatch('employee/setEmployee', res.data);
@@ -425,9 +425,9 @@
       },
       getEmployeePendingAccountRequests(page) {
         if(page) {
-          var backendEmployeePendingAccountRequests = `${process.env.backendUrl}account_requests?employee_number=${this.$route.params.id}&status=pending&format=hal&page=${page}`;
+          var backendEmployeePendingAccountRequests = `${process.env.api}account_requests?employee_number=${this.$route.params.id}&status=pending&format=hal&page=${page}`;
         } else {
-          var backendEmployeePendingAccountRequests = `${process.env.backendUrl}account_requests?employee_number=${this.$route.params.id}&status=pending&format=hal`;
+          var backendEmployeePendingAccountRequests = `${process.env.api}account_requests?employee_number=${this.$route.params.id}&status=pending&format=hal`;
         }
 
         return new Promise((resolve, reject) => {
@@ -438,9 +438,9 @@
       },
       getEmployeeCompletedAccountRequests(page) {
         if(page) {
-          var backendEmployeeCompletedAccountRequests = `${process.env.backendUrl}account_requests?employee_number=${this.$route.params.id}&status=completed&format=hal&page=${page}`;
+          var backendEmployeeCompletedAccountRequests = `${process.env.api}account_requests?employee_number=${this.$route.params.id}&status=completed&format=hal&page=${page}`;
         } else {
-          var backendEmployeeCompletedAccountRequests = `${process.env.backendUrl}account_requests?employee_number=${this.$route.params.id}&status=completed&format=hal`;
+          var backendEmployeeCompletedAccountRequests = `${process.env.api}account_requests?employee_number=${this.$route.params.id}&status=completed&format=hal`;
         }
 
         return new Promise((resolve, reject) => {

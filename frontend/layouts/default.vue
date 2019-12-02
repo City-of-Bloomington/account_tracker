@@ -32,7 +32,7 @@
               let redirectURL      = `${process.env.frontendUrl}${process.env.frontendBase}`,
                 encodedRedirectURL = encodeURI(redirectURL);
 
-              window.location = `${process.env.backendUrl}login?return_url=${encodedRedirectURL}`;
+              window.location = `${process.env.api}login?return_url=${encodedRedirectURL}`;
             }
           }
         })
@@ -49,10 +49,9 @@
     },
     methods: {
       getUserProfile() {
-        let loginRoute = `${process.env.backendUrl}account?format=json`;
-
         return new Promise((resolve, reject) => {
-          this.$axios.get(loginRoute, { withCredentials: true })
+          this.$axios.get(`${process.env.api}${process.env.apiUsersAccount}`,
+          { withCredentials: true })
           .then((res) => { resolve(res.data) })
           .catch((e)  => { reject(e) });
         })

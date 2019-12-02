@@ -57,7 +57,7 @@
   export default {
     created() {
       this.$axios
-      .get(`${process.env.backendUrl}resources?format=json`)
+      .get(`${process.env.api}resources?format=json`)
       .then((res) => {
         this.resources = res.data;
       })

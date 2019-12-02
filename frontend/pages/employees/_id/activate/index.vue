@@ -104,10 +104,9 @@
 </template>
 
 <script>
-  import {
-    mapFields }       from 'vuex-map-fields'
+  import { mapFields }      from 'vuex-map-fields'
   
-  import pageTitleHeader  from '~/components/pageTitleHeader'
+  import pageTitleHeader    from '~/components/pageTitleHeader'
   import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
 
 
@@ -116,7 +115,7 @@
     created() {
       if(!this.employee.employee){
         console.dir('no employee - get it');
-        let backendEmployee = `${process.env.backendUrl}employees/${this.$route.params.id}?format=json`;
+        let backendEmployee = `${process.env.api}employees/${this.$route.params.id}?format=json`;
 
         this.$axios.get(backendEmployee, { withCredentials: true })
         .then((res) => {
@@ -181,9 +180,9 @@
       activateAccountRequest() {
 
         let fD = new FormData();
-        fD.append(`employee_number`, this.userNumber);
-        fD.append(`profile_id`,     this.activateUser.profile.id);
-        fD.append('format',         'hal')
+        fD.append(`employee_number`,  this.userNumber);
+        fD.append(`profile_id`,       this.activateUser.profile.id);
+        fD.append('format',           'hal')
 
         Object.keys(this.activateUser.questions).forEach((item) => {
           fD.append(item, this.activateUser.questions[item])
@@ -194,15 +193,14 @@
           console.dir(`${pair[0]}: ${pair[1]}`);
         }
 
-        let createAccountRequestRoute = `${process.env.backendUrl}employees/${this.userNumber}/activate`;
+        let createAccountRequestRoute = `${process.env.api}employees/${this.userNumber}/activate`;
 
         this.$axios.post(createAccountRequestRoute, fD)
         .then((res) => {
           console.dir(res);
 
           // we don't get a proper response from the backend, sigh -_-,,
-          // this.responseData = res.data;
-
+          // eg, this.responseData = res.data;
           // so, static text'it
           this.responseData = 'Account Request successfully initialized.'
         })
@@ -211,9 +209,7 @@
         })
       },
       getProfiles() {
-        let backendProfiles = `${process.env.backendUrl}profiles?format=json`;
-
-        this.$axios.get(backendProfiles, { withCredentials: true })
+        this.$axios.get(`${process.env.api}${process.env.apiProfiles}`)
         .then((res) => {
           console.dir(res.data);
           this.$store.dispatch('profiles/setProfiles', res.data);

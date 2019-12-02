@@ -33,7 +33,7 @@
       this.resourceRouteID = this.$route.params.id
 
       this.$axios
-      .get(`${process.env.backendUrl}resources/${this.resourceRouteID}?format=json`)
+      .get(`${process.env.api}resources/${this.resourceRouteID}?format=json`)
       .then((res) => {
         this.resource = res.data;
       })

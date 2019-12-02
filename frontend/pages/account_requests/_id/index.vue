@@ -388,7 +388,7 @@
         }
       },
       deleteAccountRequest() {
-        let backendAccountRequestDelete = `${process.env.backendUrl}account_requests/${this.$route.params.id}/delete?format=hal`;
+        let backendAccountRequestDelete = `${process.env.api}account_requests/${this.$route.params.id}/delete?format=hal`;
 
         this.$axios.post(backendAccountRequestDelete)
         .then((res) => {
@@ -405,7 +405,7 @@
         })
       },
       updateAccountRequest() {
-        let backendAccountRequestUpdate = `${process.env.backendUrl}account_requests/update/${this.$route.params.id}?format=json`,
+        let backendAccountRequestUpdate = `${process.env.api}account_requests/update/${this.$route.params.id}?format=json`,
                                      fD = new FormData();
 
         fD.append(`id`,               this.update.accountRequest.id),
@@ -430,7 +430,7 @@
             this.update.errors = res.data.errors;
           }
 
-          let backendAccountRequest = `${process.env.backendUrl}account_requests/${this.$route.params.id}?format=hal`;
+          let backendAccountRequest = `${process.env.api}account_requests/${this.$route.params.id}?format=hal`;
 
           this.$axios.get(backendAccountRequest)
           .then((res) => {
@@ -447,7 +447,7 @@
       },
       getEmployeeData(id) {
         return new Promise((resolve, reject) => {
-          let backendEmployee = `${process.env.backendUrl}employees/${id}?format=hal`;
+          let backendEmployee = `${process.env.api}employees/${id}?format=hal`;
 
           this.$axios.get(backendEmployee)
           .then((res) => { resolve(res.data) })
@@ -456,7 +456,7 @@
       },
       getAccountRequestById(id) {
         return new Promise((resolve, reject) => {
-          let backendAccountRequest = `${process.env.backendUrl}account_requests/${id}?format=hal`;
+          let backendAccountRequest = `${process.env.api}account_requests/${id}?format=hal`;
 
           this.$axios.get(backendAccountRequest)
           .then((res) => { resolve(res.data) })
@@ -465,9 +465,7 @@
       },
       getResources() {
         return new Promise((resolve, reject) => {
-          let backendResources = `${process.env.backendUrl}resources?format=hal`;
-
-          this.$axios.get(backendResources)
+          this.$axios.get(`${process.env.api}${process.env.apiResources}`)
           .then((res) => { resolve(res.data) })
           .catch((e)  => { reject(e) });
         })

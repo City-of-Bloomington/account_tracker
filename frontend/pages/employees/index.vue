@@ -126,9 +126,8 @@
 </template>
 
 <script>
-  import {
-    mapFields }       from 'vuex-map-fields'
-  import axios        from 'axios'
+  import { mapFields }      from 'vuex-map-fields'
+  import axios              from 'axios'
 
   import pageTitleHeader    from '~/components/pageTitleHeader'
   import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
@@ -192,7 +191,7 @@
           employeeParams = `lastname=${params.lastname}`;
         }
 
-        let backendEmployees = `${process.env.backendUrl}${process.env.backendEmployees}${employeeParams}`;
+        let backendEmployees = `${process.env.api}${process.env.apiEmployees}&${employeeParams}`;
 
         console.dir(backendEmployees)
 
@@ -270,11 +269,7 @@ h3, h4 {
 
 
 form {
-  &#employee-search {
-    // margin: 0 0 20px 0;
-    // padding: 0 0 20px 0;
-    // border-bottom: 1px solid $color-grey-dark;
-  }
+  &#employee-search {}
 }
 
 table {

@@ -25,7 +25,7 @@
               v-if="i <= 4">
             <div>
               <span v-if="ar.employee.firstname || ar.employee.lastname">
-                {{ getUserPhoto(ar.employee.username) }}
+                <!-- {{ getUserPhoto(ar.employee.username) }} -->
                 <strong>
                   <template v-if="ar.employee.firstname">
                     {{ ar.employee.firstname }}
@@ -100,9 +100,9 @@
 </template>
 
 <script>
-import { mapFields }       from 'vuex-map-fields'
-import doughnutChart       from '~/components/charts/doughnut'
-import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
+import { mapFields }        from 'vuex-map-fields'
+import doughnutChart        from '~/components/charts/doughnut'
+import exampleBreadCrumbs   from '~/components/design-system/exampleBreadCrumbs'
 
 export default {
   components: { doughnutChart, exampleBreadCrumbs },
@@ -119,7 +119,7 @@ export default {
         },
       },
       chartdata: {
-        labels: ["Pending", "Complete"],
+        labels:   ["Pending", "Complete"],
         datasets: [
           {
             label: "Account Request by Status",
@@ -160,9 +160,7 @@ export default {
     })
     .catch((e)  => {
       this.accountRequests.completed.errror = e;
-    });
-
-    
+    }); 
   },
   watch: {
     pendingPercent(val) {
@@ -205,24 +203,23 @@ export default {
       this.chartdata.datasets[0].data.push(value);
     },
     getPendingAccountRequests() {
-      let pendingAccountRequestsRoute = `${process.env.backendUrl}account_requests?status=pending&format=hal`;
-
       return new Promise((resolve, reject) => {
-        this.$axios.get(pendingAccountRequestsRoute)
+        this.$axios.get(`${process.env.api}${process.env.apiPendingAR}`)
         .then((res) => { resolve(res.data) })
         .catch((e)  => { reject(e) });
       })
     },
     getCompletedAccountRequests() {
-      let completedAccountRequestsRoute = `${process.env.backendUrl}account_requests?status=completed&format=hal`;
-
       return new Promise((resolve, reject) => {
-        this.$axios.get(completedAccountRequestsRoute)
+        this.$axios.get(`${process.env.api}${process.env.apiCompletedAR}`)
         .then((res) => { resolve(res.data) })
         .catch((e)  => { reject(e) });
       })
     },
     getUserPhoto(username) {
+      // NOTE:
+      // This doesn't work, bc it expects the 'user' to be 'logged in'
+      // in order to view the link provided for the `photo` field.
       return this.$axios.get(`https://bloomington.in.gov/directory/people/view?username=${username}&format=json`,
       { withCredentials: false })
       .then((res) => {

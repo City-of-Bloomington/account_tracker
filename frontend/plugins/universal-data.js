@@ -12,7 +12,7 @@ Vue.mixin({
       logoSubHeading:     process.env.logoSubHeading,
       headerLogo:         'city-of-bloomington-logo.svg',
       appName:            process.env.appName,
-      logoutRoute:        `${process.env.backendUrl}logout`,
+      logoutRoute:        `${process.env.api}logout`,
 
     }
   }
