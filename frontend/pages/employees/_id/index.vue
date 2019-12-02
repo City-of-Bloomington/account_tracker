@@ -39,9 +39,6 @@
         
       <fn1-tabs class="vertical-left" v-if="employee._embedded">
         <fn1-tab name="Employee" selected="true" class="employee">
-          <svg v-if="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
-            <path fill="#4f4f4f" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 96c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm0 344c-58.7 0-111.3-26.6-146.5-68.2 18.8-35.4 55.6-59.8 98.5-59.8 2.4 0 4.8.4 7.1 1.1 13 4.2 26.6 6.9 40.9 6.9 14.3 0 28-2.7 40.9-6.9 2.3-.7 4.7-1.1 7.1-1.1 42.9 0 79.7 24.4 98.5 59.8C359.3 421.4 306.7 448 248 448z" class=""></path>
-          </svg>
           
           <div class="employee-data">
             <div v-if="employee.firstname || employee.lastname">
@@ -70,11 +67,14 @@
         </fn1-tab>
 
         <fn1-tab name="Account Requests" class="account-requests">
-          <fn1-tabs class="account-request-tabs">
+          <fn1-tabs
+            v-if="pendingAccountRequestCount > 0 || completedAccountRequestCount > 0"
+            class="account-request-tabs">
+
             <fn1-tab
               :name="`Pending (${pendingAccountRequestCount})`"
               :selected="true"
-              v-if="employeeData.accountRequests.pending.response">
+              v-if="pendingAccountRequestCount > 0">
               <table class="fixed-header account-requests">
                 <caption class="sr-only">
                   {{ employeeName }}'s Account Requests Table
@@ -164,7 +164,7 @@
 
             <fn1-tab
               :name="`Completed (${completedAccountRequestCount})`"
-              v-if="employeeData.accountRequests.completed.response">
+              v-if="completedAccountRequestCount > 0">
               <table class="fixed-header account-requests">
                 <caption class="sr-only">
                   {{ employeeName }}'s Account Requests Table
@@ -252,10 +252,13 @@
                 @pagechanged="onCompletedPageChange" />
             </fn1-tab>
           </fn1-tabs>
+
+          <p v-else>No <strong>Account Requests</strong> requested.</p>
         </fn1-tab>
 
         <fn1-tab
           v-for="r, i in filteredServices"
+          v-if="r.values.length != 0"
           :key="r.definition.code"
           :name="r.definition.name">
           <div>

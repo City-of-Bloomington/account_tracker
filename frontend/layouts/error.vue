@@ -1,8 +1,13 @@
 <template>
   <div class="container">
-    <h1 v-if="error.statusCode === 404">Page not found</h1>
-    <h1 v-else>An error occurred</h1>
-    <nuxt-link to="/">Home page</nuxt-link>
+    <fn1-alert variant="warning">
+      <strong>Status Code: {{ error.statusCode }}</strong>
+      - <strong>{{ error.message }}</strong>
+    </fn1-alert>
+    
+    <nuxt-link
+      class="button"
+      to="/">Go Home</nuxt-link>
   </div>
 </template>
 
@@ -11,3 +16,9 @@ export default {
   props: ['error']
 }
 </script>
+
+<style lang="scss">
+  .container {
+    margin: 20px 0 0 0;
+  }
+</style>

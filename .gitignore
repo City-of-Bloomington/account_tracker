@@ -21,6 +21,9 @@ frontend/certs
 ansible/roles
 .vscode
 
+# Jest
+coverage/
+
 # Service worker
 sw.*
 

@@ -1,27 +1,34 @@
 <template>
   <div>
-    <h1>Your Profile</h1>
-    <pre>{{ authUser }}</pre>
+    <exampleBreadCrumbs />
+
+    <pageTitleHeader page-title="Your Profile" />
+
+    <ul v-if="authUser">
+      <li v-for="f, i in authUser.user">
+        <strong>{{ i }}:</strong> {{ f }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-  import {
-    mapFields }       from 'vuex-map-fields'
+  import { mapFields }      from 'vuex-map-fields'
+
+  import pageTitleHeader    from '~/components/pageTitleHeader'
+  import exampleBreadCrumbs from '~/components/design-system/exampleBreadCrumbs'
 
   export default {
-    created() {
-    },
+    components: { pageTitleHeader, exampleBreadCrumbs },
+    created() {},
     data () {
-      return  {
-      }
+      return  {}
     },
     computed: {
       ...mapFields([
         'auth.authUser',
       ])
-    },
-    methods: {}
+    }
   }
 </script>
 
